@@ -1,0 +1,38 @@
+<div id="view-controler" class="container-fluid">
+    <div class="row">
+
+        <div class="col-md-12">
+            <h3 class="sub-title">1. Define a study area:</h3>
+        </div>
+
+        <form>
+
+            <div class="form-group row">
+                <label for="study_area_input" class="col-sm-3 col-form-label pt-0">Study area</label>
+
+                <div class="col-sm-6">
+                    <input
+                        class="form-control mx-sm-3"
+                        id="study_area_input"
+                        type="text"
+                        [(ngModel)]="study_area_value"
+                        name="study_area_value"
+                        required
+                    >
+
+                </div>
+
+                <div class="col-sm-3">
+                    <input
+                        class="form-control btn btn-primary"
+                        type="button"
+                        value="Submit"
+                        (click)="computeView()"
+                    >
+                </div>
+
+            </div>
+
+        </form>
+    </div>
+</div>
