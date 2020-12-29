@@ -11,7 +11,7 @@ export class NodescontrolerComponent implements OnInit {
   edit_mode_status: boolean = false;
   elevation_mode_status: boolean = false;
 
-  transport_modes: any = [
+  transport_modes: any[] = [
     {"title": "Pedestrian", "value": "mode_pedestrian"},
     {"title": "Vehicle", "value": "mode_vehicle"}
   ];

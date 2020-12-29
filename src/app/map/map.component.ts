@@ -16,7 +16,7 @@ export class MapComponent implements OnInit {
   map_nodes: any = { 
     type: "FeatureCollection",
     features: []
-  } 
+  }
 
   constructor() { }
 
@@ -26,7 +26,6 @@ export class MapComponent implements OnInit {
 
   initMap() {
     this.map = L.map('map').setView(this.init_pos_coord, this.zoom);
-    
     L.tileLayer(
       this.url,
       {
