@@ -10,6 +10,9 @@ import { MapComponent } from './map/map.component';
 import { ViewcontrolerComponent } from './viewcontroler/viewcontroler.component';
 import { NodescontrolerComponent } from './nodescontroler/nodescontroler.component';
 
+import { MapControlerService } from './mapcontroler.service';
+
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -24,7 +27,7 @@ import { NodescontrolerComponent } from './nodescontroler/nodescontroler.compone
     FormsModule,
     HttpClientModule
   ],
-  providers: [],
+  providers: [MapControlerService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

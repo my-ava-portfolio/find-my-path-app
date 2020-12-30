@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import * as L from 'leaflet';
+import { MapControlerService } from '../mapcontroler.service';
+
 
 @Component({
   selector: 'app-map',
@@ -7,7 +9,7 @@ import * as L from 'leaflet';
   styleUrls: ['./map.component.css']
 })
 export class MapComponent implements OnInit {
-  
+
   private init_pos_coord: any = [45.754649, 4.858618]
   private url: string = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
   private attribution: string = '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors';
@@ -18,7 +20,16 @@ export class MapComponent implements OnInit {
     features: []
   }
 
-  constructor() { }
+  constructor(private mapService: MapControlerService) {
+      console.log(this.mapService.bbox);
+      this.mapService.bboxChange.subscribe(data => {
+        console.log("aaa", data);
+        this.map.fitBounds([
+          [data.bbox[0], data.bbox[2]],
+          [data.bbox[1], data.bbox[3]]
+        ]);
+      });
+   }
 
   ngOnInit(): void {
     this.initMap()

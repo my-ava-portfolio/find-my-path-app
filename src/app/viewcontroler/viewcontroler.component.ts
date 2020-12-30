@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { MapControlerService } from '../mapcontroler.service';
+
 
 
 @Component({
@@ -13,7 +15,10 @@ export class ViewcontrolerComponent implements OnInit {
   private REST_API_SERVER: string = "https://find-my-path.herokuapp.com/api/v1/location?";
   coordinates: object = {};
 
-  constructor(private http: HttpClient) { }
+  constructor(
+    private http: HttpClient,
+    private mapService: MapControlerService
+  ) { }
 
   ngOnInit(): void {
   }
@@ -24,14 +29,9 @@ export class ViewcontrolerComponent implements OnInit {
       .subscribe(response => {
         this.coordinates = response
         console.log(response)
+        this.mapService.change(response)
     });
     
   }
 
-  // fitBounds(bbox_coordinates: number[]) {
-  //   this.map.fitBounds([
-  //     [bbox_coordinates[0], bbox_coordinates[2]],
-  //     [bbox_coordinates[1], bbox_coordinates[3]]
-  //   ]);
-  // }
 }
