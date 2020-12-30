@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import * as L from 'leaflet';
-import { MapControlerService } from '../mapcontroler.service';
+import { ViewControlerMapService } from '../services/mapcontroler.service';
 
 
 @Component({
@@ -20,13 +20,12 @@ export class MapComponent implements OnInit {
     features: []
   }
 
-  constructor(private mapService: MapControlerService) {
-      console.log(this.mapService.bbox);
-      this.mapService.bboxChange.subscribe(data => {
-        console.log("aaa", data);
+  constructor(private mapService: ViewControlerMapService) {
+      this.mapService.bboxCoords.subscribe(data => {
+        console.log('aaa', data);
         this.map.fitBounds([
-          [data.bbox[0], data.bbox[2]],
-          [data.bbox[1], data.bbox[3]]
+          [data[0], data[2]],
+          [data[1], data[3]]
         ]);
       });
    }
