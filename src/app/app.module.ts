@@ -5,12 +5,16 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { HeaderComponent } from './header/header.component';
-import { MapComponent } from './map/map.component';
-import { ViewcontrolerComponent } from './viewcontroler/viewcontroler.component';
-import { NodescontrolerComponent } from './nodescontroler/nodescontroler.component';
+import { HeaderComponent } from './components/header/header.component';
+import { MapComponent } from './components/map/map.component';
+import { ViewcontrolerComponent } from './components/viewcontroler/viewcontroler.component';
+import { NodesParametersComponent } from './components/nodesparameters/nodesparameters.component';
 
-import { ViewControlerMapService } from './services/mapcontroler.service';
+import { MapViewBuilderService } from './services/mapviewbuider.service';
+import { MapNodesBuilderService } from './services/mapnodesbuilder.service';
+import { MapEditingService } from './services/mapediting.service';
+import { FooterComponent } from './components/footer/footer.component';
+import { nodesControlersComponent } from './components/nodescontrolers/nodescontrolers.component';
 
 
 @NgModule({
@@ -19,7 +23,9 @@ import { ViewControlerMapService } from './services/mapcontroler.service';
     HeaderComponent,
     MapComponent,
     ViewcontrolerComponent,
-    NodescontrolerComponent
+    NodesParametersComponent,
+    FooterComponent,
+    nodesControlersComponent
   ],
   imports: [
     BrowserModule,
@@ -27,7 +33,11 @@ import { ViewControlerMapService } from './services/mapcontroler.service';
     FormsModule,
     HttpClientModule
   ],
-  providers: [ViewControlerMapService],
+  providers: [
+    MapViewBuilderService,
+    MapNodesBuilderService,
+    MapEditingService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -15,10 +15,14 @@
                         class="form-control mx-sm-3"
                         id="study_area_input"
                         type="text"
-                        [(ngModel)]="study_area_value"
-                        name="study_area_value"
+                        [(ngModel)]="StudyAreaValue"
+                        name="StudyAreaValue"
                         required
                     >
+
+                <div *ngIf="HideError" role="alert">
+                    <small>{{ErrorMessage}}</small>
+                </div>
 
                 </div>
 
@@ -30,7 +34,7 @@
                         (click)="computeView()"
                     >
                 </div>
-                <div>{{coordinates}}</div>
+
             </div>
 
         </form>
