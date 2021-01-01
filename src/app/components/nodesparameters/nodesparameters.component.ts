@@ -3,6 +3,10 @@ import { Component, OnInit } from '@angular/core';
 import { TransportMode } from '../../core/interfaces';
 
 import { MapEditingService } from '../../services/mapediting.service';
+import { MapPathBuilderService } from '../../services/mappathbuilder.service';
+import { MapNodesBuilderService } from '../../services/mapnodesbuilder.service';
+
+import { Node } from '../../core/interfaces';
 
 
 @Component({
@@ -12,23 +16,42 @@ import { MapEditingService } from '../../services/mapediting.service';
 })
 export class NodesParametersComponent implements OnInit {
 
-  TransportModeSelected = 'mode_pedestrian';
+  TransportModeSelected = 'pedestrian';
   EditModeStatus = false;
   ElevationModeStatus = false;
+  NodesDefined!: Node[];
 
   TransportModes: TransportMode[] = [
-    {title: 'Pedestrian', value: 'mode_pedestrian'},
-    {title: 'Vehicle', value: 'mode_vehicle'}
+    {title: 'Pedestrian', value: 'pedestrian'},
+    {title: 'Vehicle', value: 'vehicle'}
   ];
 
   constructor(
-    private EditingService: MapEditingService
-  ) { }
+    private EditingService: MapEditingService,
+    private PathBuilderService: MapPathBuilderService,
+    private MapNodesService: MapNodesBuilderService
+
+  ) {
+
+    this.MapNodesService.nodes.subscribe(data => {
+      this.NodesDefined = data;
+    });
+
+  }
 
   ngOnInit(): void { }
 
   computePath(): void {
-    console.log(this.TransportModeSelected, this.EditModeStatus, this.ElevationModeStatus);
+    if (this.NodesDefined) {
+      this.PathBuilderService.injectParameters(
+        this.TransportModeSelected,
+        this.ElevationModeStatus,
+        this.NodesDefined,
+      );
+    } else {
+      console.log("no nodes found", this.NodesDefined)
+    }
+
   }
 
   checkEditMode(event: any): void {

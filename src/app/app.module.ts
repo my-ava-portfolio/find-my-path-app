@@ -9,12 +9,15 @@ import { HeaderComponent } from './components/header/header.component';
 import { MapComponent } from './components/map/map.component';
 import { ViewcontrolerComponent } from './components/viewcontroler/viewcontroler.component';
 import { NodesParametersComponent } from './components/nodesparameters/nodesparameters.component';
+import { FooterComponent } from './components/footer/footer.component';
+import { nodesControlersComponent } from './components/nodescontrolers/nodescontrolers.component';
 
 import { MapViewBuilderService } from './services/mapviewbuider.service';
 import { MapNodesBuilderService } from './services/mapnodesbuilder.service';
 import { MapEditingService } from './services/mapediting.service';
-import { FooterComponent } from './components/footer/footer.component';
-import { nodesControlersComponent } from './components/nodescontrolers/nodescontrolers.component';
+import { MapPathBuilderService } from './services/mappathbuilder.service';
+
+
 
 
 @NgModule({
@@ -36,7 +39,8 @@ import { nodesControlersComponent } from './components/nodescontrolers/nodescont
   providers: [
     MapViewBuilderService,
     MapNodesBuilderService,
-    MapEditingService
+    MapEditingService,
+    MapPathBuilderService
   ],
   bootstrap: [AppComponent]
 })

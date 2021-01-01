@@ -8,7 +8,9 @@ import { Bbox } from '../core/interfaces';
 @Injectable()
 export class MapViewBuilderService {
 
-    private REST_API_SERVER = 'https://find-my-path.herokuapp.com/api/v1/location?';
+    // private REST_API_SERVER = 'https://find-my-path.herokuapp.com/api/v1/location?';
+    private REST_API_SERVER = 'http://192.168.1.16:5000/api/v1/location?';
+
     bboxCoords: Subject<number[]> = new Subject<number[]>();
     ErrorApiFound: Subject<boolean> = new Subject<boolean>();
 

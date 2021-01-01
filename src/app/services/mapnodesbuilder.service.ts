@@ -18,7 +18,7 @@ export class MapNodesBuilderService {
 
     nodes: Subject<Node[]> = new Subject<Node[]>();
     NodesArray: Node[] = [];
-    markerUuidToDelete: Subject<any> = new Subject<any>();
+    markerUuidToDelete: Subject<number> = new Subject<number>();
 
     constructor() { }
 
@@ -29,8 +29,8 @@ export class MapNodesBuilderService {
             geometry: {
                 type: 'Point',
                 coordinates: [
-                    coordinates[0],
-                    coordinates[1]
+                    coordinates[1],
+                    coordinates[0]
                 ]
             },
             properties: {

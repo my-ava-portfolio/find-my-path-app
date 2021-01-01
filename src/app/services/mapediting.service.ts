@@ -8,7 +8,7 @@ export class MapEditingService {
 
     EditModeEnabled!: boolean;
     EditModeStatus: Subject<boolean> = new Subject<boolean>();
-
+    // add survey element from parameters part
     constructor() { }
 
     setEdit(status: boolean): void {
