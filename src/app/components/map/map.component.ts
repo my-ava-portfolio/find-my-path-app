@@ -161,8 +161,6 @@ export class MapComponent implements OnInit {
     const svg: any  = d3.select(svg_map_container._container).attr('id', id);
     const g: any = svg.append('g').attr('class', 'leaflet-zoom-hide path_' + id);
 
-
-
     // Here we're creating a FUNCTION to generate a line
     // from input points. Since input points will be in
     // Lat/Long they need to be converted to map units

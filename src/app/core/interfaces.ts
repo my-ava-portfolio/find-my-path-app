@@ -17,14 +17,14 @@ export interface TransportMode {
 // }
 
 
-
+interface PointGeometry {
+    type: string;
+    coordinates: number[];
+};
 
 export interface Node {
     type: string;
-    geometry: {
-        type: string;
-        coordinates: number[];
-    };
+    geometry: PointGeometry;
     properties: {
         position: number;
         uuid: number;
@@ -39,25 +39,52 @@ export interface NodeGeoJson {
 // PATH API
 export interface NodePathFeature {
     type: string;
-    geometry: {
-        type: string;
-        coordinates: number[];
-    };
+    geometry: PointGeometry;
     properties: {
         elevation: number;
         distance: number;
     };
     LatLng?: any;
 }
+
 export interface NodePathGeoJson {
     type: string;
     features: NodePathFeature[];
 }
 
+interface TopoPath {
+    nodes_count: number;
+    elevation_min: number;
+    elevation_max: number;
+    elevation_diff: number;
+    longer: number;
+}
+
+interface LinePathGeoJson {
+    type: string;
+    features: {
+        type: string;
+        geometry: PointGeometry;
+        properties: {
+            source_node: string,
+            target_node: string,
+            path_step: number,
+            length: number
+        };
+    };
+}
+
+export interface PathStatistics {
+    elevation_min: number;
+    elevation_max: number;
+    elevation_diff: number;
+    longer: number;
+}
+
 export interface OutputPathApi {
     points_path: NodePathGeoJson;
-    line_path: any;
-    stats_path: any;
+    line_path: LinePathGeoJson;
+    stats_path: PathStatistics;
 }
 
 
