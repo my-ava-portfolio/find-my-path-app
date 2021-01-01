@@ -41,7 +41,7 @@ export interface NodePathFeature {
     type: string;
     geometry: PointGeometry;
     properties: {
-        elevation: number;
+        height: number;
         distance: number;
     };
     LatLng?: any;
@@ -54,10 +54,10 @@ export interface NodePathGeoJson {
 
 interface TopoPath {
     nodes_count: number;
-    elevation_min: number;
-    elevation_max: number;
-    elevation_diff: number;
-    longer: number;
+    height_min: number;
+    height_max: number;
+    height_diff: number;
+    length: number;
 }
 
 interface LinePathGeoJson {
@@ -75,10 +75,11 @@ interface LinePathGeoJson {
 }
 
 export interface PathStatistics {
-    elevation_min: number;
-    elevation_max: number;
-    elevation_diff: number;
-    longer: number;
+    nodes_count: number;
+    height_min: number;
+    height_max: number;
+    height_diff: number;
+    length: number;
 }
 
 export interface OutputPathApi {

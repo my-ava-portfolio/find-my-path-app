@@ -1,17 +1,15 @@
+<div id="nodes-results">
 
-<div class="tab-pane fade show active" id="nodes" role="tabpanel" aria-labelledby="nodes-tab">
-    <div id="nodes-results">
+    <ol id="path-coords-list"></ol>
+        <li *ngFor="let node of NodesDefined">
+            
+                <span class="node-name">{{node.properties.name}} {{node.geometry.coordinates[0]}} {{node.geometry.coordinates[1]}}</span>
+                <span class="remove" (click)="removeNode(node.properties.uuid)">X </span>
+                <span class="up" (click)="upPosition(node.properties.uuid)">UP </span>
+                <span class="down" (click)="botPosition(node.properties.uuid)">DOWN</span>
+        </li>
 
-        <ol id="path-coords-list"></ol>
-            <li *ngFor="let node of NodesDefined">
-                
-                    <span class="node-name">{{node.properties.name}} {{node.geometry.coordinates[0]}} {{node.geometry.coordinates[1]}}</span>
-                    <span class="remove" (click)="removeNode(node.properties.uuid)">X </span>
-                    <span class="up" (click)="upPosition(node.properties.uuid)">UP </span>
-                    <span class="down" (click)="botPosition(node.properties.uuid)">DOWN</span>
-            </li>
-
-    </div>
 </div>
+
 
 

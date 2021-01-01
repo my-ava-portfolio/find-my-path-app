@@ -8,7 +8,7 @@ import { AppComponent } from './app.component';
 import { HeaderComponent } from './components/header/header.component';
 import { MapComponent } from './components/map/map.component';
 import { ViewcontrolerComponent } from './components/viewcontroler/viewcontroler.component';
-import { NodesParametersComponent } from './components/nodesparameters/nodesparameters.component';
+import { inputParametersComponent } from './components/inputparameters/inputparameters.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { nodesControlersComponent } from './components/nodescontrolers/nodescontrolers.component';
 
@@ -16,6 +16,8 @@ import { MapViewBuilderService } from './services/mapviewbuider.service';
 import { MapNodesBuilderService } from './services/mapnodesbuilder.service';
 import { MapEditingService } from './services/mapediting.service';
 import { MapPathBuilderService } from './services/mappathbuilder.service';
+import { NodesstatisticsComponent } from './components/nodesstatistics/nodesstatistics.component';
+import { NodestopographyComponent } from './components/nodestopography/nodestopography.component';
 
 
 
@@ -26,9 +28,11 @@ import { MapPathBuilderService } from './services/mappathbuilder.service';
     HeaderComponent,
     MapComponent,
     ViewcontrolerComponent,
-    NodesParametersComponent,
+    inputParametersComponent,
     FooterComponent,
-    nodesControlersComponent
+    nodesControlersComponent,
+    NodesstatisticsComponent,
+    NodestopographyComponent
   ],
   imports: [
     BrowserModule,

@@ -15,7 +15,7 @@
                 </div>
 
                 <div id="nodes-parameters">
-                    <app-nodesparameters></app-nodesparameters>
+                    <app-inputparameters></app-inputparameters>
                 </div>
 
                 <div id="nodes-computed">
@@ -41,7 +41,17 @@
                                 </ul>
                                 <div class="tab-content" id="myTabContent">
 
-                                    <app-nodescontrolers></app-nodescontrolers>
+                                    <div class="tab-pane fade active show" id="nodes" role="tabpanel" aria-labelledby="nodes-tab">
+                                        <app-nodescontrolers></app-nodescontrolers>
+                                    </div>
+
+                                    <div class="tab-pane fade" id="stats" role="tabpanel" aria-labelledby="stats-tab">
+                                        <app-nodesstatistics></app-nodesstatistics>
+                                    </div>
+
+                                    <div class="tab-pane fade" id="topo" role="tabpanel" aria-labelledby="topo-tab">
+                                        <app-nodestopography></app-nodestopography>
+                                    </div>
 
                                 </div>
                             

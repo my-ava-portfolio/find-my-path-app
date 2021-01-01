@@ -18,8 +18,12 @@ export class MapPathBuilderService {
         private http: HttpClient
     ) {}
 
-    getPathData(TransportMode: string, nodes: Node[], ElevationMode: boolean): void {
+    getPathData(TransportMode: string, nodes: Node[], ElevationMode: boolean | string ): void {
         console.log("yatta", JSON.stringify({ type: "FeatureCollection", features: nodes }))
+        if ( !ElevationMode ) {
+            ElevationMode = '';
+        }
+
         this.http.get<OutputPathApi>(
             this.REST_API_SERVER + 'elevation_mode=' + ElevationMode + '&mode=' + TransportMode + '&geojson=' + JSON.stringify({ type: "FeatureCollection", features: nodes })
         ).subscribe(

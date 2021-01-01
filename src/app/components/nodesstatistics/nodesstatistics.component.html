@@ -1,0 +1,13 @@
+<div id="stats-results">
+    
+    <div *ngIf="DataExists">
+        <ul>
+            <li>Nodes count: {{StatisticsData.nodes_count}}</li>
+            <li>Min. height: {{StatisticsData.height_min}}</li>
+            <li>Max. height: {{StatisticsData.height_max}}</li>
+            <li>Diff. height: {{StatisticsData.height_diff}}</li>
+            <li>Length: {{StatisticsData.length}}</li>
+        </ul>
+    </div>
+
+</div>

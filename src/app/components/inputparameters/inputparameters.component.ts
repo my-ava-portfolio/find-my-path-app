@@ -10,11 +10,11 @@ import { Node } from '../../core/interfaces';
 
 
 @Component({
-  selector: 'app-nodesparameters',
-  templateUrl: './nodesparameters.component.html',
-  styleUrls: ['./nodesparameters.component.css']
+  selector: 'app-inputparameters',
+  templateUrl: './inputparameters.component.html',
+  styleUrls: ['./inputparameters.component.css']
 })
-export class NodesParametersComponent implements OnInit {
+export class inputParametersComponent implements OnInit {
 
   TransportModeSelected = 'pedestrian';
   EditModeStatus = false;
