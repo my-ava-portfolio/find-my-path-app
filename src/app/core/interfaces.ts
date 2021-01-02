@@ -20,7 +20,7 @@ export interface TransportMode {
 interface PointGeometry {
     type: string;
     coordinates: number[];
-};
+}
 
 export interface Node {
     type: string;

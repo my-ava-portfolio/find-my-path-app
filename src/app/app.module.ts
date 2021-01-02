@@ -8,7 +8,7 @@ import { AppComponent } from './app.component';
 import { HeaderComponent } from './components/header/header.component';
 import { MapComponent } from './components/map/map.component';
 import { ViewcontrolerComponent } from './components/viewcontroler/viewcontroler.component';
-import { inputParametersComponent } from './components/inputparameters/inputparameters.component';
+import { InputParametersComponent } from './components/inputparameters/inputparameters.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { nodesControlersComponent } from './components/nodescontrolers/nodescontrolers.component';
 
@@ -28,7 +28,7 @@ import { NodestopographyComponent } from './components/nodestopography/nodestopo
     HeaderComponent,
     MapComponent,
     ViewcontrolerComponent,
-    inputParametersComponent,
+    InputParametersComponent,
     FooterComponent,
     nodesControlersComponent,
     NodesstatisticsComponent,

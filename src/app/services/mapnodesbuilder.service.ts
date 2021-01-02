@@ -47,7 +47,7 @@ export class MapNodesBuilderService {
 
         this.NodesArray.forEach((feature, index) => {
             if (feature.properties.uuid === uuid) {
-                console.log("coucou uuid", uuid)
+                console.log('coucou uuid', uuid);
                 this.NodesArray[index].geometry.coordinates = coordinates;
             }
         });
@@ -56,7 +56,7 @@ export class MapNodesBuilderService {
 
     getNodeFromUuid(uuid: number): Node {
         const NodeFound = this.NodesArray.filter(data => data.properties.uuid === uuid);
-        return NodeFound[0]
+        return NodeFound[0];
     }
 
     removeNodeAction(uuid: number): void {
@@ -65,16 +65,16 @@ export class MapNodesBuilderService {
             this.nodes.next(this.NodesArray);
             console.log('hahahaha2', this.NodesArray);
             // try to delete marker related uuid
-            this.markerUuidToDelete.next(uuid)
+            this.markerUuidToDelete.next(uuid);
         }
     }
 
     upPositionAction(uuid: number): void{
-        const uuid_index = this.NodesArray.findIndex( function(node) {
+        const uuidIndex = this.NodesArray.findIndex( (node: Node): boolean => {
             return node.properties.uuid === uuid;
         });
-        if (uuid_index > 0) {
-            move(this.NodesArray, uuid_index, uuid_index - 1);
+        if (uuidIndex > 0) {
+            move(this.NodesArray, uuidIndex, uuidIndex - 1);
             this.nodes.next(this.NodesArray);
             console.log('up', this.NodesArray);
         }
@@ -82,11 +82,11 @@ export class MapNodesBuilderService {
     }
 
     botPositionAction(uuid: number): void{
-        const uuid_index = this.NodesArray.findIndex( function(node) {
-            return node.properties.uuid === uuid;
-        });
-        if (uuid_index < this.NodesArray.length) {
-            move(this.NodesArray, uuid_index, uuid_index + 1);
+        const uuidIndex: number = this.NodesArray.findIndex((node: Node): boolean =>
+            node.properties.uuid === uuid
+        );
+        if (uuidIndex < this.NodesArray.length) {
+            move(this.NodesArray, uuidIndex, uuidIndex + 1);
             this.nodes.next(this.NodesArray);
             console.log('up', this.NodesArray);
         }

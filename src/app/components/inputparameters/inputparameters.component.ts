@@ -14,7 +14,7 @@ import { Node } from '../../core/interfaces';
   templateUrl: './inputparameters.component.html',
   styleUrls: ['./inputparameters.component.css']
 })
-export class inputParametersComponent implements OnInit {
+export class InputParametersComponent implements OnInit {
 
   TransportModeSelected = 'pedestrian';
   EditModeStatus = false;
@@ -49,7 +49,7 @@ export class inputParametersComponent implements OnInit {
         this.NodesDefined,
       );
     } else {
-      console.log("no nodes found", this.NodesDefined)
+      console.log('no nodes found', this.NodesDefined);
     }
 
   }

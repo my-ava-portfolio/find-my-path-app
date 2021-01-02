@@ -12,7 +12,7 @@ import { NodePathGeoJson, NodePathFeature, Node, Margin } from '../../core/inter
 })
 export class NodestopographyComponent implements OnInit {
 
-  margin: Margin = {top: 30, right: 25, bottom: 30, left: 25};
+  margin: Margin = {top: 30, right: 25, bottom: 30, left: 30};
   width = 400;
   height = 300;
 
@@ -27,7 +27,7 @@ export class NodestopographyComponent implements OnInit {
 
     this.PathBuilderService.PathPointsOutput.subscribe(PathData => {
       this.initChart();
-      console.log(PathData.features)
+      console.log(PathData.features);
       this.createChart(PathData.features);
     });
 
@@ -35,11 +35,11 @@ export class NodestopographyComponent implements OnInit {
 
   ngOnInit(): void { }
 
-  initChart() {
+  initChart(): void {
 
     this.svg = d3.select('#TopoChart').append('svg');
 
-    this.contentWidth = this.width //+ this.margin.left + this.margin.right;
+    this.contentWidth = this.width; // + this.margin.left + this.margin.right;
     this.contentHeight = this.height + this.margin.top + this.margin.bottom;
 
     this.g = this.svg
@@ -59,9 +59,8 @@ export class NodestopographyComponent implements OnInit {
     const xAxis: any = d3.axisBottom(x);
     const yAxis: any = d3.axisLeft(y);
 
-  
     // Define the line
-    const line_value: any = d3.line<NodePathFeature>()
+    const lineBuilder: any = d3.line<NodePathFeature>()
       .x( (d: NodePathFeature) => x(d.properties.distance) )
       .y( (d: NodePathFeature) => y(d.properties.height) )
       .curve(d3.curveCatmullRom);
@@ -69,19 +68,19 @@ export class NodestopographyComponent implements OnInit {
     // Scale the range of the data
     x.domain(d3.extent(data, (d: NodePathFeature) => d.properties.distance ));
     y.domain([
-      d3.min(data, (d: NodePathFeature) => d.properties.height - 5),
-      d3.max(data, (d: NodePathFeature) => d.properties.height + 5)
+      d3.min(data, (d: NodePathFeature) => d.properties.height - 2),
+      d3.max(data, (d: NodePathFeature) => d.properties.height + 2)
     ]);
 
     // Add the line_value path.
     this.g.append('path')
       .attr('class', 'line')
-      .attr('d', line_value(data))
+      .attr('d', lineBuilder(data))
       .style('fill', 'none') // add a color
       .style('opacity', 'unset') // add 0 to hide the path
       .style('stroke', 'black')
       .style('stroke-width', '2')
-      .style('overflow', 'overlay')
+      .style('overflow', 'overlay');
 
     // Add the valueline path.
     this.g.selectAll('circle')
