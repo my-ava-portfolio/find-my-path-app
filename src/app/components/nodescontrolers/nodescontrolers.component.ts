@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+
 
 import { MapNodesBuilderService } from '../../services/mapnodesbuilder.service';
 
@@ -12,7 +13,6 @@ import { Node } from '../../core/interfaces';
 })
 export class nodesControlersComponent implements OnInit {
   NodesDefined!: Node[];
-
 
   constructor(
     private MapNodesService: MapNodesBuilderService
