@@ -101,3 +101,15 @@ export interface Marker {
     uuid: number;
     marker: any;
 }
+
+
+// topo chart
+
+// margin
+export interface Margin {
+    top: number;
+    right: number;
+    bottom: number;
+    left: number;
+}
+
