@@ -14,7 +14,8 @@ import { D3LeafletUtils } from '../../core/d3LeafletUtils';
 
 @Component({
   selector: 'app-map',
-  encapsulation: ViewEncapsulation.None, // https://medium.com/@simonb90/comprendre-la-viewencapsulation-dans-un-component-angular-83decae8f092
+  // https://medium.com/@simonb90/comprendre-la-viewencapsulation-dans-un-component-angular-83decae8f092
+  encapsulation: ViewEncapsulation.None,
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.css']
 })
@@ -51,7 +52,7 @@ export class MapComponent implements OnInit {
     });
 
     this.MapNodesService.nodes.subscribe(nodes => {
-      this.MapFuncs.computeMapFromPoints(this.map, nodes, "path-nodes")
+      this.MapFuncs.computeMapFromPoints(this.map, nodes, 'path-nodes');
 
     });
 

@@ -90,10 +90,10 @@ export class MapNodesBuilderService {
 
     }
 
-    updatePositionNodes() {
+    updatePositionNodes(): void {
         this.NodesArray.forEach((feature, index) => {
             this.NodesArray[index].properties.position = index;
-        })
+        });
     }
 
 }

@@ -36,7 +36,7 @@ export class NodestopographyComponent implements OnInit {
   ngOnInit(): void { }
 
   initChart(): void {
-    d3.select('#TopoLineChart').remove()
+    d3.select('#TopoLineChart').remove();
     this.svg = d3.select('#TopoChart').append('svg');
 
     this.contentWidth = this.width; // + this.margin.left + this.margin.right;

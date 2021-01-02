@@ -236,11 +236,11 @@ export class D3LeafletUtils {
                 this.initPopup('body', 'popup-' + layerId, d, false);
             })
             .on('mousemove', (d: any): void => {
-                LeafletMap.dragging.disable()
+                LeafletMap.dragging.disable();
                 this.moveResponsivePopup('#popup-' + layerId);
             })
             .on('mouseout', (d: any): void => {
-                LeafletMap.dragging.enable()
+                LeafletMap.dragging.enable();
                 d3.select('#popup-' + layerId).remove();
             })
             .call(
@@ -257,7 +257,7 @@ export class D3LeafletUtils {
                             node.properties.uuid === d.properties.uuid
                     );
                     const CoordinatesUpdated = layerCoordsConverter(LeafletMap, { x: d3.event.x, y: d3.event.y });
-                    GeoJsonPointFeatures[nodeUuid].geometry.coordinates = [CoordinatesUpdated.lng, CoordinatesUpdated.lat]
+                    GeoJsonPointFeatures[nodeUuid].geometry.coordinates = [CoordinatesUpdated.lng, CoordinatesUpdated.lat];
                     this.computeMapFromPoints(LeafletMap, GeoJsonPointFeatures, layerId, displayToolTip = false);
 
                 })
@@ -311,7 +311,7 @@ export class D3LeafletUtils {
     }
 
     convertLayerCoordsToLatLng(LeafletMap: any, coordinates: Coordinates): LatLng {
-        console.log('aaa', coordinates, LeafletMap.layerPointToLatLng([coordinates.x, coordinates.y]) )
+        console.log('aaa', coordinates, LeafletMap.layerPointToLatLng([coordinates.x, coordinates.y]) );
         return LeafletMap.layerPointToLatLng([coordinates.x, coordinates.y]);
 
     }
@@ -320,17 +320,17 @@ export class D3LeafletUtils {
 
         const popupDiv: any = d3.select(containerId).append('div')
             .attr('class', 'shadow bg-white rounded ' + this.popupClassName)
-            .attr('id', popupId)
+            .attr('id', popupId);
              // .style('opacity', 1)
         // TODO improve to display all the properties nicely
         popupDiv.html(feature.properties.name);
 
         if (staticMode) {
             const popup: any = d3.selectAll('#' + popupId);
-            console.log(popup)
+            console.log(popup);
             popup
                 .style('left', (d3.event.pageX)  + 'px')
-                .style('top', (d3.event.pageY - 20) + 'px')
+                .style('top', (d3.event.pageY - 20) + 'px');
         }
     }
 
@@ -338,6 +338,7 @@ export class D3LeafletUtils {
         const popup: any = d3.selectAll(popupId);
 
         // do not change with let or you'll have value issue
+        // TODO improve
         const popupWidth: number = 50;
         const popupHeight: number = 10;
         popup
@@ -354,7 +355,7 @@ export class D3LeafletUtils {
                 } else {
                     return d3.event.pageY + 15 + 'px';
                 }
-            })
+            });
     }
 
 
