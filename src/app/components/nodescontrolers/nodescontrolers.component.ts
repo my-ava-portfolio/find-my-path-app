@@ -19,7 +19,7 @@ export class nodesControlersComponent implements OnInit {
   ) {
 
     this.MapNodesService.nodes.subscribe(data => {
-      this.NodesDefined = data
+      this.NodesDefined = data;
     });
 
    }

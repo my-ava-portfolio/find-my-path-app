@@ -4,7 +4,8 @@ import { Subject } from 'rxjs';
 import { Node } from '../core/interfaces';
 
 
-function move(input: Node[], from: number, to: number): Node[] {
+function shiftingOnArray(input: any[], from: number, to: number): Node[] {
+    // TODO add to common func
     let numberOfDeletedElm = 1;
     const elm = input.splice(from, numberOfDeletedElm)[0];
     numberOfDeletedElm = 0;
@@ -18,7 +19,6 @@ export class MapNodesBuilderService {
 
     nodes: Subject<Node[]> = new Subject<Node[]>();
     NodesArray: Node[] = [];
-    markerUuidToDelete: Subject<number> = new Subject<number>();
 
     constructor() { }
 
@@ -63,9 +63,6 @@ export class MapNodesBuilderService {
         if (this.NodesArray !== []) {
             this.NodesArray = this.NodesArray.filter(data => data.properties.uuid !== uuid);
             this.nodes.next(this.NodesArray);
-            console.log('hahahaha2', this.NodesArray);
-            // try to delete marker related uuid
-            this.markerUuidToDelete.next(uuid);
         }
     }
 
@@ -74,9 +71,9 @@ export class MapNodesBuilderService {
             return node.properties.uuid === uuid;
         });
         if (uuidIndex > 0) {
-            move(this.NodesArray, uuidIndex, uuidIndex - 1);
+            shiftingOnArray(this.NodesArray, uuidIndex, uuidIndex - 1);
+            this.updatePositionNodes();
             this.nodes.next(this.NodesArray);
-            console.log('up', this.NodesArray);
         }
 
     }
@@ -86,11 +83,17 @@ export class MapNodesBuilderService {
             node.properties.uuid === uuid
         );
         if (uuidIndex < this.NodesArray.length) {
-            move(this.NodesArray, uuidIndex, uuidIndex + 1);
+            shiftingOnArray(this.NodesArray, uuidIndex, uuidIndex + 1);
+            this.updatePositionNodes();
             this.nodes.next(this.NodesArray);
-            console.log('up', this.NodesArray);
         }
 
+    }
+
+    updatePositionNodes() {
+        this.NodesArray.forEach((feature, index) => {
+            this.NodesArray[index].properties.position = index;
+        })
     }
 
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import * as L from 'leaflet';
 import 'leaflet/dist/images/marker-shadow.png';
 import * as d3 from 'd3';
@@ -14,6 +14,7 @@ import { D3LeafletUtils } from '../../core/d3LeafletUtils';
 
 @Component({
   selector: 'app-map',
+  encapsulation: ViewEncapsulation.None, // https://medium.com/@simonb90/comprendre-la-viewencapsulation-dans-un-component-angular-83decae8f092
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.css']
 })
@@ -49,24 +50,13 @@ export class MapComponent implements OnInit {
       ]);
     });
 
-    this.MapNodesService.nodes.subscribe(data => {
-      console.log('nodes FROM MAP', data);
-      this.countNodes(data);
-    });
-
-    this.MapNodesService.markerUuidToDelete.subscribe(markerUuid => {
-      console.log(this.MarkerArray);
-      this.MarkerArray.forEach( (value, index) => {
-        if (value.uuid === markerUuid) {
-          this.map.removeLayer(value.marker);
-        }
-      });
+    this.MapNodesService.nodes.subscribe(nodes => {
+      this.MapFuncs.computeMapFromPoints(this.map, nodes, "path-nodes")
 
     });
 
     this.EditingService.EditModeStatus.subscribe(status => {
       this.EditModeStatus = status;
-      console.log('cpcpcp', status);
     });
 
 
@@ -84,10 +74,25 @@ export class MapComponent implements OnInit {
         attribution: this.attribution
       }
     ).addTo(this.map);
-    this.map.on('click', this.onMapClick.bind(this));
+    this.map.on('click', this.onMapClickWithD3.bind(this));
   }
 
-  onMapClick(event: any): void {
+  onMapClickWithD3(event: any): void {
+    if (this.EditModeStatus) {
+      const coordinates: any = [
+        event.latlng.lat,
+        event.latlng.lng
+      ];
+      console.log('pouette', event);
+      this.MapNodesService.buildNodesArray(coordinates);
+
+      const UuidExpected: number = this.MapNodesService.NodesArray.length - 1;
+      const NodeFound: Node = this.MapNodesService.getNodeFromUuid(UuidExpected);
+
+    }
+  }
+
+  onMapClickWithLeafletMarker(event: any): void {
 
     const customMarker: any = L.Marker.extend({
       options: {
@@ -132,9 +137,6 @@ export class MapComponent implements OnInit {
 
 
   }
-  //  put d3 js code!
-  countNodes(nodes: any[]): void {
-    console.log('nodes count FROM MAP', nodes.length);
-  }
+
 
 }
