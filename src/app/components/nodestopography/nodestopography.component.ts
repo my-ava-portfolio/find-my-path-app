@@ -48,6 +48,7 @@ export class NodestopographyComponent implements OnInit {
       .attr('id', 'TopoLineChart')
       .append('g')
       .attr('transform', 'translate(' + this.margin.left + ',' + this.margin.top + ')');
+
   }
 
   createChart(data: NodePathFeature[]): void {
@@ -66,6 +67,7 @@ export class NodestopographyComponent implements OnInit {
       .y( (d: NodePathFeature) => y(d.properties.height) )
       .curve(d3.curveCatmullRom);
 
+   
     // Scale the range of the data
     x.domain(d3.extent(data, (d: NodePathFeature) => d.properties.distance ));
     y.domain([
