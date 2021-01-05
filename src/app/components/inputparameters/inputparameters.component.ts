@@ -17,6 +17,7 @@ import { PathFeature, Nodes } from '../../core/interfaces';
 export class InputParametersComponent implements OnInit {
   @Input() pathData!: PathFeature;
 
+  colorSelected!: string;
   transportModeSelected = 'pedestrian';
   editModeStatus = false;
   elevationModeStatus = false;
@@ -35,9 +36,8 @@ export class InputParametersComponent implements OnInit {
     private PathBuilderService: MapPathBuilderService,
 
   ) {
-
     this.PathBuilderService.pathApiOutputs.subscribe(data => {
-      this.PathsHService.getComputedData(data)
+      this.PathsHService.getComputedData(data);
       console.log("Get API data OK")
     });
 
@@ -45,13 +45,21 @@ export class InputParametersComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getPathName()
-    this.getEditMode()
-    this.getTransportMode()
-    this.getElevationStatus()
-
+    this.getPathName();
+    this.getEditMode();
+    this.getTransportMode();
+    this.getElevationStatus();
+    this.getColor();
     this.currentNodes = this.pathData.inputNodes.features
 
+    console.log(
+      this.pathName,
+      this.colorSelected,
+      this.transportModeSelected,
+      this.editModeStatus,
+      this.elevationModeStatus,
+      this.currentNodes,
+    )
   }
 
 
@@ -60,14 +68,15 @@ export class InputParametersComponent implements OnInit {
     console.log("parameters defined",
       this.transportModeSelected,
       this.elevationModeStatus,
-      this.currentNodes
+      this.currentNodes,
+      this.colorSelected
     )
 
     if (this.currentNodes.length > 0) {
       this.PathBuilderService.injectParameters(
         this.transportModeSelected,
         this.elevationModeStatus,
-        this.currentNodes,
+        this.currentNodes
       );
       console.log("Compute Path", this.pathData.id)
     } else {
@@ -77,18 +86,27 @@ export class InputParametersComponent implements OnInit {
   }
 
   getPathName(): void {
-    const pathIndex: number = this.PathsHService.getPathIndex(this.pathData.id)
-    this.pathName = this.PathsHService.PathsHandlerData[pathIndex].name
+    const pathIndex: number = this.PathsHService.getPathIndex(this.pathData.id);
+    this.pathName = this.PathsHService.PathsHandlerData[pathIndex].name;
   }
 
+  getColor(): void {
+    const pathIndex: number = this.PathsHService.getPathIndex(this.pathData.id);
+    this.colorSelected = this.PathsHService.PathsHandlerData[pathIndex].color;
+  }
+  setColor(event: any): void {
+    console.log("color", event)
+    this.colorSelected = event.target.value;
+  }
 
   getEditMode(): void {
     const editStatus: boolean = this.PathsHService.getPathConfigFromPathId(this.pathData.id).EditingStatus;
     this.editModeStatus = editStatus;
     // this.editingService.setEdit(EditStatus);
   }
-  setEditModel(event: any): void {
+  setEditMode(event: any): void {
     const newEditingStatus: boolean = event.target.checked;
+    // this.editModeStatus = newEditingStatus;
     const pathIndex: number = this.PathsHService.getPathIndex(this.pathData.id)
     this.PathsHService.PathsHandlerData[pathIndex].configuration.EditingStatus = newEditingStatus;
   }

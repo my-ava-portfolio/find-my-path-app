@@ -24,6 +24,7 @@ export class MapComponent implements OnInit {
   private url = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
   private attribution = '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors';
   private zoom = 10;
+
   map: any;
   EditModeStatus!: boolean;
   MarkerArray: Marker[] = [];
@@ -38,10 +39,13 @@ export class MapComponent implements OnInit {
 
     // go to handler service ; idem for statistics
     this.PathBuilderService.pathApiOutputs.subscribe(PathData => {
+      const pathColor: string = this.PathsHService.getOpenedPath().color;
+
       this.MapFuncs.computeAnimatePointsOnLine(
         this.map,
         PathData.points_path!.features,
-        'pathMap-' + this.PathsHService.currentTabDisplayed
+        'pathMap-' + this.PathsHService.currentTabDisplayed,
+        pathColor
       );
       console.log("animated path", 'pathMap-' + this.PathsHService.currentTabDisplayed)
       this.PointsPathData = null;
@@ -86,9 +90,12 @@ export class MapComponent implements OnInit {
     const PathId: string = this.PathsHService.currentTabDisplayed;
     const pathIndex: number = this.PathsHService.getPathIndex(PathId);
     this.EditModeStatus = this.PathsHService.PathsHandlerData[pathIndex].configuration.EditingStatus;
+    console.log("path edit conf", PathId, pathIndex, this.PathsHService.PathsHandlerData[pathIndex].configuration)
+
   }
 
   onMapClickWithD3(event: any): void {
+    console.log("click on map", this.EditModeStatus)
     this._getEditingPathStatus()
 
     if (this.EditModeStatus) {

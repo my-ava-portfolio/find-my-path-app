@@ -10,10 +10,10 @@
                     <button id="btn-add-tab" type="button" class="btn btn-primary pull-right" (click)="addPath()">Add Path</button>
                 </p>
                 
-                <div *ngIf="isPathFound">
+                <div [hidden]="!isPathFound">
                     <!-- Nav tabs -->
                     <div id="tab-list" class="nav nav-tabs" role="tablist">
-                        <a class="nav-item nav-link" id="{{ 'nav-' + path.id }}" *ngFor="let path of PathFeatures; let i = index" href="{{ '#' + path.id }}" (click)="getTabId(path.id)" role="tab" data-toggle="tab" aria-controls="tab" aria-selected="true">{{path.name}}
+                        <a #myDiv class="nav-item nav-link" id="{{ 'nav-' + path.id }}" *ngFor="let path of PathFeatures; let i = index" href="{{ '#' + path.id }}" (click)="getTabId(path.id)" role="tab" data-toggle="tab" aria-controls="tab" aria-selected="true">{{path.name}}
                         </a>
                     </div>
 

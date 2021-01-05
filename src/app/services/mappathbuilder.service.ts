@@ -19,7 +19,7 @@ export class MapPathBuilderService {
         private http: HttpClient
     ) {}
 
-    getPathData(TransportMode: string, nodes: Nodes, ElevationMode: boolean | string ): void {
+    getPathData(TransportMode: string, nodes: Nodes, ElevationMode: boolean | string): void {
         if ( !ElevationMode ) {
             ElevationMode = '';
         }

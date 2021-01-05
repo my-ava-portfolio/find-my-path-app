@@ -34,7 +34,7 @@ export class D3LeafletUtils {
 
     constructor() { }
 
-    computeAnimatePointsOnLine(LeafletMap: any, GeoJsonPointFeatures: any[], layerId: string): void {
+    computeAnimatePointsOnLine(LeafletMap: any, GeoJsonPointFeatures: any[], layerId: string, lineColor: string): void {
         d3.selectAll('#' + layerId).remove();
 
         const convertLatLngToLayerCoords = (d: any): any => {
@@ -93,9 +93,9 @@ export class D3LeafletUtils {
             .enter()
             .append('path')
             .attr('class', 'lineConnect_' + layerId)
-            .style('fill', 'none') // add a color
+            .style('fill', 'none')
             .style('opacity', 'unset') // add 0 to hide the path
-            .style('stroke', 'black')
+            .style('stroke', lineColor)
             .style('stroke-width', '2')
             .style('overflow', 'overlay');
 

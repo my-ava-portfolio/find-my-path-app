@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 
 import { PathContainer } from '../../core/interfaces';
 
@@ -24,22 +24,26 @@ export class NodeshandlerComponent implements OnInit {
     // to update path data injected into html templates
     this.PathsHService.PathsHandlerContainer.subscribe(data => {
       this.PathFeatures = data;
+      this.countPath = data.length
     });
 
   }
 
   ngOnInit(): void {
-    this.getTabId(this.currentTabId)
+    this.getTabId(this.currentTabId);
+
   }
 
   getTabId(tabId: string): void {
     this.currentTabId = tabId;
-    console.log('Get tab: ' + this.currentTabId)
-    
+    console.log('Get tab: ' + this.currentTabId);
+
   }
 
   addPath(): void {
     this.isPathFound = true;
-    this.PathsHService.addPath(this.currentTabId);
+    console.log('ADDED path');
+    this.PathsHService.addPath();
+
   }
 }

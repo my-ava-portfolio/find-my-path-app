@@ -7,12 +7,19 @@
 
         <form class="row">
             <div class="col-md-8">
+
+                <div class="form-group">
+                    <div class="row">
+                        <input type="color" [value]="colorSelected" name="color-Picker" id="colorPicker" (change)="setColor($event)"/>
+                    </div>
+                </div>
+
                 <div class="form-group">
                     <div class="row">
                         <legend class="col-form-label col-sm-4 pt-0">Editing</legend>
                         <div class="col-sm-8">
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="edit_mode" name="edit_options" [(ngModel)]="editModeStatus" (change)="setEditModel($event)">
+                                <input class="form-check-input" type="checkbox" id="edit_mode" name="edit_options" [(ngModel)]="editModeStatus" (change)="setEditMode($event)">
                                 <label class="form-check-label" for="edit_mode">Edit mode</label>
                             </div>
                         </div>

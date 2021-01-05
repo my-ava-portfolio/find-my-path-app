@@ -13,7 +13,9 @@ function shiftingOnArray(input: any[], from: number, to: number): Node[] {
     return input;
   }
 
-
+function randomHexColor(): string{
+    return '#' + Math.floor(Math.random() * 16777215).toString(16);
+}
 
 @Injectable()
 export class PathsHandlerService {
@@ -84,6 +86,7 @@ export class PathsHandlerService {
     }
 
     addPath(name?: string): void {
+        // TODO name input
         this.initNewPath();
         this.PathsHandlerContainer.next(this.PathsHandlerData);
     }
@@ -155,8 +158,9 @@ export class PathsHandlerService {
         const idValue = this.countPath() + 1;
         this.currentTabDisplayed = 'path' + idValue;
         this.PathsHandlerData.push({
-            id: this.currentTabDisplayed,
+            id: 'path' + idValue,
             name: 'Path ' + idValue,
+            color: randomHexColor(),
             configuration: {
                 EditingStatus: this.defaultEditStatus,
                 transportModeStatus: this.defaultTransportMode,

@@ -101,9 +101,9 @@ export interface configuration {
 export interface PathFeature {
     id: string;
     name: string;
+    color: string;
     configuration: configuration;
     inputNodes: NodeGeoJson;
-    // computedNodes?: OutputPathApi;
     points_path?: NodePathGeoJson;
     line_path?: LinePathGeoJson;
     stats_path?: PathStatistics;
