@@ -3,9 +3,11 @@ import * as L from 'leaflet';
 import 'leaflet/dist/images/marker-shadow.png';
 import * as d3 from 'd3';
 
+import { MapToParametersService } from '../../services/maptoparameters.service';
+import { ParametersToMapService } from '../../services/parameterstomap.service';
+
 import { MapViewBuilderService } from '../../services/mapviewbuider.service';
 import { MapPathBuilderService } from '../../services/mappathbuilder.service';
-import { PathsHandlerService } from '../../services/pathshandler.service';
 
 import { PathFeature, PathContainer, Nodes, Node, Marker,  NodePathGeoJson, NodePathFeature} from '../../core/interfaces';
 import { D3LeafletUtils } from '../../core/d3LeafletUtils';
@@ -28,28 +30,15 @@ export class MapComponent implements OnInit {
   map: any;
   EditModeStatus!: boolean;
   MarkerArray: Marker[] = [];
-  PointsPathData!: NodePathGeoJson | null;
+  finalPathCompleted!: PathFeature;
 
   constructor(
-    private PathsHService: PathsHandlerService,
+    private Map2ParametersService: MapToParametersService,
+    private Parameters2MapService: ParametersToMapService,
     private MapViewService: MapViewBuilderService,
     private PathBuilderService: MapPathBuilderService,
     private MapFuncs: D3LeafletUtils
   ) {
-
-    // go to handler service ; idem for statistics
-    this.PathBuilderService.pathApiOutputs.subscribe(PathData => {
-      const pathColor: string = this.PathsHService.getOpenedPath().color;
-
-      this.MapFuncs.computeAnimatePointsOnLine(
-        this.map,
-        PathData.points_path!.features,
-        'pathMap-' + this.PathsHService.currentTabDisplayed,
-        pathColor
-      );
-      console.log("animated path", 'pathMap-' + this.PathsHService.currentTabDisplayed)
-      this.PointsPathData = null;
-    });
 
     this.MapViewService.bboxCoords.subscribe(data => {
       this.map.fitBounds([
@@ -58,15 +47,29 @@ export class MapComponent implements OnInit {
       ]);
     });
 
-
-    this.PathsHService.PathsHandlerContainer.subscribe(data => {
-      const openedPath: PathFeature = this.PathsHService.getOpenedPath();
+    // map from a path nodes
+    this.Parameters2MapService.NodesPathToMap.subscribe(NodesPath => {
       this.MapFuncs.computeMapFromPoints(
         this.map,
-        openedPath.inputNodes.features,
-        'nodesMap-' + openedPath.id
+        NodesPath.inputNodes.features,
+        'nodesMap-' + NodesPath.id
       )
+    })
+
+
+    // go to handler service
+    this.PathBuilderService.pathApiOutputs.subscribe(PathData => {
+
+      this.MapFuncs.computeAnimatePointsOnLine(
+        this.map,
+        PathData.points_path!.features,
+        'pathMap-' + PathData.id,
+        PathData.color
+      );
+      console.log("animated path", 'pathMap-' + PathData.id)
+      this.Map2ParametersService.pushCompletePath(PathData)
     });
+
 
    }
 
@@ -85,31 +88,15 @@ export class MapComponent implements OnInit {
     this.map.on('click', this.onMapClickWithD3.bind(this));
   }
 
-
-  _getEditingPathStatus(): void {
-    const PathId: string = this.PathsHService.currentTabDisplayed;
-    const pathIndex: number = this.PathsHService.getPathIndex(PathId);
-    this.EditModeStatus = this.PathsHService.PathsHandlerData[pathIndex].configuration.EditingStatus;
-    console.log("path edit conf", PathId, pathIndex, this.PathsHService.PathsHandlerData[pathIndex].configuration)
-
-  }
-
   onMapClickWithD3(event: any): void {
-    console.log("click on map", this.EditModeStatus)
-    this._getEditingPathStatus()
+    console.log("create point on map")
+    const coordinates: any = [
+      event.latlng.lat,
+      event.latlng.lng
+    ];
+    this.Map2ParametersService.getPointCoords(coordinates)
+    
 
-    if (this.EditModeStatus) {
-      const coordinates: any = [
-        event.latlng.lat,
-        event.latlng.lng
-      ];
-      this.PathsHService.buildNodesArray(coordinates);
-
-    } else {
-
-      // TODO not good : need to check edit mode status
-
-    }
   }
 
 

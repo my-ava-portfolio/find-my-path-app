@@ -1,9 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 
-import { MapPathBuilderService } from '../../services/mappathbuilder.service';
-import { PathsHandlerService } from '../../services/pathshandler.service';
-
-import { PathFeature, PathStatistics } from '../../core/interfaces';
+import { PathFeature } from '../../core/interfaces';
 
 
 @Component({

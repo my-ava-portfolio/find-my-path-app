@@ -13,7 +13,7 @@
                 <div [hidden]="!isPathFound">
                     <!-- Nav tabs -->
                     <div id="tab-list" class="nav nav-tabs" role="tablist">
-                        <a class="nav-item nav-link" id="{{ 'nav-' + path.id }}" *ngFor="let path of PathFeatures; let i = index" href="{{ '#' + path.id }}" (click)="getTabId(path.id)" role="tab" data-toggle="tab" aria-controls="tab" aria-selected="true">{{path.name}}
+                        <a class="nav-item nav-link" id="{{ 'nav-' + path.id }}" *ngFor="let path of PathFeatures; let i = index" href="{{ '#' + path.id }}" (click)="switchTab(path.id)" role="tab" data-toggle="tab" aria-controls="tab" aria-selected="true">{{path.name}}
                         </a>
                     </div>
 
@@ -21,8 +21,8 @@
                     <div id="tab-content" class="tab-content">
                         <div class="tab-pane fade in" id="{{ path.id }}" *ngFor="let path of PathFeatures; let i = index">
                         
-                            <app-inputparameters [pathData]="path"></app-inputparameters>
-                            <app-nodescontrolers [pathData]="path"></app-nodescontrolers>
+                            <app-inputparameters [pathData]="path" [isCurrentTab]="currentTabId === path.id"></app-inputparameters>
+                            <app-nodescontrolers [pathData]="path" [isCurrentTab]="currentTabId === path.id"></app-nodescontrolers>
                             <app-nodesstatistics [pathData]="path"></app-nodesstatistics>
                         </div>
                     </div>

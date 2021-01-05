@@ -2,8 +2,9 @@ import { Component, OnInit, Input } from '@angular/core';
 
 import { TransportMode, OutputPathApi } from '../../core/interfaces';
 
+import { MapToParametersService } from '../../services/maptoparameters.service';
+import { ParametersToMapService } from '../../services/parameterstomap.service';
 
-import { PathsHandlerService } from '../../services/pathshandler.service';
 import { MapPathBuilderService } from '../../services/mappathbuilder.service';
 
 import { PathFeature, Nodes } from '../../core/interfaces';
@@ -16,12 +17,13 @@ import { PathFeature, Nodes } from '../../core/interfaces';
 })
 export class InputParametersComponent implements OnInit {
   @Input() pathData!: PathFeature;
+  @Input() isCurrentTab!: boolean;
 
   colorSelected!: string;
-  transportModeSelected = 'pedestrian';
+  transportModeSelected!: string;
   editModeStatus = false;
   elevationModeStatus = false;
-  currentNodes: Nodes = [];
+  nodesToMap: Nodes = [];
   pathName!: string;
   dataApiOutput!: OutputPathApi;
 
@@ -32,110 +34,99 @@ export class InputParametersComponent implements OnInit {
   ];
 
   constructor(
-    private PathsHService: PathsHandlerService,
+    private Parameters2MapService: ParametersToMapService,
+    private Map2ParametersService: MapToParametersService,
     private PathBuilderService: MapPathBuilderService,
 
   ) {
-    this.PathBuilderService.pathApiOutputs.subscribe(data => {
-      this.PathsHService.getComputedData(data);
-      console.log("Get API data OK")
+    this.Map2ParametersService.newPointCoords.subscribe(coordinates => {
+      this.addPointsFromCoords(coordinates)
     });
 
+    this.Map2ParametersService.pathComplete.subscribe(pathDone => {
+      this.updatePathWithApiData(pathDone)
+    });
 
   }
 
   ngOnInit(): void {
-    this.getPathName();
-    this.getEditMode();
-    this.getTransportMode();
-    this.getElevationStatus();
-    this.getColor();
-    this.currentNodes = this.pathData.inputNodes.features
-
-    console.log(
-      this.pathName,
-      this.colorSelected,
-      this.transportModeSelected,
-      this.editModeStatus,
-      this.elevationModeStatus,
-      this.currentNodes,
-    )
+    this.displayPathParams();
   }
 
 
   computePath(): void {
 
-    console.log("parameters defined",
-      this.transportModeSelected,
-      this.elevationModeStatus,
-      this.currentNodes,
-      this.colorSelected
-    )
-
-    if (this.currentNodes.length > 0) {
-      this.PathBuilderService.injectParameters(
-        this.transportModeSelected,
-        this.elevationModeStatus,
-        this.currentNodes
-      );
-      console.log("Compute Path", this.pathData.id)
+    this.displayPathParams();
+    const nodesCreated: Nodes = this.pathData.inputNodes.features
+    if (nodesCreated.length > 0) {
+      this.PathBuilderService.getPostProcData(this.pathData);
+      console.log('Compute Path', this.pathData.id)
     } else {
-      alert(this.currentNodes.length + '  nodes found');
+      alert(nodesCreated.length + '  nodes found');
     }
 
   }
 
-  getPathName(): void {
-    const pathIndex: number = this.PathsHService.getPathIndex(this.pathData.id);
-    this.pathName = this.PathsHService.PathsHandlerData[pathIndex].name;
+  updatetColor(event: any): void {
+    this.pathData.color = event.target.value;
+    console.log('update color', this.pathData.color)
   }
 
-  getColor(): void {
-    const pathIndex: number = this.PathsHService.getPathIndex(this.pathData.id);
-    this.colorSelected = this.PathsHService.PathsHandlerData[pathIndex].color;
-  }
-  setColor(event: any): void {
-    console.log("color", event)
-    this.colorSelected = event.target.value;
+  updateEditMode(event: any): void {
+    this.pathData.configuration.EditingStatus = event.target.checked;
+    console.log('update edit', this.pathData.configuration.EditingStatus)
   }
 
-  getEditMode(): void {
-    const editStatus: boolean = this.PathsHService.getPathConfigFromPathId(this.pathData.id).EditingStatus;
-    this.editModeStatus = editStatus;
-    // this.editingService.setEdit(EditStatus);
+  updateTransportMode(newValue: string): void {
+    this.pathData.configuration.transportModeStatus = newValue;
+    console.log('update transportMode', this.pathData.configuration.transportModeStatus)
   }
-  setEditMode(event: any): void {
-    const newEditingStatus: boolean = event.target.checked;
-    // this.editModeStatus = newEditingStatus;
-    const pathIndex: number = this.PathsHService.getPathIndex(this.pathData.id)
-    this.PathsHService.PathsHandlerData[pathIndex].configuration.EditingStatus = newEditingStatus;
+
+  updateElevationStatus(event: any): void {
+    this.pathData.configuration.elevationStatus = event.target.checked;
+    console.log('update elevationMode', this.pathData.configuration.elevationStatus)
   }
 
 
-  getTransportMode(): void {
-    const transportMode: string = this.PathsHService.getPathConfigFromPathId(this.pathData.id).transportModeStatus;
-    this.transportModeSelected = transportMode;
-  }
-  setTransportMode(newValue: string): void {
-    const pathIndex: number = this.PathsHService.getPathIndex(this.pathData.id)
-    this.PathsHService.PathsHandlerData[pathIndex].configuration.transportModeStatus = newValue;
+  addPointsFromCoords(coordinates: number[]): void {
+    // here the magic part! update only the active tab and if edit is true of course
+    if (this.pathData.configuration.EditingStatus && this.isCurrentTab) {
+      console.log('Nodes inserted', this.pathData.name)
+      const currentNodesPosition: number = this.pathData.inputNodes.features.length;
+      this.pathData.inputNodes.features.push({
+        type: 'Feature',
+        geometry: {
+          type: 'Point',
+          coordinates: [
+            coordinates[1],
+            coordinates[0]
+          ]
+        },
+        properties: {
+          position: currentNodesPosition,
+          uuid: currentNodesPosition,
+          name: 'node ' + currentNodesPosition
+        }
+      });
+    }
+    this.Parameters2MapService.mapFromPathNodes(this.pathData);
   }
 
-  getElevationStatus(): void {
-    const elevationStatus: boolean = this.PathsHService.getPathConfigFromPathId(this.pathData.id).elevationStatus;
-    this.elevationModeStatus = elevationStatus;
-  }
-  setElevationStatus(event: any): void {
-    const newElevationStatus: boolean = event.target.checked;
-    const pathIndex: number = this.PathsHService.getPathIndex(this.pathData.id)
-    this.PathsHService.PathsHandlerData[pathIndex].configuration.elevationStatus = newElevationStatus;
+  updatePathWithApiData(path: PathFeature): void {
+    if ( this.isCurrentTab ) {
+      this.pathData = path;
+      console.log('finito', this.isCurrentTab, this.pathData)
+      // TODO from here to paths handler to create the plot
+    }
   }
 
-
-  getCurrentNodes(): void {
-    const currentNodes: Nodes = this.PathsHService.getNodesFromOpenedPath();
-    this.currentNodes = currentNodes;
+  private displayPathParams(): void {
+    console.log(
+      this.pathData.name,
+      this.pathData.color,
+      this.pathData.configuration,
+      this.pathData.inputNodes,
+    )
   }
-
 
 }

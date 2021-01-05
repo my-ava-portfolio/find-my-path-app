@@ -13,7 +13,8 @@ import { FooterComponent } from './components/footer/footer.component';
 
 import { MapViewBuilderService } from './services/mapviewbuider.service';
 import { MapPathBuilderService } from './services/mappathbuilder.service';
-import { PathsHandlerService } from './services/pathshandler.service';
+import { MapToParametersService } from './services/maptoparameters.service';
+import { ParametersToMapService } from './services/parameterstomap.service';
 
 import { pathsHandlerComponent } from './components/pathshandler/pathshandler.component';
 import { nodesControlersComponent } from './components/nodescontrolers/nodescontrolers.component';
@@ -40,8 +41,9 @@ import { NodesstatisticsComponent } from './components/nodesstatistics/nodesstat
     HttpClientModule
   ],
   providers: [
+    MapToParametersService,
+    ParametersToMapService,
     MapViewBuilderService,
-    PathsHandlerService,
     MapPathBuilderService
   ],
   bootstrap: [AppComponent]
