@@ -13,17 +13,17 @@
                 <div *ngIf="isPathFound">
                     <!-- Nav tabs -->
                     <div id="tab-list" class="nav nav-tabs" role="tablist">
-                        <a class="nav-item nav-link" id="{{ 'nav-' + path.id }}" *ngFor="let path of PathsHandlerContainer; let i = index" href="{{ '#' + path.id }}" (click)="getTabId(path.id)" role="tab" data-toggle="tab" aria-controls="tab" aria-selected="true">{{path.name}}
+                        <a class="nav-item nav-link" id="{{ 'nav-' + path.id }}" *ngFor="let path of PathFeatures; let i = index" href="{{ '#' + path.id }}" (click)="getTabId(path.id)" role="tab" data-toggle="tab" aria-controls="tab" aria-selected="true">{{path.name}}
                         </a>
                     </div>
 
                     <!-- Tab panes -->
                     <div id="tab-content" class="tab-content">
-                        <div class="tab-pane fade in" id="{{ path.id }}" *ngFor="let path of PathsHandlerContainer; let i = index">
+                        <div class="tab-pane fade in" id="{{ path.id }}" *ngFor="let path of PathFeatures; let i = index">
                         
-                            <app-inputparameters [pathId]="path.id"></app-inputparameters>
-                            <app-nodescontrolers [pathId]="path.id"></app-nodescontrolers>
-                            <app-nodesstatistics [pathId]="path.id"></app-nodesstatistics>
+                            <app-inputparameters [pathData]="path"></app-inputparameters>
+                            <app-nodescontrolers [pathData]="path"></app-nodescontrolers>
+                            <app-nodesstatistics [pathData]="path"></app-nodesstatistics>
                         </div>
                     </div>
                 </div>

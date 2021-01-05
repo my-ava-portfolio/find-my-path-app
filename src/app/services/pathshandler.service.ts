@@ -18,6 +18,10 @@ function shiftingOnArray(input: any[], from: number, to: number): Node[] {
 @Injectable()
 export class PathsHandlerService {
 
+    private defaultEditStatus = false;
+    private defaultTransportMode = 'pedestrian';
+    private defaultElevationStatus = false;
+
     PathsHandlerContainer: Subject<PathContainer> = new Subject<PathContainer>();
     PathsHandlerData: PathContainer = [];
     currentTabDisplayed!: string;
@@ -25,14 +29,13 @@ export class PathsHandlerService {
     constructor() {
     }
 
-    private _updatePathHandlerContainer(indexPath: number, nodesToUpdate: Nodes) {
+    private _updatePathHandlerContainer(indexPath: number, nodesToUpdate: Nodes): void {
          // very important
         this.PathsHandlerData[indexPath].inputNodes.features = nodesToUpdate;
         this.PathsHandlerContainer.next(this.PathsHandlerData);
     }
 
-    setComputedData(outputApiData: OutputPathApi): void {
-        console.log('compare', this.currentTabDisplayed)
+    getComputedData(outputApiData: OutputPathApi): void {
         const indexPath: number = this.getPathIndex(this.currentTabDisplayed);
         this.PathsHandlerData[indexPath].line_path = outputApiData.line_path;
         this.PathsHandlerData[indexPath].points_path = outputApiData.points_path;
@@ -147,6 +150,7 @@ export class PathsHandlerService {
         return nodesShifted;
     }
 
+
     private initNewPath(): void {
         const idValue = this.countPath() + 1;
         this.currentTabDisplayed = 'path' + idValue;
@@ -154,9 +158,9 @@ export class PathsHandlerService {
             id: this.currentTabDisplayed,
             name: 'Path ' + idValue,
             configuration: {
-                EditingStatus: false,
-                transportModeStatus: 'pedestrian',
-                elevationStatus: false
+                EditingStatus: this.defaultEditStatus,
+                transportModeStatus: this.defaultTransportMode,
+                elevationStatus: this.defaultElevationStatus
             },
             inputNodes: {
                 type: 'FeatureCollection',

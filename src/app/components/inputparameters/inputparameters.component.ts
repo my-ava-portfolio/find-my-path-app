@@ -6,7 +6,7 @@ import { TransportMode, OutputPathApi } from '../../core/interfaces';
 import { PathsHandlerService } from '../../services/pathshandler.service';
 import { MapPathBuilderService } from '../../services/mappathbuilder.service';
 
-import { Nodes } from '../../core/interfaces';
+import { PathFeature, Nodes } from '../../core/interfaces';
 
 
 @Component({
@@ -15,7 +15,7 @@ import { Nodes } from '../../core/interfaces';
   styleUrls: ['./inputparameters.component.css']
 })
 export class InputParametersComponent implements OnInit {
-  @Input() pathId!: string;
+  @Input() pathData!: PathFeature;
 
   transportModeSelected = 'pedestrian';
   editModeStatus = false;
@@ -36,13 +36,9 @@ export class InputParametersComponent implements OnInit {
 
   ) {
 
-    this.PathsHService.PathsHandlerContainer.subscribe(data => {
-      this.currentNodes = this.PathsHService.getNodesFromOpenedPath();
-    });
-
     this.PathBuilderService.pathApiOutputs.subscribe(data => {
-      this.PathsHService.setComputedData(data)
-      console.log("Compute API data", this.pathId)
+      this.PathsHService.getComputedData(data)
+      console.log("Get API data OK")
     });
 
 
@@ -53,13 +49,19 @@ export class InputParametersComponent implements OnInit {
     this.getEditMode()
     this.getTransportMode()
     this.getElevationStatus()
+
+    this.currentNodes = this.pathData.inputNodes.features
+
   }
 
 
   computePath(): void {
 
-
-    const pathIndex: number = this.PathsHService.getPathIndex(this.pathId);
+    console.log("parameters defined",
+      this.transportModeSelected,
+      this.elevationModeStatus,
+      this.currentNodes
+    )
 
     if (this.currentNodes.length > 0) {
       this.PathBuilderService.injectParameters(
@@ -67,7 +69,7 @@ export class InputParametersComponent implements OnInit {
         this.elevationModeStatus,
         this.currentNodes,
       );
-      console.log("Compute Path", this.pathId)
+      console.log("Compute Path", this.pathData.id)
     } else {
       alert(this.currentNodes.length + '  nodes found');
     }
@@ -75,39 +77,39 @@ export class InputParametersComponent implements OnInit {
   }
 
   getPathName(): void {
-    const pathIndex: number = this.PathsHService.getPathIndex(this.pathId)
+    const pathIndex: number = this.PathsHService.getPathIndex(this.pathData.id)
     this.pathName = this.PathsHService.PathsHandlerData[pathIndex].name
   }
 
 
   getEditMode(): void {
-    const editStatus: boolean = this.PathsHService.getPathConfigFromPathId(this.pathId).EditingStatus;
+    const editStatus: boolean = this.PathsHService.getPathConfigFromPathId(this.pathData.id).EditingStatus;
     this.editModeStatus = editStatus;
     // this.editingService.setEdit(EditStatus);
   }
   setEditModel(event: any): void {
     const newEditingStatus: boolean = event.target.checked;
-    const pathIndex: number = this.PathsHService.getPathIndex(this.pathId)
+    const pathIndex: number = this.PathsHService.getPathIndex(this.pathData.id)
     this.PathsHService.PathsHandlerData[pathIndex].configuration.EditingStatus = newEditingStatus;
   }
 
 
   getTransportMode(): void {
-    const transportMode: string = this.PathsHService.getPathConfigFromPathId(this.pathId).transportModeStatus;
+    const transportMode: string = this.PathsHService.getPathConfigFromPathId(this.pathData.id).transportModeStatus;
     this.transportModeSelected = transportMode;
   }
   setTransportMode(newValue: string): void {
-    const pathIndex: number = this.PathsHService.getPathIndex(this.pathId)
+    const pathIndex: number = this.PathsHService.getPathIndex(this.pathData.id)
     this.PathsHService.PathsHandlerData[pathIndex].configuration.transportModeStatus = newValue;
   }
 
   getElevationStatus(): void {
-    const elevationStatus: boolean = this.PathsHService.getPathConfigFromPathId(this.pathId).elevationStatus;
+    const elevationStatus: boolean = this.PathsHService.getPathConfigFromPathId(this.pathData.id).elevationStatus;
     this.elevationModeStatus = elevationStatus;
   }
   setElevationStatus(event: any): void {
     const newElevationStatus: boolean = event.target.checked;
-    const pathIndex: number = this.PathsHService.getPathIndex(this.pathId)
+    const pathIndex: number = this.PathsHService.getPathIndex(this.pathData.id)
     this.PathsHService.PathsHandlerData[pathIndex].configuration.elevationStatus = newElevationStatus;
   }
 

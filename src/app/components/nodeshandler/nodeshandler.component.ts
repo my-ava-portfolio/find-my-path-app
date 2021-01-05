@@ -12,7 +12,7 @@ import { PathsHandlerService } from '../../services/pathshandler.service';
 })
 export class NodeshandlerComponent implements OnInit {
 
-  PathsHandlerContainer: PathContainer = [];
+  PathFeatures: PathContainer = [];
   countPath = 0;
   isPathFound = false;
   currentTabId!: string;
@@ -21,19 +21,21 @@ export class NodeshandlerComponent implements OnInit {
     private PathsHService: PathsHandlerService,
   ) {
 
+    // to update path data injected into html templates
     this.PathsHService.PathsHandlerContainer.subscribe(data => {
-      this.PathsHandlerContainer = data;
+      this.PathFeatures = data;
     });
 
   }
 
   ngOnInit(): void {
+    this.getTabId(this.currentTabId)
   }
 
   getTabId(tabId: string): void {
     this.currentTabId = tabId;
     console.log('Get tab: ' + this.currentTabId)
-    this.PathsHService.currentTabDisplayed = this.currentTabId;
+    
   }
 
   addPath(): void {

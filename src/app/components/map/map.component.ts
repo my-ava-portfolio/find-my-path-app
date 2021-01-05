@@ -7,7 +7,7 @@ import { MapViewBuilderService } from '../../services/mapviewbuider.service';
 import { MapPathBuilderService } from '../../services/mappathbuilder.service';
 import { PathsHandlerService } from '../../services/pathshandler.service';
 
-import { PathFeature, Nodes, Node, Marker,  NodePathGeoJson, NodePathFeature} from '../../core/interfaces';
+import { PathFeature, PathContainer, Nodes, Node, Marker,  NodePathGeoJson, NodePathFeature} from '../../core/interfaces';
 import { D3LeafletUtils } from '../../core/d3LeafletUtils';
 
 
@@ -38,7 +38,12 @@ export class MapComponent implements OnInit {
 
     // go to handler service ; idem for statistics
     this.PathBuilderService.pathApiOutputs.subscribe(PathData => {
-      this.MapFuncs.computeAnimatePointsOnLine(this.map, PathData.points_path!.features, 'pouette');
+      this.MapFuncs.computeAnimatePointsOnLine(
+        this.map,
+        PathData.points_path!.features,
+        'pathMap-' + this.PathsHService.currentTabDisplayed
+      );
+      console.log("animated path", 'pathMap-' + this.PathsHService.currentTabDisplayed)
       this.PointsPathData = null;
     });
 
