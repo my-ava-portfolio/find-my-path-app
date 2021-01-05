@@ -156,7 +156,7 @@ export class PathsHandlerService {
 
     private initNewPath(): void {
         const idValue = this.countPath() + 1;
-        this.currentTabDisplayed = 'path' + idValue;
+        this.currentTabDisplayed = 'path' + idValue; // not dynamic WARNING BUG ISSUE !!!!!!
         this.PathsHandlerData.push({
             id: 'path' + idValue,
             name: 'Path ' + idValue,

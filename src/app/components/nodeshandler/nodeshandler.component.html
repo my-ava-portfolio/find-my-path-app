@@ -13,7 +13,7 @@
                 <div [hidden]="!isPathFound">
                     <!-- Nav tabs -->
                     <div id="tab-list" class="nav nav-tabs" role="tablist">
-                        <a #myDiv class="nav-item nav-link" id="{{ 'nav-' + path.id }}" *ngFor="let path of PathFeatures; let i = index" href="{{ '#' + path.id }}" (click)="getTabId(path.id)" role="tab" data-toggle="tab" aria-controls="tab" aria-selected="true">{{path.name}}
+                        <a class="nav-item nav-link" id="{{ 'nav-' + path.id }}" *ngFor="let path of PathFeatures; let i = index" href="{{ '#' + path.id }}" (click)="getTabId(path.id)" role="tab" data-toggle="tab" aria-controls="tab" aria-selected="true">{{path.name}}
                         </a>
                     </div>
 

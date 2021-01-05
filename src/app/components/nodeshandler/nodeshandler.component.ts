@@ -30,7 +30,7 @@ export class NodeshandlerComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getTabId(this.currentTabId);
+    // this.getTabId(this.currentTabId);
 
   }
 
@@ -44,6 +44,5 @@ export class NodeshandlerComponent implements OnInit {
     this.isPathFound = true;
     console.log('ADDED path');
     this.PathsHService.addPath();
-
   }
 }
