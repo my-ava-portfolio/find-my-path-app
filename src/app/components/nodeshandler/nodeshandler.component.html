@@ -4,36 +4,31 @@
             <div class="col-md-12">
                 <h3 class="sub-title">2. Computed</h3>
             </div>
-
-            <div class="col-md-12">
-
-                <ul class="nav nav-tabs" id="myTab" role="tablist">
-                    <li class="nav-item">
-                    <a class="nav-link active" id="nodes-tab" data-toggle="tab" href="#nodes" role="tab" aria-controls="home" aria-selected="true">Nodes defined</a>
-                    </li>
-                    <li class="nav-item">
-                    <a class="nav-link" id="stats-tab" data-toggle="tab" href="#stats" role="tab" aria-controls="stat" aria-selected="false">Statistics</a>
-                    </li>
-                    <li class="nav-item">
-                    <a class="nav-link" id="topo-tab" data-toggle="tab" href="#topo" role="tab" aria-controls="topo" aria-selected="false">Topography</a>
-                    </li>
-                </ul>
-                <div class="tab-content" id="myTabContent">
-
-                    <div class="tab-pane fade active show" id="nodes" role="tabpanel" aria-labelledby="nodes-tab">
-                        <app-nodescontrolers></app-nodescontrolers>
-                    </div>
-
-                    <div class="tab-pane fade" id="stats" role="tabpanel" aria-labelledby="stats-tab">
-                        <app-nodesstatistics></app-nodesstatistics>
-                    </div>
-
-                    <div class="tab-pane fade" id="topo" role="tabpanel" aria-labelledby="topo-tab">
-                        <app-nodestopography></app-nodestopography>
-                    </div>
-
-                </div>
             
+            <div class="col-md-12">
+                <p>
+                    <button id="btn-add-tab" type="button" class="btn btn-primary pull-right" (click)="addPath()">Add Path</button>
+                </p>
+                
+                <div *ngIf="isPathFound">
+                    <!-- Nav tabs -->
+                    <div id="tab-list" class="nav nav-tabs" role="tablist">
+                        <a class="nav-item nav-link" id="{{ 'nav-' + path.id }}" *ngFor="let path of PathsHandlerContainer; let i = index" href="{{ '#' + path.id }}" (click)="getTabId(path.id)" role="tab" data-toggle="tab" aria-controls="tab" aria-selected="true">{{path.name}}
+                        </a>
+                    </div>
+
+                    <!-- Tab panes -->
+                    <div id="tab-content" class="tab-content">
+                        <div class="tab-pane fade in" id="{{ path.id }}" *ngFor="let path of PathsHandlerContainer; let i = index">
+                        
+                            <app-inputparameters [pathId]="path.id"></app-inputparameters>
+                            <app-nodescontrolers [pathId]="path.id"></app-nodescontrolers>
+                            <app-nodesstatistics [pathId]="path.id"></app-nodesstatistics>
+                        </div>
+                    </div>
+                </div>
+
             </div>
+
         </div>
     </div>

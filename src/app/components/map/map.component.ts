@@ -4,11 +4,10 @@ import 'leaflet/dist/images/marker-shadow.png';
 import * as d3 from 'd3';
 
 import { MapViewBuilderService } from '../../services/mapviewbuider.service';
-import { MapNodesBuilderService } from '../../services/mapnodesbuilder.service';
-import { MapEditingService } from '../../services/mapediting.service';
 import { MapPathBuilderService } from '../../services/mappathbuilder.service';
+import { PathsHandlerService } from '../../services/pathshandler.service';
 
-import { Node, Marker,  NodePathGeoJson, NodePathFeature} from '../../core/interfaces';
+import { PathFeature, Nodes, Node, Marker,  NodePathGeoJson, NodePathFeature} from '../../core/interfaces';
 import { D3LeafletUtils } from '../../core/d3LeafletUtils';
 
 
@@ -31,35 +30,35 @@ export class MapComponent implements OnInit {
   PointsPathData!: NodePathGeoJson | null;
 
   constructor(
+    private PathsHService: PathsHandlerService,
     private MapViewService: MapViewBuilderService,
-    private MapNodesService: MapNodesBuilderService,
-    private EditingService: MapEditingService,
     private PathBuilderService: MapPathBuilderService,
     private MapFuncs: D3LeafletUtils
   ) {
 
-    this.PathBuilderService.PathPointsOutput.subscribe(PathData => {
-      this.MapFuncs.computeAnimatePointsOnLine(this.map, PathData.features, 'pouette');
+    // go to handler service ; idem for statistics
+    this.PathBuilderService.pathApiOutputs.subscribe(PathData => {
+      this.MapFuncs.computeAnimatePointsOnLine(this.map, PathData.points_path!.features, 'pouette');
       this.PointsPathData = null;
     });
 
     this.MapViewService.bboxCoords.subscribe(data => {
-      console.log('bbox FROM MAP', data);
       this.map.fitBounds([
         [data[0], data[2]],
         [data[1], data[3]]
       ]);
     });
 
-    this.MapNodesService.nodes.subscribe(nodes => {
-      this.MapFuncs.computeMapFromPoints(this.map, nodes, 'path-nodes');
 
+    this.PathsHService.PathsHandlerContainer.subscribe(data => {
+      const PathId: string = this.PathsHService.currentTabDisplayed;
+      const nodesFound: Nodes = this.PathsHService.getNodesFromPathId(PathId);
+      this.MapFuncs.computeMapFromPoints(
+        this.map,
+        nodesFound,
+        'map-' + PathId
+      )
     });
-
-    this.EditingService.EditModeStatus.subscribe(status => {
-      this.EditModeStatus = status;
-    });
-
 
    }
 
@@ -78,65 +77,24 @@ export class MapComponent implements OnInit {
     this.map.on('click', this.onMapClickWithD3.bind(this));
   }
 
-  onMapClickWithD3(event: any): void {
-    if (this.EditModeStatus) {
-      const coordinates: any = [
-        event.latlng.lat,
-        event.latlng.lng
-      ];
-      console.log('pouette', event);
-      this.MapNodesService.buildNodesArray(coordinates);
 
-      const UuidExpected: number = this.MapNodesService.NodesArray.length - 1;
-      const NodeFound: Node = this.MapNodesService.getNodeFromUuid(UuidExpected);
-
-    }
+  _getEditingPathStatus(): void {
+    const PathId: string = this.PathsHService.currentTabDisplayed;
+    const pathIndex: number = this.PathsHService.getPathIndex(PathId);
+    this.EditModeStatus = this.PathsHService.PathsHandlerData[pathIndex].configuration.EditingStatus;
   }
 
-  onMapClickWithLeafletMarker(event: any): void {
-
-    const customMarker: any = L.Marker.extend({
-      options: {
-        uuid: ''
-      }
-    });
+  onMapClickWithD3(event: any): void {
+    this._getEditingPathStatus()
 
     if (this.EditModeStatus) {
       const coordinates: any = [
         event.latlng.lat,
         event.latlng.lng
       ];
-      console.log('pouette', event);
-      this.MapNodesService.buildNodesArray(coordinates);
+      this.PathsHService.buildNodesArray(coordinates);
 
-      const UuidExpected: number = this.MapNodesService.NodesArray.length - 1;
-      const NodeFound: Node = this.MapNodesService.getNodeFromUuid(UuidExpected);
-
-      const marker = new customMarker(
-        coordinates,
-        {
-          uuid: NodeFound.properties.uuid,
-          draggable: true
-        }
-      ).on('dragend', (e: any) => {
-        const coordsUpdated: any = [
-          e.target.getLatLng().lat,
-          e.target.getLatLng().lng
-        ];
-        const uuid: number = event.target.options.uuid;
-        this.MapNodesService.updateNodeFeature(uuid, coordsUpdated);
-
-        console.log('pouet', event.target.getLatLng(), event);
-      }).addTo(this.map);
-
-      marker.bindPopup(NodeFound.properties.name, { autoClose: false, closeOnClick: false }).openPopup();
-
-      this.MarkerArray.push(
-        { uuid: UuidExpected, marker }
-      );
     }
-
-
   }
 
 

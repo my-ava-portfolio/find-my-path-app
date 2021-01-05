@@ -1,7 +1,10 @@
-<div id="nodes-results">
+<div class="nodes-results">
+    <div class="col-md-12">
+        <h6 class="sub-title">Nodes created</h6>
+    </div>
 
-    <ol id="path-coords-list"></ol>
-        <li *ngFor="let node of NodesDefined">
+    <ol class="path-coords-list"></ol>
+        <li *ngFor="let node of currentNodesDefined">
             
                 <span class="node-name">{{node.properties.name}} {{node.geometry.coordinates[0]}} {{node.geometry.coordinates[1]}}</span>
                 <span class="remove" (click)="removeNode(node.properties.uuid)">X </span>

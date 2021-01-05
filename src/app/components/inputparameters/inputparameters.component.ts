@@ -1,12 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 
-import { TransportMode } from '../../core/interfaces';
+import { TransportMode, OutputPathApi } from '../../core/interfaces';
 
-import { MapEditingService } from '../../services/mapediting.service';
+
+import { PathsHandlerService } from '../../services/pathshandler.service';
 import { MapPathBuilderService } from '../../services/mappathbuilder.service';
-import { MapNodesBuilderService } from '../../services/mapnodesbuilder.service';
 
-import { Node } from '../../core/interfaces';
+import { Nodes } from '../../core/interfaces';
 
 
 @Component({
@@ -15,11 +15,15 @@ import { Node } from '../../core/interfaces';
   styleUrls: ['./inputparameters.component.css']
 })
 export class InputParametersComponent implements OnInit {
+  @Input() pathId!: string;
 
-  TransportModeSelected = 'pedestrian';
-  EditModeStatus = false;
-  ElevationModeStatus = false;
-  NodesDefined!: Node[];
+  transportModeSelected = 'pedestrian';
+  editModeStatus = false;
+  elevationModeStatus = false;
+  currentNodes: Nodes = [];
+  pathName!: string;
+  dataApiOutput!: OutputPathApi;
+
 
   TransportModes: TransportMode[] = [
     {title: 'Pedestrian', value: 'pedestrian'},
@@ -27,36 +31,91 @@ export class InputParametersComponent implements OnInit {
   ];
 
   constructor(
-    private EditingService: MapEditingService,
+    private PathsHService: PathsHandlerService,
     private PathBuilderService: MapPathBuilderService,
-    private MapNodesService: MapNodesBuilderService
 
   ) {
 
-    this.MapNodesService.nodes.subscribe(data => {
-      this.NodesDefined = data;
+    this.PathsHService.PathsHandlerContainer.subscribe(data => {
+      this.currentNodes = this.PathsHService.getNodesFromPathId(this.pathId);
     });
+
+    this.PathBuilderService.pathApiOutputs.subscribe(data => {
+      this.PathsHService.setComputedData(this.pathId, data)
+      console.log("Compute API data", this.pathId)
+    });
+
 
   }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    this.getPathName()
+    this.getEditMode()
+    this.getTransportMode()
+    this.getElevationStatus()
+  }
+
 
   computePath(): void {
-    if (this.NodesDefined) {
+
+
+    const pathIndex: number = this.PathsHService.getPathIndex(this.pathId);
+
+    if (this.currentNodes.length > 0) {
       this.PathBuilderService.injectParameters(
-        this.TransportModeSelected,
-        this.ElevationModeStatus,
-        this.NodesDefined,
+        this.transportModeSelected,
+        this.elevationModeStatus,
+        this.currentNodes,
       );
+      console.log("Compute Path", this.pathId)
     } else {
-      console.log('no nodes found', this.NodesDefined);
+      alert(this.currentNodes.length + '  nodes found');
     }
 
   }
 
-  checkEditMode(event: any): void {
-    this.EditModeStatus = event.target.checked;
-    this.EditingService.setEdit(this.EditModeStatus);
- }
+  getPathName(): void {
+    const pathIndex: number = this.PathsHService.getPathIndex(this.pathId)
+    this.pathName = this.PathsHService.PathsHandlerData[pathIndex].name
+  }
+
+
+  getEditMode(): void {
+    const editStatus: boolean = this.PathsHService.getPathConfigFromPathId(this.pathId).EditingStatus;
+    this.editModeStatus = editStatus;
+    // this.editingService.setEdit(EditStatus);
+  }
+  setEditModel(event: any): void {
+    const newEditingStatus: boolean = event.target.checked;
+    const pathIndex: number = this.PathsHService.getPathIndex(this.pathId)
+    this.PathsHService.PathsHandlerData[pathIndex].configuration.EditingStatus = newEditingStatus;
+  }
+
+
+  getTransportMode(): void {
+    const transportMode: string = this.PathsHService.getPathConfigFromPathId(this.pathId).transportModeStatus;
+    this.transportModeSelected = transportMode;
+  }
+  setTransportMode(newValue: string): void {
+    const pathIndex: number = this.PathsHService.getPathIndex(this.pathId)
+    this.PathsHService.PathsHandlerData[pathIndex].configuration.transportModeStatus = newValue;
+  }
+
+  getElevationStatus(): void {
+    const elevationStatus: boolean = this.PathsHService.getPathConfigFromPathId(this.pathId).elevationStatus;
+    this.elevationModeStatus = elevationStatus;
+  }
+  setElevationStatus(event: any): void {
+    const newElevationStatus: boolean = event.target.checked;
+    const pathIndex: number = this.PathsHService.getPathIndex(this.pathId)
+    this.PathsHService.PathsHandlerData[pathIndex].configuration.elevationStatus = newElevationStatus;
+  }
+
+
+  getCurrentNodes(): void {
+    const currentNodes: Nodes = this.PathsHService.getNodesFromPathId(this.pathId);
+    this.currentNodes = currentNodes;
+  }
+
 
 }

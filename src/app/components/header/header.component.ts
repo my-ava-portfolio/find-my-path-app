@@ -6,8 +6,7 @@ import { Component, OnInit, Input } from '@angular/core';
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
-  @Input()
-  NavBarTitle = 'Nav bar title';
+  @Input() NavBarTitle = 'Nav bar title';
 
 
   // useful to inject dependencies

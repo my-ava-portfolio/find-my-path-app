@@ -31,9 +31,11 @@ export interface Node {
         name: string;
     };
 }
+export interface Nodes extends Array<Node>{}
+
 export interface NodeGeoJson {
     type: string;
-    features: Node[];
+    features: Nodes;
 }
 
 // PATH API
@@ -89,6 +91,25 @@ export interface OutputPathApi {
 }
 
 
+export interface configuration {
+    EditingStatus: boolean;
+    transportModeStatus: string;
+    elevationStatus: boolean;
+}
+
+
+export interface PathFeature {
+    id: string;
+    name: string;
+    configuration: configuration;
+    inputNodes: NodeGeoJson;
+    // computedNodes?: OutputPathApi;
+    points_path?: NodePathGeoJson;
+    line_path?: LinePathGeoJson;
+    stats_path?: PathStatistics;
+
+}
+export interface PathContainer extends Array<PathFeature>{}
 
 // a bbox output from app api
 export interface Bbox {

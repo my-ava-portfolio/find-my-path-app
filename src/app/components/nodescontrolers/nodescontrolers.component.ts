@@ -1,9 +1,9 @@
 import { Component, OnInit, Input } from '@angular/core';
 
 
-import { MapNodesBuilderService } from '../../services/mapnodesbuilder.service';
+import { PathsHandlerService } from '../../services/pathshandler.service';
 
-import { Node } from '../../core/interfaces';
+import { Nodes, Node } from '../../core/interfaces';
 
 
 @Component({
@@ -12,33 +12,50 @@ import { Node } from '../../core/interfaces';
   styleUrls: ['./nodescontrolers.component.css']
 })
 export class nodesControlersComponent implements OnInit {
-  NodesDefined!: Node[];
+  @Input() pathId!: string;
+
+
+  currentNodesDefined: Nodes = [];
 
   constructor(
-    private MapNodesService: MapNodesBuilderService
+    private PathsHService: PathsHandlerService
   ) {
 
-    this.MapNodesService.nodes.subscribe(data => {
-      this.NodesDefined = data;
+    this.PathsHService.PathsHandlerContainer.subscribe(data => {
+      this.nodesCreated(this.pathId); // update the node controler
     });
 
    }
 
   ngOnInit(): void {
+    this.nodesCreated(this.pathId);
+  }
+
+  nodesCreated(pathId: string): void {
+    this.currentNodesDefined = this.PathsHService.getNodesFromPathId(pathId);
+
   }
 
   removeNode(uuid: number): void {
-    this.MapNodesService.removeNodeAction(uuid);
 
-    console.log(uuid);
+    this.PathsHService.removeNodeAction(
+      this.pathId,
+      uuid
+    );
   }
 
   upPosition(uuid: number): void {
-    this.MapNodesService.upPositionAction(uuid);
+    this.PathsHService.upPositionAction(
+      this.pathId,
+      uuid
+    );
   }
 
   botPosition(uuid: number): void {
-    this.MapNodesService.botPositionAction(uuid);
+    this.PathsHService.botPositionAction(
+      this.pathId,
+      uuid
+    );
   }
   
 }

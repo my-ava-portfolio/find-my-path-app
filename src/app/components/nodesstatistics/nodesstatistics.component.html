@@ -1,12 +1,15 @@
 <div id="stats-results">
-    
+    <div class="col-md-12">
+        <h6 class="sub-title">Statistics</h6>
+    </div>
+    <span>{{pathId}}</span>
     <div *ngIf="DataExists">
         <ul>
-            <li>Nodes count: {{StatisticsData.nodes_count}}</li>
-            <li>Min. height: {{StatisticsData.height_min}}</li>
-            <li>Max. height: {{StatisticsData.height_max}}</li>
-            <li>Diff. height: {{StatisticsData.height_diff}}</li>
-            <li>Length: {{StatisticsData.length}}</li>
+            <li>Nodes count: {{statisticsData.nodes_count}}</li>
+            <li>Min. height: {{statisticsData.height_min}}</li>
+            <li>Max. height: {{statisticsData.height_max}}</li>
+            <li>Diff. height: {{statisticsData.height_diff}}</li>
+            <li>Length: {{statisticsData.length}}</li>
         </ul>
     </div>
 

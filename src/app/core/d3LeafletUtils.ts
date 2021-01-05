@@ -241,6 +241,7 @@ export class D3LeafletUtils {
             })
             .on('mouseout', (d: any): void => {
                 LeafletMap.dragging.enable();
+                // TODO issue popup sometimes not removed 
                 d3.select('#popup-' + layerId).remove();
             })
             .call(
@@ -311,7 +312,6 @@ export class D3LeafletUtils {
     }
 
     convertLayerCoordsToLatLng(LeafletMap: any, coordinates: Coordinates): LatLng {
-        console.log('aaa', coordinates, LeafletMap.layerPointToLatLng([coordinates.x, coordinates.y]) );
         return LeafletMap.layerPointToLatLng([coordinates.x, coordinates.y]);
 
     }
@@ -327,7 +327,6 @@ export class D3LeafletUtils {
 
         if (staticMode) {
             const popup: any = d3.selectAll('#' + popupId);
-            console.log(popup);
             popup
                 .style('left', (d3.event.pageX)  + 'px')
                 .style('top', (d3.event.pageY - 20) + 'px');

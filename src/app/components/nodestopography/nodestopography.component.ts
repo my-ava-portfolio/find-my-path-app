@@ -27,7 +27,6 @@ export class NodestopographyComponent implements OnInit {
 
     this.PathBuilderService.PathPointsOutput.subscribe(PathData => {
       this.initChart();
-      console.log(PathData.features);
       this.createChart(PathData.features);
     });
 

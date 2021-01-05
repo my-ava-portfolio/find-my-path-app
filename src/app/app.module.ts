@@ -12,28 +12,26 @@ import { InputParametersComponent } from './components/inputparameters/inputpara
 import { FooterComponent } from './components/footer/footer.component';
 
 import { MapViewBuilderService } from './services/mapviewbuider.service';
-import { MapNodesBuilderService } from './services/mapnodesbuilder.service';
-import { MapEditingService } from './services/mapediting.service';
 import { MapPathBuilderService } from './services/mappathbuilder.service';
-
+import { PathsHandlerService } from './services/pathshandler.service';
 
 import { NodeshandlerComponent } from './components/nodeshandler/nodeshandler.component';
 import { nodesControlersComponent } from './components/nodescontrolers/nodescontrolers.component';
 import { NodesstatisticsComponent } from './components/nodesstatistics/nodesstatistics.component';
-import { NodestopographyComponent } from './components/nodestopography/nodestopography.component';
+// import { NodestopographyComponent } from './components/nodestopography/nodestopography.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HeaderComponent,
+    FooterComponent,
     MapComponent,
     ViewcontrolerComponent,
-    InputParametersComponent,
-    FooterComponent,
     NodeshandlerComponent,
+    InputParametersComponent,
     nodesControlersComponent,
-    NodesstatisticsComponent,
-    NodestopographyComponent
+    NodesstatisticsComponent
+    // NodestopographyComponent
   ],
   imports: [
     BrowserModule,
@@ -43,8 +41,7 @@ import { NodestopographyComponent } from './components/nodestopography/nodestopo
   ],
   providers: [
     MapViewBuilderService,
-    MapNodesBuilderService,
-    MapEditingService,
+    PathsHandlerService,
     MapPathBuilderService
   ],
   bootstrap: [AppComponent]
