@@ -110,12 +110,13 @@ export class PathsHandlerService {
 
 
     removeNodeAction(pathId: string, uuidToRemove: number): void {
-        console.log("DEL", "pathId:" + pathId + ", handler:" + this.currentTabDisplayed)
         this.currentTabDisplayed = pathId;
         const indexPath: number = this.getPathIndex(this.currentTabDisplayed);
         const nodes: Nodes = this.PathsHandlerData[indexPath].inputNodes.features;
 
         const nodesCleaned: Nodes = nodes.filter(data => data.properties.uuid !== uuidToRemove);
+        console.log("DEL", "pathId:" + pathId + ", handler:" + this.currentTabDisplayed, indexPath, uuidToRemove, ' left:',nodesCleaned )
+
         this._updatePathHandlerContainer(indexPath, nodesCleaned)
 
     }

@@ -39,8 +39,8 @@ export class MapPathBuilderService {
         );
     }
 
-    injectParameters(TransportMode: string, ElevationMode: boolean, NodesDefined: Nodes): void {
-        this.getPathData(TransportMode, NodesDefined, ElevationMode);
+    injectParameters(TransportMode: string, ElevationMode: boolean): void {
+        this.getPathData(TransportMode, ElevationMode);
     }
 
 }

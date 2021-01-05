@@ -14,16 +14,12 @@ import { PathFeature, Nodes, Node } from '../../core/interfaces';
 export class nodesControlersComponent implements OnInit {
   @Input() pathData!: PathFeature;
 
-
-  currentNodesDefined: Nodes = [];
-
   constructor(
     private PathsHService: PathsHandlerService
   ) {
-   }
+  }
 
   ngOnInit(): void {
-    this.currentNodesDefined = this.pathData.inputNodes.features ;
   }
 
   removeNode(uuid: number): void {

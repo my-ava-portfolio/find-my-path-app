@@ -231,23 +231,24 @@ export class D3LeafletUtils {
             .attr('class', 'PathNodes')
             .attr('r', '15')
             .attr('id', (d: any): void => d.properties.id)
-            .on('mouseover', (d: any): void => {
-                LeafletMap.dragging.disable();
-                this.initPopup('body', 'popup-' + layerId, d, false);
-            })
-            .on('mousemove', (d: any): void => {
-                LeafletMap.dragging.disable();
-                this.moveResponsivePopup('#popup-' + layerId);
-            })
-            .on('mouseout', (d: any): void => {
-                LeafletMap.dragging.enable();
-                // TODO issue popup sometimes not removed 
-                d3.select('#popup-' + layerId).remove();
-            })
+            // .on('mouseover', (d: any): void => {
+            //     LeafletMap.dragging.disable();
+            //     this.initPopup('body', 'popup-' + layerId, d, false);
+            // })
+            // .on('mousemove', (d: any): void => {
+            //     LeafletMap.dragging.disable();
+            //     this.moveResponsivePopup('#popup-' + layerId);
+            // })
+            // .on('mouseout', (d: any): void => {
+            //     LeafletMap.dragging.enable();
+            //     // TODO issue popup sometimes not removed 
+            //     d3.select('#popup-' + layerId).remove();
+            // })
             .call(
                 d3.drag()
-                .on('drag', (): void => {
-                    d3.select(d3.event.sourceEvent.target)
+                    .on('drag', (): void => {
+                        LeafletMap.dragging.disable();
+                        d3.select(d3.event.sourceEvent.target)
                         .style('r', '15')
                         .attr('transform', (d: any): string => 'translate(' + d3.event.x + ',' + d3.event.y + ')' );
                 })
@@ -260,7 +261,7 @@ export class D3LeafletUtils {
                     const CoordinatesUpdated = layerCoordsConverter(LeafletMap, { x: d3.event.x, y: d3.event.y });
                     GeoJsonPointFeatures[nodeUuid].geometry.coordinates = [CoordinatesUpdated.lng, CoordinatesUpdated.lat];
                     this.computeMapFromPoints(LeafletMap, GeoJsonPointFeatures, layerId, displayToolTip = false);
-
+                    LeafletMap.dragging.enable();
                 })
             );
 

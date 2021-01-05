@@ -105,6 +105,10 @@ export class MapComponent implements OnInit {
       ];
       this.PathsHService.buildNodesArray(coordinates);
 
+    } else {
+
+      // TODO not good : need to check edit mode status
+
     }
   }
 

@@ -4,7 +4,7 @@
     </div>
 
     <ol class="path-coords-list"></ol>
-        <li *ngFor="let node of currentNodesDefined">
+        <li *ngFor="let node of pathData.inputNodes.features">
             
                 <span class="node-name">{{node.properties.name}} {{node.geometry.coordinates[0]}} {{node.geometry.coordinates[1]}}</span>
                 <span class="remove" (click)="removeNode(node.properties.uuid)">X </span>
