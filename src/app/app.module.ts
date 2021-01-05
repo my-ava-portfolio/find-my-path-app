@@ -15,7 +15,7 @@ import { MapViewBuilderService } from './services/mapviewbuider.service';
 import { MapPathBuilderService } from './services/mappathbuilder.service';
 import { PathsHandlerService } from './services/pathshandler.service';
 
-import { NodeshandlerComponent } from './components/nodeshandler/nodeshandler.component';
+import { pathsHandlerComponent } from './components/pathshandler/pathshandler.component';
 import { nodesControlersComponent } from './components/nodescontrolers/nodescontrolers.component';
 import { NodesstatisticsComponent } from './components/nodesstatistics/nodesstatistics.component';
 // import { NodestopographyComponent } from './components/nodestopography/nodestopography.component';
@@ -27,7 +27,7 @@ import { NodesstatisticsComponent } from './components/nodesstatistics/nodesstat
     FooterComponent,
     MapComponent,
     ViewcontrolerComponent,
-    NodeshandlerComponent,
+    pathsHandlerComponent,
     InputParametersComponent,
     nodesControlersComponent,
     NodesstatisticsComponent

@@ -6,11 +6,11 @@ import { PathsHandlerService } from '../../services/pathshandler.service';
 
 
 @Component({
-  selector: 'app-nodeshandler',
-  templateUrl: './nodeshandler.component.html',
-  styleUrls: ['./nodeshandler.component.css']
+  selector: 'app-pathshandler',
+  templateUrl: './pathshandler.component.html',
+  styleUrls: ['./pathshandler.component.css']
 })
-export class NodeshandlerComponent implements OnInit {
+export class pathsHandlerComponent implements OnInit {
 
   PathFeatures: PathContainer = [];
   countPath = 0;
@@ -30,7 +30,6 @@ export class NodeshandlerComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log("emit", this.color);
     // this.getTabId(this.currentTabId);
 
   }

@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { NodeshandlerComponent } from './nodeshandler.component';
+import { pathsHandlerComponent } from './pathshandler.component';
 
-describe('NodeshandlerComponent', () => {
-  let component: NodeshandlerComponent;
-  let fixture: ComponentFixture<NodeshandlerComponent>;
+describe('PathshandlerComponent', () => {
+  let component: pathsHandlerComponent;
+  let fixture: ComponentFixture<pathsHandlerComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ NodeshandlerComponent ]
+      declarations: [ pathsHandlerComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(NodeshandlerComponent);
+    fixture = TestBed.createComponent(pathsHandlerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
