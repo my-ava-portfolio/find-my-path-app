@@ -32,7 +32,7 @@ export class nodesControlersComponent implements OnInit {
   }
 
   nodesCreated(pathId: string): void {
-    this.currentNodesDefined = this.PathsHService.getNodesFromPathId(pathId);
+    this.currentNodesDefined = this.PathsHService.getNodesFromOpenedPath();
 
   }
 

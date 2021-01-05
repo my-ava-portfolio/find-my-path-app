@@ -51,12 +51,11 @@ export class MapComponent implements OnInit {
 
 
     this.PathsHService.PathsHandlerContainer.subscribe(data => {
-      const PathId: string = this.PathsHService.currentTabDisplayed;
-      const nodesFound: Nodes = this.PathsHService.getNodesFromPathId(PathId);
+      const openedPath: PathFeature = this.PathsHService.getOpenedPath();
       this.MapFuncs.computeMapFromPoints(
         this.map,
-        nodesFound,
-        'map-' + PathId
+        openedPath.inputNodes.features,
+        'nodesMap-' + openedPath.id
       )
     });
 

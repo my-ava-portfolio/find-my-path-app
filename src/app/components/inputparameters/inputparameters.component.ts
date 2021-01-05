@@ -37,11 +37,11 @@ export class InputParametersComponent implements OnInit {
   ) {
 
     this.PathsHService.PathsHandlerContainer.subscribe(data => {
-      this.currentNodes = this.PathsHService.getNodesFromPathId(this.pathId);
+      this.currentNodes = this.PathsHService.getNodesFromOpenedPath();
     });
 
     this.PathBuilderService.pathApiOutputs.subscribe(data => {
-      this.PathsHService.setComputedData(this.pathId, data)
+      this.PathsHService.setComputedData(data)
       console.log("Compute API data", this.pathId)
     });
 
@@ -113,7 +113,7 @@ export class InputParametersComponent implements OnInit {
 
 
   getCurrentNodes(): void {
-    const currentNodes: Nodes = this.PathsHService.getNodesFromPathId(this.pathId);
+    const currentNodes: Nodes = this.PathsHService.getNodesFromOpenedPath();
     this.currentNodes = currentNodes;
   }
 

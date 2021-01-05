@@ -31,9 +31,8 @@ export class PathsHandlerService {
         this.PathsHandlerContainer.next(this.PathsHandlerData);
     }
 
-    setComputedData(pathId: string, outputApiData: OutputPathApi): void {
-        // this.currentTabDisplayed = pathId;
-        console.log('compare', pathId, this.currentTabDisplayed)
+    setComputedData(outputApiData: OutputPathApi): void {
+        console.log('compare', this.currentTabDisplayed)
         const indexPath: number = this.getPathIndex(this.currentTabDisplayed);
         this.PathsHandlerData[indexPath].line_path = outputApiData.line_path;
         this.PathsHandlerData[indexPath].points_path = outputApiData.points_path;
@@ -71,10 +70,14 @@ export class PathsHandlerService {
         this._updatePathHandlerContainer(indexPath, nodes)
     }
 
-    getNodesFromPathId(pathId: string): Nodes {
-        // this.currentTabDisplayed = pathId;
+    getNodesFromOpenedPath(): Nodes {
         const indexPath: number = this.getPathIndex(this.currentTabDisplayed);
         return this.PathsHandlerData[indexPath].inputNodes.features;
+    }
+
+    getOpenedPath(): PathFeature {
+        const indexPath: number = this.getPathIndex(this.currentTabDisplayed);
+        return this.PathsHandlerData[indexPath];
     }
 
     addPath(name?: string): void {
