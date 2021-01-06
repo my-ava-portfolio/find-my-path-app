@@ -15,9 +15,6 @@ import { GeneralUtils } from '../../core/generalUtils';
 export class nodesControlersComponent implements OnInit {
   @Input() pathData!: PathElement;
   @Input() isCurrentTab!: boolean;
-  @Input() CurrentTab!: string;
-
-  currentNodes!: NodeFeature[];
 
   constructor(
     private Parameters2MapService: ParametersToMapService,
@@ -27,10 +24,7 @@ export class nodesControlersComponent implements OnInit {
   }
 
 
-
-
   ngOnInit(): void {
-      // this.currentNodes = this.currentPath.getNodes()
   }
 
   removeNode(uuid: number): void {
@@ -39,7 +33,6 @@ export class nodesControlersComponent implements OnInit {
       const nodes: NodeFeature[] = this.pathData.getNodes();
       const nodesFiltered: NodeFeature[] = nodes.filter(data => data.properties.uuid !== uuid);
       console.log(uuid, nodesFiltered)
-      this.currentNodes = nodesFiltered
 
       this.pathData.setNodes(nodesFiltered);
       this.Parameters2MapService.mapFromPathNodes(this.pathData);
@@ -51,7 +44,6 @@ export class nodesControlersComponent implements OnInit {
       console.log(uuid)
       const nodes: NodeFeature[] = this.pathData.getNodes();
       const nodesUpdated = this._updatePositionNodes(nodes, uuid, -1);
-      this.currentNodes = nodesUpdated
 
       this.pathData.setNodes(nodesUpdated);
       this.Parameters2MapService.mapFromPathNodes(this.pathData);
@@ -62,7 +54,6 @@ export class nodesControlersComponent implements OnInit {
     if (this.pathData.getEdit() === true && this.isCurrentTab) {
       const nodes: NodeFeature[] = this.pathData.getNodes();
       const nodesUpdated = this._updatePositionNodes(nodes, uuid, 1);
-      this.currentNodes = nodesUpdated
 
       this.pathData.setNodes(nodesUpdated);
       this.Parameters2MapService.mapFromPathNodes(this.pathData);
@@ -77,11 +68,5 @@ export class nodesControlersComponent implements OnInit {
         nodesShifted[index].properties.position = index;
     });
     return nodesShifted;
-}
-
-
-
-
-
-
+  }
 }

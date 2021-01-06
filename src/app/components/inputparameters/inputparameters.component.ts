@@ -5,7 +5,6 @@ import { TransportMode, OutputPathApi } from '../../core/interfaces';
 import { MapToParametersService } from '../../services/maptoparameters.service';
 import { ParametersToMapService } from '../../services/parameterstomap.service';
 import { MapPathBuilderService } from '../../services/mappathbuilder.service';
-import { SharedPathService } from '../../services/sharedpath.service';
 
 import { NodeFeature, PathElement, Nodes } from '../../core/interfaces';
 
@@ -30,7 +29,6 @@ export class InputParametersComponent implements OnInit {
   pathName!: string;
   dataApiOutput!: OutputPathApi;
 
-
   TransportModes: TransportMode[] = [
     {title: 'Pedestrian', value: 'pedestrian'},
     {title: 'Vehicle', value: 'vehicle'}
@@ -40,11 +38,9 @@ export class InputParametersComponent implements OnInit {
     private Parameters2MapService: ParametersToMapService,
     private Map2ParametersService: MapToParametersService,
     private PathBuilderService: MapPathBuilderService,
-    private SharedNService: SharedPathService
   ) {
     this.Map2ParametersService.newPointCoords.subscribe(coordinates => {
       this.addPointsFromCoords(coordinates)
-      this.SharedNService.currentPath.next(this.pathData);
     });
 
     this.Map2ParametersService.pathComplete.subscribe(pathDone => {
@@ -57,11 +53,6 @@ export class InputParametersComponent implements OnInit {
     this.displayPathParams();
     console.log("AAAAAA", this.pathData.id, this.isCurrentTab)
   }
-
-  sendCurrentPath(): void {
-    this.SharedNService.currentPath.next(this.pathData);
-  }
-
 
   deletePathAction(pathId: string): void {
     this.pathEmitToDelete.emit(pathId)
