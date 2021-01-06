@@ -29,7 +29,6 @@ export interface Node {
         position: number;
         uuid: number;
         name: string;
-        path: string;
     };
 }
 export interface Nodes extends Array<Node>{}
@@ -143,7 +142,6 @@ export interface Node {
         position: number;
         uuid: number;
         name: string;
-        path: string;
     };
 }
 
@@ -249,6 +247,7 @@ export class PathElement {
         return this.statsPath;
     }
 
+    // deprecated, only used to debug the duplication action
     updatePath(pathId: string): void {
         this.getNodes().forEach((element: NodeFeature) => {
             element.properties.path = pathId
@@ -269,10 +268,10 @@ export class PathElement {
         return (JSON.parse(JSON.stringify(this)));
     }
 
-
 }
   
 
 function createCopy(objectToCopy: any): any {
+    // save my life...
     return JSON.parse(JSON.stringify(objectToCopy));
 }

@@ -64,7 +64,6 @@ export class pathsHandlerComponent implements OnInit {
     const newPath: PathElement = this.initPath(' from ' + pathId);
     newPath.setNodes(nodesCopy);
     newPath.rebuildNodes() // deep copy to remove references....
-    newPath.updatePath(newPath.id)
     this.switchTab(newPath.id)
 
     this.PathFeatures.push(newPath);

@@ -113,8 +113,7 @@ export class InputParametersComponent implements OnInit {
         {
           position: currentNodesPosition,
           uuid: currentNodesPosition,
-          name: 'node ' + currentNodesPosition,
-          path: this.pathData.id
+          name: 'node ' + currentNodesPosition
         }
       );
       this.Parameters2MapService.mapFromPathNodes(this.pathData);
