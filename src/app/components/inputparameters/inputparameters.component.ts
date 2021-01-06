@@ -56,6 +56,7 @@ export class InputParametersComponent implements OnInit {
 
   deletePathAction(pathId: string): void {
     this.pathEmitToDelete.emit(pathId)
+    this.Parameters2MapService.deletePathMaps(pathId)
   }
 
   duplicatePathAction(pathId: string): void {

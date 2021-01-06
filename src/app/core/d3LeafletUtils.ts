@@ -34,8 +34,12 @@ export class D3LeafletUtils {
 
     constructor() { }
 
-    computeAnimatePointsOnLine(LeafletMap: any, GeoJsonPointFeatures: any[], layerId: string, lineColor: string): void {
+    removeFeaturesMapFromLayerId(layerId: string): void {
         d3.selectAll('#' + layerId).remove();
+    }
+
+    computeAnimatePointsOnLine(LeafletMap: any, GeoJsonPointFeatures: any[], layerId: string, lineColor: string): void {
+        this.removeFeaturesMapFromLayerId(layerId);
 
         const convertLatLngToLayerCoords = (d: any): any => {
             return LeafletMap.latLngToLayerPoint(
@@ -211,7 +215,7 @@ export class D3LeafletUtils {
 
 
     computeMapFromPoints(LeafletMap: any, GeoJsonPointFeatures: any[], layerId: string, displayToolTip: boolean = false): void {
-        d3.selectAll('#' + layerId).remove();
+        this.removeFeaturesMapFromLayerId(layerId);
 
         GeoJsonPointFeatures.forEach( (feature, i): void => {
             feature.LatLng = new L.LatLng(

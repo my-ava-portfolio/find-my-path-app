@@ -27,6 +27,9 @@ export class MapComponent implements OnInit {
   private attribution = '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors';
   private zoom = 10;
 
+  private nodesMapPrefix = 'nodesMap-';
+  private pathMapPrefix = 'pathMap-';
+
   map: any;
   EditModeStatus!: boolean;
   MarkerArray: Marker[] = [];
@@ -52,7 +55,7 @@ export class MapComponent implements OnInit {
       this.MapFuncs.computeMapFromPoints(
         this.map,
         NodesPath.getNodes(),
-        'nodesMap-' + NodesPath.id
+        this.nodesMapPrefix + NodesPath.id
       )
     })
 
@@ -62,14 +65,19 @@ export class MapComponent implements OnInit {
       this.MapFuncs.computeAnimatePointsOnLine(
         this.map,
         PathData.getPointsPath().features,
-        'pathMap-' + PathData.id,
+        this.pathMapPrefix + PathData.id,
         PathData.color
       );
-      console.log("animated path", 'pathMap-' + PathData.id)
+      console.log("animated path", this.pathMapPrefix + PathData.id)
       this.Map2ParametersService.pushCompletePath(PathData)
     });
 
+    // delete node path from parameter button
+    this.Parameters2MapService.MapPathIdToremove.subscribe(pathId => {
+      this.MapFuncs.removeFeaturesMapFromLayerId(this.pathMapPrefix + pathId)
+      this.MapFuncs.removeFeaturesMapFromLayerId(this.nodesMapPrefix + pathId)
 
+    })
    }
 
   ngOnInit(): void {

@@ -9,12 +9,16 @@ import { PathElement, Nodes } from '../core/interfaces';
 export class ParametersToMapService {
 
     NodesPathToMap: Subject<PathElement> = new Subject<PathElement>();
-    NodesToMap: Subject<Nodes> = new Subject<Nodes>();
+    MapPathIdToremove: Subject<string> = new Subject<string>();
 
     constructor() { }
 
     mapFromPathNodes(pathFeat: PathElement): void {
         this.NodesPathToMap.next(pathFeat);
+    }
+
+    deletePathMaps(pathId: PathElement): void {
+        this.MapPathIdToremove.next(pathId)
     }
 
 }
