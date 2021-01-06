@@ -4,10 +4,10 @@ import { TransportMode, OutputPathApi } from '../../core/interfaces';
 
 import { MapToParametersService } from '../../services/maptoparameters.service';
 import { ParametersToMapService } from '../../services/parameterstomap.service';
-
 import { MapPathBuilderService } from '../../services/mappathbuilder.service';
+import { SharedPathService } from '../../services/sharedpath.service';
 
-import { PathElement, Nodes } from '../../core/interfaces';
+import { NodeFeature, PathElement, Nodes } from '../../core/interfaces';
 
 
 @Component({
@@ -40,10 +40,11 @@ export class InputParametersComponent implements OnInit {
     private Parameters2MapService: ParametersToMapService,
     private Map2ParametersService: MapToParametersService,
     private PathBuilderService: MapPathBuilderService,
-
+    private SharedNService: SharedPathService
   ) {
     this.Map2ParametersService.newPointCoords.subscribe(coordinates => {
       this.addPointsFromCoords(coordinates)
+      this.SharedNService.currentPath.next(this.pathData);
     });
 
     this.Map2ParametersService.pathComplete.subscribe(pathDone => {
@@ -55,6 +56,10 @@ export class InputParametersComponent implements OnInit {
   ngOnInit(): void {
     this.displayPathParams();
     console.log("AAAAAA", this.pathData.id, this.isCurrentTab)
+  }
+
+  sendCurrentPath(): void {
+    this.SharedNService.currentPath.next(this.pathData);
   }
 
 
@@ -69,7 +74,7 @@ export class InputParametersComponent implements OnInit {
   computePath(): void {
 
     this.displayPathParams();
-    const nodesCreated: Nodes = this.pathData.getNodes()
+    const nodesCreated: NodeFeature[] = this.pathData.getNodes()
     if (nodesCreated.length > 0) {
       this.PathBuilderService.getPostProcData(this.pathData);
       console.log('Compute Path', this.pathData.id)
@@ -106,22 +111,21 @@ export class InputParametersComponent implements OnInit {
       console.log('Nodes inserted', this.pathData, this.isCurrentTab)
       const currentNodesPosition: number = this.pathData.getNodes().length;
       // TODO add class for point
-      this.pathData.addNode({
-        type: 'Feature',
-        geometry: {
+      this.pathData.addNode(
+        {
           type: 'Point',
           coordinates: [
             coordinates[1],
             coordinates[0]
           ]
         },
-        properties: {
+        {
           position: currentNodesPosition,
           uuid: currentNodesPosition,
           name: 'node ' + currentNodesPosition,
           path: this.pathData.id
         }
-      });
+      );
       this.Parameters2MapService.mapFromPathNodes(this.pathData);
     }
     

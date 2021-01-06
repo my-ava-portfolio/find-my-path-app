@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
-import { PathFeature, NodeGeoJson, Nodes, OutputPathApi, PathElement } from '../core/interfaces';
+import { PathFeature, NodeGeoJson, Nodes, OutputPathApi, PathElement, NodeFeature } from '../core/interfaces';
 
 
 @Injectable()
@@ -21,7 +21,7 @@ export class MapPathBuilderService {
         console.log('Get API data OK')
         const transportMode: string = path.getTransportMode();
         let elevationStatus: boolean | string = path.getElevation();
-        const nodes: Nodes = path.getNodes();
+        const nodes: NodeFeature[] = path.getNodes();
 
         if ( !elevationStatus ) {
             elevationStatus = '';

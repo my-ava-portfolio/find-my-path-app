@@ -15,6 +15,7 @@ import { MapViewBuilderService } from './services/mapviewbuider.service';
 import { MapPathBuilderService } from './services/mappathbuilder.service';
 import { MapToParametersService } from './services/maptoparameters.service';
 import { ParametersToMapService } from './services/parameterstomap.service';
+import { SharedPathService } from './services/sharedpath.service';
 
 import { pathsHandlerComponent } from './components/pathshandler/pathshandler.component';
 import { nodesControlersComponent } from './components/nodescontrolers/nodescontrolers.component';
@@ -43,6 +44,7 @@ import { NodesstatisticsComponent } from './components/nodesstatistics/nodesstat
   providers: [
     MapToParametersService,
     ParametersToMapService,
+    SharedPathService,
     MapViewBuilderService,
     MapPathBuilderService
   ],

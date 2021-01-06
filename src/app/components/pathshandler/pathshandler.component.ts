@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 
-import { PathElement, NodeGeoJson, Nodes, PathContainer, PathFeature } from '../../core/interfaces';
+import { NodeFeature, PathElement, NodeGeoJson, Nodes, PathContainer, PathFeature } from '../../core/interfaces';
 
 import { GeneralUtils } from '../../core/generalUtils';
 
@@ -40,6 +40,7 @@ export class pathsHandlerComponent implements OnInit {
     // TODO add name
     const newPath: PathElement = this.initPath();
     this.PathFeatures.push(newPath);
+    this.switchTab(newPath.id)
     console.log('ADDED path');
   }
 
@@ -47,6 +48,8 @@ export class pathsHandlerComponent implements OnInit {
     this.PathFeatures = this.PathFeatures.filter(
       (path: PathElement): boolean => path.id !== pathId
     );
+    this.countPath -= 1;
+    this.switchTab(this.PathFeatures[this.PathFeatures.length-1].id)
     console.log('REMOVED path', pathId);
     // TODO remove nodes on map
   }
@@ -57,10 +60,12 @@ export class pathsHandlerComponent implements OnInit {
     );
 
     // create and copy nodes
-    const nodesCopy: Nodes = this.PathFeatures[pathToDuplicateIndex].getNodes();
+    const nodesCopy: NodeFeature[] = this.PathFeatures[pathToDuplicateIndex].getNodes();
     const newPath: PathElement = this.initPath(' from ' + pathId);
     newPath.setNodes(nodesCopy);
-    newPath.updatePath(newPath.id)
+    newPath.rebuildNodes() // deep copy to remove references....
+    this.switchTab(newPath.id)
+
     this.PathFeatures.push(newPath);
     console.log('DUPL path', newPath, this.PathFeatures);
 

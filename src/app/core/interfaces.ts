@@ -171,7 +171,7 @@ export class PathElement {
     editingStatus = false;
     transportMode = 'pedestrian';
     elevationStatus = false;
-    private inputNodes: Nodes = [];
+    private inputNodes: NodeFeature[] = [];
     private pointsPath!: NodePathGeoJson;
     private linePath!: LinePathGeoJson;
     private statsPath!: PathStatistics;
@@ -214,13 +214,17 @@ export class PathElement {
         return this.elevationStatus;
     }
 
-    setNodes(nodes: Nodes): void {
+    setNodes(nodes: NodeFeature[]): void {
         this.inputNodes = nodes;
     }
-    addNode(node: Node): void {
-        this.inputNodes.push(node);
+    addNode(geometry: PointGeometry, properties: any): void {
+        const newNodes = new NodeFeature(
+            geometry,
+            properties
+        )
+        this.inputNodes.push(newNodes);
     }
-    getNodes(): Nodes {
+    getNodes(): NodeFeature[] {
         return this.inputNodes;
     }
 
@@ -246,20 +250,29 @@ export class PathElement {
     }
 
     updatePath(pathId: string): void {
-        this.getNodes().forEach((element: Node) => {
+        this.getNodes().forEach((element: NodeFeature) => {
             element.properties.path = pathId
         });
     }
-    // rebuildNodes(): void {
-    //     const nodesReworked: Nodes = []; 
-    //     this.getNodes().forEach((element: Node) => {
-    //         const newNodes = new NodeFeature(
-    //             element.geometry, 
-    //             element.properties
-    //         )
-    //         nodesReworked.push(newNodes)
-    //     });
-    // }
+    rebuildNodes(): void {
+        const nodesToReworked: NodeFeature[] = this.getNodes(); 
+        this.inputNodes = []
+        nodesToReworked.forEach((element: NodeFeature) => {
+            this.addNode(
+                createCopy(element.geometry), 
+                createCopy(element.properties)
+            )
+        });
+    }
+
+    getCopy(): PathElement{
+        return (JSON.parse(JSON.stringify(this)));
+    }
 
 
-  }
+}
+  
+
+function createCopy(objectToCopy: any): any {
+    return JSON.parse(JSON.stringify(objectToCopy));
+}
