@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 
-import { PathContainer } from '../../core/interfaces';
+import { NodeGeoJson, Nodes, PathContainer, PathFeature } from '../../core/interfaces';
 
 import { GeneralUtils } from '../../core/generalUtils';
 
@@ -37,11 +37,41 @@ export class pathsHandlerComponent implements OnInit {
 
   addPath(): void {
     this.isPathFound = true;
+    // TODO add name
+    const newPath: PathFeature = this.initPath()
+    this.PathFeatures.push(newPath);
+    console.log('ADDED path');
+  }
+
+  deletePath(pathId: string): void {
+    this.PathFeatures = this.PathFeatures.filter(
+      (path: PathFeature): boolean => path.id !== pathId
+    )
+    console.log('REMOVED path', pathId);
+    // TODO remove nodes on map
+  }
+
+  duplicatePath(pathId: string): void {
+    const pathToDuplicateIndex: number = this.PathFeatures.findIndex(
+      (path: PathFeature): boolean => path.id === pathId
+    )
+
+    // create and copy nodes
+    const nodesCopy: Nodes = this.PathFeatures[pathToDuplicateIndex].inputNodes.features
+    const newPath: PathFeature = this.initPath(" from " + pathId)
+    newPath.inputNodes.features = nodesCopy; 
+
+    this.PathFeatures.push(newPath)
+    console.log('DUPL path', newPath, this.PathFeatures);
+
+  }
+
+  initPath(name: string = ''): PathFeature {
     this.countPath += 1;
     const colorOuput = this.GeneralFunc.randomHexColor()
-    this.PathFeatures.push({
+    return {
         id: 'path' + this.countPath,
-        name: 'Path ' + this.countPath,
+        name: 'Path ' + this.countPath + name,
         color: colorOuput,
         configuration: {
             EditingStatus: this.defaultEditStatus,
@@ -52,8 +82,8 @@ export class pathsHandlerComponent implements OnInit {
             type: 'FeatureCollection',
             features: []
         }
-    });
-    console.log('ADDED path', colorOuput);
+    }
   }
-
 }
+
+

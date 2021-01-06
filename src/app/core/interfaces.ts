@@ -134,3 +134,17 @@ export interface Margin {
     left: number;
 }
 
+// class PathElement {
+
+//     private id: string;
+//     private name: string;
+//     private color: string;
+//     private editingStatus: boolean;
+//     private transportModeStatus: boolean;
+//     private elevationStatus: boolean;
+//     private inputNodes: Nodes;
+  
+//     constructor(id: string) {
+//       this.id = id;
+//     }
+//   }

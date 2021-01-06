@@ -7,6 +7,10 @@
 
         <form class="row">
             <div class="col-md-8">
+                <p>
+                    <button id="btn-del-tab" type="button" class="btn btn-primary pull-right" (click)="deletePathAction(pathData.id)">Delete</button>
+                    <button id="btn-del-tab" type="button" class="btn btn-primary pull-right" (click)="duplicatePathAction(pathData.id)">Duplicate</button>
+                </p>
 
                 <div class="form-group">
                     <div class="row">

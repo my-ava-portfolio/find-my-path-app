@@ -21,9 +21,21 @@
                     <div id="tab-content" class="tab-content">
                         <div class="tab-pane fade in" id="{{ path.id }}" *ngFor="let path of PathFeatures; let i = index">
                         
-                            <app-inputparameters [pathData]="path" [isCurrentTab]="currentTabId === path.id"></app-inputparameters>
-                            <app-nodescontrolers [pathData]="path" [isCurrentTab]="currentTabId === path.id"></app-nodescontrolers>
-                            <app-nodesstatistics [pathData]="path"></app-nodesstatistics>
+                            <app-inputparameters 
+                                (pathEmitToDelete)="deletePath($event)" 
+                                (pathEmitToDuplicate)="duplicatePath($event)" 
+                                [pathData]="path" 
+                                [isCurrentTab]="currentTabId === path.id"
+                            ></app-inputparameters>
+
+                            <app-nodescontrolers 
+                                [pathData]="path"
+                                [isCurrentTab]="currentTabId === path.id"
+                            ></app-nodescontrolers>
+
+                            <app-nodesstatistics 
+                                [pathData]="path"
+                            ></app-nodesstatistics>
                         </div>
                     </div>
                 </div>

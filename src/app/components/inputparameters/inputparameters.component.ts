@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 import { TransportMode, OutputPathApi } from '../../core/interfaces';
 
@@ -18,6 +18,9 @@ import { PathFeature, Nodes } from '../../core/interfaces';
 export class InputParametersComponent implements OnInit {
   @Input() pathData!: PathFeature;
   @Input() isCurrentTab!: boolean;
+
+  @Output() pathEmitToDelete = new EventEmitter<string>();
+  @Output() pathEmitToDuplicate = new EventEmitter<string>();
 
   colorSelected!: string;
   transportModeSelected!: string;
@@ -53,6 +56,14 @@ export class InputParametersComponent implements OnInit {
     this.displayPathParams();
   }
 
+
+  deletePathAction(pathId: string) {
+    this.pathEmitToDelete.emit(pathId)
+  }
+
+  duplicatePathAction(pathId: string) {
+    this.pathEmitToDuplicate.emit(pathId)
+  }
 
   computePath(): void {
 
@@ -91,7 +102,7 @@ export class InputParametersComponent implements OnInit {
   addPointsFromCoords(coordinates: number[]): void {
     // here the magic part! update only the active tab and if edit is true of course
     if (this.pathData.configuration.EditingStatus && this.isCurrentTab) {
-      console.log('Nodes inserted', this.pathData.name)
+      console.log('Nodes inserted', this.pathData, this.isCurrentTab)
       const currentNodesPosition: number = this.pathData.inputNodes.features.length;
       this.pathData.inputNodes.features.push({
         type: 'Feature',
@@ -108,8 +119,9 @@ export class InputParametersComponent implements OnInit {
           name: 'node ' + currentNodesPosition
         }
       });
+      this.Parameters2MapService.mapFromPathNodes(this.pathData);
     }
-    this.Parameters2MapService.mapFromPathNodes(this.pathData);
+    
   }
 
   updatePathWithApiData(path: PathFeature): void {
