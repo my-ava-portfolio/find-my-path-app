@@ -51,7 +51,7 @@ export class MapComponent implements OnInit {
     this.Parameters2MapService.NodesPathToMap.subscribe(NodesPath => {
       this.MapFuncs.computeMapFromPoints(
         this.map,
-        NodesPath.inputNodes.features,
+        NodesPath.getNodes(),
         'nodesMap-' + NodesPath.id
       )
     })
@@ -59,10 +59,9 @@ export class MapComponent implements OnInit {
 
     // go to handler service
     this.PathBuilderService.pathApiOutputs.subscribe(PathData => {
-
       this.MapFuncs.computeAnimatePointsOnLine(
         this.map,
-        PathData.points_path!.features,
+        PathData.getPointsPath().features,
         'pathMap-' + PathData.id,
         PathData.color
       );

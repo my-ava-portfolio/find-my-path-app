@@ -4,9 +4,9 @@
     </div>
 
     <ol class="path-coords-list"></ol>
-        <li *ngFor="let node of pathData.inputNodes.features">
+        <li *ngFor="let node of this.currentNodes">
             
-                <span class="node-name">{{node.properties.name}} {{node.geometry.coordinates[0]}} {{node.geometry.coordinates[1]}}</span>
+                <span class="node-name">>{{node.properties.path}} {{node.properties.name}} {{node.geometry.coordinates[0]}} {{node.geometry.coordinates[1]}}</span>
                 <span class="remove" (click)="removeNode(node.properties.uuid)">X </span>
                 <span class="up" (click)="upPosition(node.properties.uuid)">UP </span>
                 <span class="down" (click)="botPosition(node.properties.uuid)">DOWN</span>

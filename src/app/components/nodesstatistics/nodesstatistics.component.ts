@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 
-import { PathFeature } from '../../core/interfaces';
+import { PathElement } from '../../core/interfaces';
 
 
 @Component({
@@ -9,7 +9,7 @@ import { PathFeature } from '../../core/interfaces';
   styleUrls: ['./nodesstatistics.component.css']
 })
 export class NodesstatisticsComponent implements OnInit {
-  @Input() pathData!: PathFeature;
+  @Input() pathData!: PathElement;
 
 
   constructor(

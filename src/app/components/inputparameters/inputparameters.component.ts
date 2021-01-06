@@ -7,7 +7,7 @@ import { ParametersToMapService } from '../../services/parameterstomap.service';
 
 import { MapPathBuilderService } from '../../services/mappathbuilder.service';
 
-import { PathFeature, Nodes } from '../../core/interfaces';
+import { PathElement, Nodes } from '../../core/interfaces';
 
 
 @Component({
@@ -16,7 +16,7 @@ import { PathFeature, Nodes } from '../../core/interfaces';
   styleUrls: ['./inputparameters.component.css']
 })
 export class InputParametersComponent implements OnInit {
-  @Input() pathData!: PathFeature;
+  @Input() pathData!: PathElement;
   @Input() isCurrentTab!: boolean;
 
   @Output() pathEmitToDelete = new EventEmitter<string>();
@@ -24,8 +24,8 @@ export class InputParametersComponent implements OnInit {
 
   colorSelected!: string;
   transportModeSelected!: string;
-  editModeStatus = false;
-  elevationModeStatus = false;
+  editModeStatus!: boolean;
+  elevationModeStatus!: boolean;
   nodesToMap: Nodes = [];
   pathName!: string;
   dataApiOutput!: OutputPathApi;
@@ -54,21 +54,22 @@ export class InputParametersComponent implements OnInit {
 
   ngOnInit(): void {
     this.displayPathParams();
+    console.log("AAAAAA", this.pathData.id, this.isCurrentTab)
   }
 
 
-  deletePathAction(pathId: string) {
+  deletePathAction(pathId: string): void {
     this.pathEmitToDelete.emit(pathId)
   }
 
-  duplicatePathAction(pathId: string) {
+  duplicatePathAction(pathId: string): void {
     this.pathEmitToDuplicate.emit(pathId)
   }
 
   computePath(): void {
 
     this.displayPathParams();
-    const nodesCreated: Nodes = this.pathData.inputNodes.features
+    const nodesCreated: Nodes = this.pathData.getNodes()
     if (nodesCreated.length > 0) {
       this.PathBuilderService.getPostProcData(this.pathData);
       console.log('Compute Path', this.pathData.id)
@@ -78,33 +79,34 @@ export class InputParametersComponent implements OnInit {
 
   }
 
-  updatetColor(event: any): void {
-    this.pathData.color = event.target.value;
+  updateColor(event: any): void {
+    this.pathData.setColor(event.target.value)
     console.log('update color', this.pathData.color)
   }
 
   updateEditMode(event: any): void {
-    this.pathData.configuration.EditingStatus = event.target.checked;
-    console.log('update edit', this.pathData.configuration.EditingStatus)
+    this.pathData.setEdit(event.target.checked);
+    console.log('update edit', this.pathData.editingStatus)
   }
 
   updateTransportMode(newValue: string): void {
-    this.pathData.configuration.transportModeStatus = newValue;
-    console.log('update transportMode', this.pathData.configuration.transportModeStatus)
+    this.pathData.setTransportMode(newValue);
+    console.log('update transportMode', this.pathData.getTransportMode())
   }
 
   updateElevationStatus(event: any): void {
-    this.pathData.configuration.elevationStatus = event.target.checked;
-    console.log('update elevationMode', this.pathData.configuration.elevationStatus)
+    this.pathData.setElevation(event.target.checked);
+    console.log('update elevationMode', this.pathData.getElevation())
   }
 
 
   addPointsFromCoords(coordinates: number[]): void {
     // here the magic part! update only the active tab and if edit is true of course
-    if (this.pathData.configuration.EditingStatus && this.isCurrentTab) {
+    if (this.pathData.getEdit() === true && this.isCurrentTab) {
       console.log('Nodes inserted', this.pathData, this.isCurrentTab)
-      const currentNodesPosition: number = this.pathData.inputNodes.features.length;
-      this.pathData.inputNodes.features.push({
+      const currentNodesPosition: number = this.pathData.getNodes().length;
+      // TODO add class for point
+      this.pathData.addNode({
         type: 'Feature',
         geometry: {
           type: 'Point',
@@ -116,7 +118,8 @@ export class InputParametersComponent implements OnInit {
         properties: {
           position: currentNodesPosition,
           uuid: currentNodesPosition,
-          name: 'node ' + currentNodesPosition
+          name: 'node ' + currentNodesPosition,
+          path: this.pathData.id
         }
       });
       this.Parameters2MapService.mapFromPathNodes(this.pathData);
@@ -124,7 +127,7 @@ export class InputParametersComponent implements OnInit {
     
   }
 
-  updatePathWithApiData(path: PathFeature): void {
+  updatePathWithApiData(path: PathElement): void {
     if ( this.isCurrentTab ) {
       this.pathData = path;
       console.log('finito', this.isCurrentTab, this.pathData)
@@ -134,10 +137,7 @@ export class InputParametersComponent implements OnInit {
 
   private displayPathParams(): void {
     console.log(
-      this.pathData.name,
-      this.pathData.color,
-      this.pathData.configuration,
-      this.pathData.inputNodes,
+      this.pathData
     )
   }
 

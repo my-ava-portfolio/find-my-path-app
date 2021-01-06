@@ -2,14 +2,14 @@ import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
-import { Nodes, OutputPathApi, PathFeature } from '../core/interfaces';
+import { Nodes, OutputPathApi, PathElement } from '../core/interfaces';
 
 
 @Injectable()
 export class MapToParametersService {
 
     newPointCoords: Subject<number[]> = new Subject<number[]>();
-    pathComplete: Subject<PathFeature> = new Subject<PathFeature>();
+    pathComplete: Subject<PathElement> = new Subject<PathElement>();
 
     constructor() { }
 
@@ -17,7 +17,7 @@ export class MapToParametersService {
         this.newPointCoords.next(coordinates);
     }
 
-    pushCompletePath(Path: PathFeature): void {
+    pushCompletePath(Path: PathElement): void {
         this.pathComplete.next(Path)
     }
 

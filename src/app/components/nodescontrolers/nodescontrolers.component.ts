@@ -3,7 +3,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { ParametersToMapService } from '../../services/parameterstomap.service';
 import { GeneralUtils } from '../../core/generalUtils';
 
-import { PathFeature, Nodes, Node } from '../../core/interfaces';
+import { PathElement, Nodes, Node } from '../../core/interfaces';
 
 
 @Component({
@@ -12,8 +12,11 @@ import { PathFeature, Nodes, Node } from '../../core/interfaces';
   styleUrls: ['./nodescontrolers.component.css']
 })
 export class nodesControlersComponent implements OnInit {
-  @Input() pathData!: PathFeature;
+  @Input() pathData!: PathElement;
   @Input() isCurrentTab!: boolean;
+  @Input() CurrentTab!: string;
+
+  currentNodes!: Nodes;
 
   constructor(
     private Parameters2MapService: ParametersToMapService,
@@ -22,44 +25,47 @@ export class nodesControlersComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
+      this.currentNodes = this.pathData.getNodes()
   }
 
   removeNode(uuid: number): void {
-    if (this.pathData.configuration.EditingStatus && this.isCurrentTab) {
-      console.log(uuid)
+    if (this.pathData.getEdit() === true && this.isCurrentTab) {
 
-      const IndexNodeToRemove: number = this._findNodeIndex(uuid)
+      const nodes: Nodes = this.pathData.getNodes();
+      const nodesFiltered: Nodes = nodes.filter(data => data.properties.uuid !== uuid);
+      console.log(uuid, nodesFiltered)
+      this.currentNodes = nodesFiltered
 
-      const nodes: Nodes = this.pathData.inputNodes.features;
-      const nodesFiltered: Nodes = nodes.filter(data => data.properties.uuid !== IndexNodeToRemove);
-
-      this.pathData.inputNodes.features = nodesFiltered;
+      this.pathData.setNodes(nodesFiltered);
       this.Parameters2MapService.mapFromPathNodes(this.pathData);
     }
   }
 
   upPosition(uuid: number): void {
-    if (this.pathData.configuration.EditingStatus && this.isCurrentTab) {
+    if (this.pathData.getEdit() && this.isCurrentTab) {
       console.log(uuid)
-      const nodes: Nodes = this.pathData.inputNodes.features;
+      const nodes: Nodes = this.pathData.getNodes();
       const nodesUpdated = this._updatePositionNodes(nodes, uuid, -1);
-      this.pathData.inputNodes.features = nodesUpdated;
+      this.currentNodes = nodesUpdated
+
+      this.pathData.setNodes(nodesUpdated);
       this.Parameters2MapService.mapFromPathNodes(this.pathData);
     }
   }
 
   botPosition(uuid: number): void {
-    if (this.pathData.configuration.EditingStatus && this.isCurrentTab) {
-      const nodes: Nodes = this.pathData.inputNodes.features;
+    if (this.pathData.getEdit() === true && this.isCurrentTab) {
+      const nodes: Nodes = this.pathData.getNodes();
       const nodesUpdated = this._updatePositionNodes(nodes, uuid, 1);
-      this.pathData.inputNodes.features = nodesUpdated;
+      this.currentNodes = nodesUpdated
+
+      this.pathData.setNodes(nodesUpdated);
       this.Parameters2MapService.mapFromPathNodes(this.pathData);
     }
   }
 
   private _findNodeIndex(uuid: number): number {
-    return this.pathData.inputNodes.features.findIndex(
+    return this.pathData.getNodes().findIndex(
       (node: Node): boolean => node.properties.uuid === uuid
     );
   }

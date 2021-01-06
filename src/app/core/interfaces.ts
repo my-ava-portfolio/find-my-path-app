@@ -29,6 +29,7 @@ export interface Node {
         position: number;
         uuid: number;
         name: string;
+        path: string;
     };
 }
 export interface Nodes extends Array<Node>{}
@@ -134,17 +135,131 @@ export interface Margin {
     left: number;
 }
 
-// class PathElement {
 
-//     private id: string;
-//     private name: string;
-//     private color: string;
-//     private editingStatus: boolean;
-//     private transportModeStatus: boolean;
-//     private elevationStatus: boolean;
-//     private inputNodes: Nodes;
-  
-//     constructor(id: string) {
-//       this.id = id;
-//     }
-//   }
+export interface Node {
+    type: string;
+    geometry: PointGeometry;
+    properties: {
+        position: number;
+        uuid: number;
+        name: string;
+        path: string;
+    };
+}
+
+export class NodeFeature {
+    private type = 'feature';
+    geometry: PointGeometry;
+    properties: any;
+
+    constructor(
+        geometry: PointGeometry,
+        properties: any
+    ) {
+        this.type = this.type;
+        this.geometry = geometry;
+        this.properties = properties;
+    }
+
+}
+
+export class PathElement {
+
+    id: string;
+    name: string;
+    color: string;
+    editingStatus = false;
+    transportMode = 'pedestrian';
+    elevationStatus = false;
+    private inputNodes: Nodes = [];
+    private pointsPath!: NodePathGeoJson;
+    private linePath!: LinePathGeoJson;
+    private statsPath!: PathStatistics;
+
+    constructor(
+        id: string,
+        name: string,
+        color: string,
+    ) {
+        this.id = id;
+        this.name = name;
+        this.color = color;
+    }
+
+    setColor(value: string): void {
+        this.color = value;
+    }
+    getColor(): string {
+        return this.color;
+    }
+
+    setEdit(value: boolean): void {
+        this.editingStatus = value;
+    }
+    getEdit(): boolean {
+        return this.editingStatus;
+    }
+
+    setTransportMode(value: string): void {
+        this.transportMode = value;
+    }
+    getTransportMode(): string {
+        return this.transportMode;
+    }
+
+    setElevation(value: boolean): void {
+        this.elevationStatus = true;
+    }
+    getElevation(): boolean {
+        return this.elevationStatus;
+    }
+
+    setNodes(nodes: Nodes): void {
+        this.inputNodes = nodes;
+    }
+    addNode(node: Node): void {
+        this.inputNodes.push(node);
+    }
+    getNodes(): Nodes {
+        return this.inputNodes;
+    }
+
+    setPointsPath(nodesPath: NodePathGeoJson): void {
+        this.pointsPath = nodesPath;
+    }
+    getPointsPath(): NodePathGeoJson {
+        return this.pointsPath;
+    }
+
+    setLinePath(linePath: LinePathGeoJson): void {
+        this.linePath = linePath;
+    }
+    getLinePath(): LinePathGeoJson {
+        return this.linePath;
+    }
+
+    setStatsPath(statsPath: PathStatistics): void {
+        this.statsPath = statsPath;
+    }
+    getStatsPath(): PathStatistics {
+        return this.statsPath;
+    }
+
+    updatePath(pathId: string): void {
+        this.getNodes().forEach((element: Node) => {
+            element.properties.path = pathId
+        });
+    }
+    // rebuildNodes(): void {
+    //     const nodesReworked: Nodes = []; 
+    //     this.getNodes().forEach((element: Node) => {
+    //         const newNodes = new NodeFeature(
+    //             element.geometry, 
+    //             element.properties
+    //         )
+    //         nodesReworked.push(newNodes)
+    //     });
+    // }
+
+
+  }
