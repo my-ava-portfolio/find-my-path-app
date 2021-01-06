@@ -51,6 +51,8 @@ export class InputParametersComponent implements OnInit {
 
   ngOnInit(): void {
     this.displayPathParams();
+    // in order to generate the map by default, each time we create a new tab (useful if duplicate!)
+    this.Parameters2MapService.mapFromPathNodes(this.pathData);
     console.log("AAAAAA", this.pathData.id, this.isCurrentTab)
   }
 

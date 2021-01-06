@@ -59,7 +59,6 @@ export class MapComponent implements OnInit {
       )
     })
 
-
     // go to handler service
     this.PathBuilderService.pathApiOutputs.subscribe(PathData => {
       this.MapFuncs.computeAnimatePointsOnLine(
