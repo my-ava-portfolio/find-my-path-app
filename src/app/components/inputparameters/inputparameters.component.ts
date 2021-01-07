@@ -6,6 +6,8 @@ import { MapToParametersService } from '../../services/maptoparameters.service';
 import { ParametersToMapService } from '../../services/parameterstomap.service';
 import { MapPathBuilderService } from '../../services/mappathbuilder.service';
 
+import { D3LeafletUtils } from '../../core/d3LeafletUtils';
+
 import { NodeFeature, PathElement, Nodes } from '../../core/interfaces';
 
 
@@ -38,6 +40,7 @@ export class InputParametersComponent implements OnInit {
     private Parameters2MapService: ParametersToMapService,
     private Map2ParametersService: MapToParametersService,
     private PathBuilderService: MapPathBuilderService,
+    private MapFuncs: D3LeafletUtils
   ) {
     this.Map2ParametersService.newPointCoords.subscribe(coordinates => {
       this.addPointsFromCoords(coordinates)
@@ -77,10 +80,15 @@ export class InputParametersComponent implements OnInit {
     }
 
   }
-
-  updateColor(event: any): void {
+  updateStrokeWidth(event: any): void {
+    this.pathData.setWidth(event.target.value)
+    this.MapFuncs.UpdatePathStyleFromLayerId(this.pathData.id, undefined, event.target.value)
+    console.log('update width', this.pathData.getWidth())
+  }
+  updateStrokeColor(event: any): void {
     this.pathData.setColor(event.target.value)
-    console.log('update color', this.pathData.color)
+    this.MapFuncs.UpdatePathStyleFromLayerId(this.pathData.id, event.target.value)
+    console.log('update color', this.pathData.getColor())
   }
 
   updateEditMode(event: any): void {
@@ -121,7 +129,7 @@ export class InputParametersComponent implements OnInit {
       );
       this.Parameters2MapService.mapFromPathNodes(this.pathData);
     }
-    
+
   }
 
   updatePathWithApiData(path: PathElement): void {

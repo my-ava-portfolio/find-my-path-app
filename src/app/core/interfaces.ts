@@ -165,7 +165,8 @@ export class PathElement {
 
     id: string;
     name: string;
-    color: string;
+    strokeColor: string;
+    strokeWidth = '2';
     editingStatus = false;
     transportMode = 'pedestrian';
     elevationStatus = false;
@@ -177,18 +178,24 @@ export class PathElement {
     constructor(
         id: string,
         name: string,
-        color: string,
+        strokeColor: string,
     ) {
         this.id = id;
         this.name = name;
-        this.color = color;
+        this.strokeColor = strokeColor;
     }
 
     setColor(value: string): void {
-        this.color = value;
+        this.strokeColor = value;
     }
     getColor(): string {
-        return this.color;
+        return this.strokeColor;
+    }
+    setWidth(value: number): void {
+      this.strokeWidth = '' + value;
+    }
+    getWidth(): string {
+        return this.strokeWidth;
     }
 
     setEdit(value: boolean): void {
@@ -254,11 +261,11 @@ export class PathElement {
         });
     }
     rebuildNodes(): void {
-        const nodesToReworked: NodeFeature[] = this.getNodes(); 
+        const nodesToReworked: NodeFeature[] = this.getNodes();
         this.inputNodes = []
         nodesToReworked.forEach((element: NodeFeature) => {
             this.addNode(
-                createCopy(element.geometry), 
+                createCopy(element.geometry),
                 createCopy(element.properties)
             )
         });
@@ -269,7 +276,7 @@ export class PathElement {
     }
 
 }
-  
+
 
 function createCopy(objectToCopy: any): any {
     // save my life...

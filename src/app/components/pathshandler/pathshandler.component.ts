@@ -1,8 +1,12 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 import { NodeFeature, PathElement, NodeGeoJson, Nodes, PathContainer, PathFeature } from '../../core/interfaces';
 
 import { GeneralUtils } from '../../core/generalUtils';
+import { interval } from 'rxjs';
+import { startWith  } from 'rxjs/operators';
+
+import { ApiStatusService } from '../../services/apistatus.service';
 
 
 @Component({
@@ -11,24 +15,36 @@ import { GeneralUtils } from '../../core/generalUtils';
   styleUrls: ['./pathshandler.component.css']
 })
 export class pathsHandlerComponent implements OnInit {
-
-  private defaultEditStatus = false;
-  private defaultTransportMode = 'pedestrian';
-  private defaultElevationStatus = false;
-
+  apiStatus!: string;
   PathFeatures: PathElement[] = [];
   countPath = 0;
   isPathFound = false;
   currentTabId!: string;
+  ApiContinuousChecker = interval(5000); // observable which run all the time
 
   constructor(
     private GeneralFunc: GeneralUtils,
+    private ApiCheckService: ApiStatusService
   ) {
+
+    this.ApiCheckService.apiHealth.subscribe(data =>
+      this.apiStatus = data
+    )
 
   }
 
   ngOnInit(): void {
+    this.checkApiStatus()
   }
+
+
+  checkApiStatus(): void {
+    this.ApiContinuousChecker.pipe(startWith(0)).subscribe(() => {
+        this.ApiCheckService.callApiStatus()
+      }
+    );
+  }
+
 
   switchTab(tabId: string): void {
     this.currentTabId = tabId;
@@ -40,7 +56,7 @@ export class pathsHandlerComponent implements OnInit {
     // TODO add name
     const newPath: PathElement = this.initPath();
     this.PathFeatures.push(newPath);
-    this.switchTab(newPath.id)
+    this.switchTab(newPath.id);
     console.log('ADDED path');
   }
 
@@ -49,7 +65,7 @@ export class pathsHandlerComponent implements OnInit {
       (path: PathElement): boolean => path.id !== pathId
     );
     this.countPath -= 1;
-    this.switchTab(this.PathFeatures[this.PathFeatures.length-1].id)
+    this.switchTab(this.PathFeatures[this.PathFeatures.length-1].id);
     console.log('REMOVED path', pathId);
     // TODO remove nodes on map
   }
@@ -63,12 +79,11 @@ export class pathsHandlerComponent implements OnInit {
     const nodesCopy: NodeFeature[] = this.PathFeatures[pathToDuplicateIndex].getNodes();
     const newPath: PathElement = this.initPath(' from ' + pathId);
     newPath.setNodes(nodesCopy);
-    newPath.rebuildNodes() // deep copy to remove references....
-    this.switchTab(newPath.id)
+    newPath.rebuildNodes(); // deep copy to remove references....
+    this.switchTab(newPath.id);
 
     this.PathFeatures.push(newPath);
     console.log('DUPL path', newPath, this.PathFeatures);
-
   }
 
   initPath(name: string = ''): PathElement {
@@ -77,9 +92,10 @@ export class pathsHandlerComponent implements OnInit {
     return new PathElement(
       'path' + this.countPath,
       'Path ' + this.countPath + name,
-      colorOuput,
+      colorOuput
     );
-  }
+}
+
 }
 
 

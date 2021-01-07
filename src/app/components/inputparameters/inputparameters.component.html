@@ -14,7 +14,8 @@
 
                 <div class="form-group">
                     <div class="row">
-                        <input type="color" [(ngModel)]="pathData.color" name="color-Picker" id="colorPicker" (change)="updateColor($event)"/>
+                        <input type="color" [(ngModel)]="pathData.strokeColor" name="color-Picker" id="strokeColorPicker" (change)="updateStrokeColor($event)"/>
+                        <input type="range" [(ngModel)]="pathData.strokeWidth" class="form-control-range" name="stroke-Picker" id="stroleWidthControlRange"  (input)="updateStrokeWidth($event)" (change)="updateStrokeWidth($event)" min="1" max="10">
                     </div>
                 </div>
 
@@ -47,7 +48,7 @@
                         <legend class="col-form-label col-sm-4 pt-0">Option</legend>
                         <div class="col-sm-8">
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="elevation_mode" name="elevation_options" [(ngModel)]="pathData.elevationStatus" (change)="updateElevationStatus($event)"> 
+                                <input class="form-check-input" type="checkbox" id="elevation_mode" name="elevation_options" [(ngModel)]="pathData.elevationStatus" (change)="updateElevationStatus($event)">
                                 <label class="form-check-label" for="elevation_mode">Elevation output</label>
                             </div>
                         </div>

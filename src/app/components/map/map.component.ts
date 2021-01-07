@@ -65,7 +65,8 @@ export class MapComponent implements OnInit {
         this.map,
         PathData.getPointsPath().features,
         this.pathMapPrefix + PathData.id,
-        PathData.color
+        PathData.strokeColor,
+        PathData.strokeWidth
       );
       console.log("animated path", this.pathMapPrefix + PathData.id)
       this.Map2ParametersService.pushCompletePath(PathData)
@@ -101,7 +102,7 @@ export class MapComponent implements OnInit {
       event.latlng.lng
     ];
     this.Map2ParametersService.getPointCoords(coordinates)
-    
+
 
   }
 

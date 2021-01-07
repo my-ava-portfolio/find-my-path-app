@@ -11,6 +11,7 @@ import { ViewcontrolerComponent } from './components/viewcontroler/viewcontroler
 import { InputParametersComponent } from './components/inputparameters/inputparameters.component';
 import { FooterComponent } from './components/footer/footer.component';
 
+import { ApiStatusService } from './services/apistatus.service';
 import { MapViewBuilderService } from './services/mapviewbuider.service';
 import { MapPathBuilderService } from './services/mappathbuilder.service';
 import { MapToParametersService } from './services/maptoparameters.service';
@@ -40,6 +41,7 @@ import { NodesstatisticsComponent } from './components/nodesstatistics/nodesstat
     HttpClientModule
   ],
   providers: [
+    ApiStatusService,
     MapToParametersService,
     ParametersToMapService,
     MapViewBuilderService,

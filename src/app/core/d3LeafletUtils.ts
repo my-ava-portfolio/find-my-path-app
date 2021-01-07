@@ -38,7 +38,19 @@ export class D3LeafletUtils {
         d3.selectAll('#' + layerId).remove();
     }
 
-    computeAnimatePointsOnLine(LeafletMap: any, GeoJsonPointFeatures: any[], layerId: string, lineColor: string): void {
+    UpdatePathStyleFromLayerId(layerId: string, strokeColor?: string, strokeWidth?: string): void {
+      const path: any = d3.selectAll('.lineConnect_pathMap-' + layerId);
+
+      if (strokeColor !== undefined) {
+        path.style('stroke', strokeColor)
+      }
+
+      if (strokeWidth !== undefined) {
+        path.style('stroke-width', strokeWidth)
+      }
+  }
+
+    computeAnimatePointsOnLine(LeafletMap: any, GeoJsonPointFeatures: any[], layerId: string, lineColor: string, lineWidth: string): void {
         this.removeFeaturesMapFromLayerId(layerId);
 
         const convertLatLngToLayerCoords = (d: any): any => {
@@ -100,7 +112,7 @@ export class D3LeafletUtils {
             .style('fill', 'none')
             .style('opacity', 'unset') // add 0 to hide the path
             .style('stroke', lineColor)
-            .style('stroke-width', '2')
+            .style('stroke-width', lineWidth)
             .style('overflow', 'overlay');
 
         // This will be our traveling circle it will
@@ -245,7 +257,7 @@ export class D3LeafletUtils {
             // })
             // .on('mouseout', (d: any): void => {
             //     LeafletMap.dragging.enable();
-            //     // TODO issue popup sometimes not removed 
+            //     // TODO issue popup sometimes not removed
             //     d3.select('#popup-' + layerId).remove();
             // })
             .call(

@@ -17,7 +17,7 @@ export class ParametersToMapService {
         this.NodesPathToMap.next(pathFeat);
     }
 
-    deletePathMaps(pathId: PathElement): void {
+    deletePathMaps(pathId: string): void {
         this.MapPathIdToremove.next(pathId)
     }
 
