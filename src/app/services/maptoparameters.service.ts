@@ -9,16 +9,21 @@ import { Nodes, OutputPathApi, PathElement } from '../core/interfaces';
 export class MapToParametersService {
 
     newPointCoords: Subject<number[]> = new Subject<number[]>();
-    pathComplete: Subject<PathElement> = new Subject<PathElement>();
+  pathComplete: Subject<PathElement> = new Subject<PathElement>();
+
+    pointCoords!: number[];
+    pathDone!: PathElement;
 
     constructor() { }
 
-    getPointCoords(coordinates: number[]): void {
-        this.newPointCoords.next(coordinates);
+  getPointCoords(coordinates: number[]): void {
+      this.pointCoords = coordinates
+        this.newPointCoords.next(this.pointCoords);
     }
 
-    pushCompletePath(Path: PathElement): void {
-        this.pathComplete.next(Path)
+  pushCompletePath(Path: PathElement): void {
+      this.pathDone = Path
+        this.pathComplete.next(this.pathDone)
     }
 
 }

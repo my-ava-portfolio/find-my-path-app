@@ -7,6 +7,7 @@ import { interval } from 'rxjs';
 import { startWith  } from 'rxjs/operators';
 
 import { ApiStatusService } from '../../services/apistatus.service';
+import { map } from 'leaflet';
 
 
 @Component({
@@ -19,7 +20,7 @@ export class pathsHandlerComponent implements OnInit {
   PathFeatures: PathElement[] = [];
   countPath = 0;
   isPathFound = false;
-  currentTabId!: string;
+  currentTabId!: string | undefined;
   ApiContinuousChecker = interval(5000); // observable which run all the time
 
   constructor(
@@ -47,7 +48,13 @@ export class pathsHandlerComponent implements OnInit {
 
 
   switchTab(tabId: string): void {
-    this.currentTabId = tabId;
+    const indexPath: number = this.PathFeatures.findIndex(path => path.id === tabId);
+
+    if (indexPath >= 0) {
+      this.currentTabId = this.PathFeatures[indexPath].id
+    } else {
+      this.currentTabId = undefined;
+    }
     console.log('Get tab: ' + this.currentTabId);
   }
 
@@ -64,8 +71,9 @@ export class pathsHandlerComponent implements OnInit {
     this.PathFeatures = this.PathFeatures.filter(
       (path: PathElement): boolean => path.id !== pathId
     );
-    this.countPath -= 1;
-    this.switchTab(this.PathFeatures[this.PathFeatures.length-1].id);
+    // this.countPath -= 1;
+    const lastPathId: string = this.PathFeatures[this.PathFeatures.length - 1].id
+    this.switchTab(lastPathId);
     console.log('REMOVED path', pathId);
     // TODO remove nodes on map
   }
@@ -80,9 +88,10 @@ export class pathsHandlerComponent implements OnInit {
     const newPath: PathElement = this.initPath(' from ' + pathId);
     newPath.setNodes(nodesCopy);
     newPath.rebuildNodes(); // deep copy to remove references....
-    this.switchTab(newPath.id);
 
     this.PathFeatures.push(newPath);
+    this.switchTab(newPath.id);
+
     console.log('DUPL path', newPath, this.PathFeatures);
   }
 

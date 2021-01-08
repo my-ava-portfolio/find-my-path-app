@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input} from '@angular/core';
 
 import { ParametersToMapService } from '../../services/parameterstomap.service';
 
@@ -26,6 +26,7 @@ export class nodesControlersComponent implements OnInit {
 
   ngOnInit(): void {
   }
+
 
   removeNode(uuid: number): void {
     if (this.pathData.getEdit() === true && this.isCurrentTab) {

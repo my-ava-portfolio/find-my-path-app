@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
 
 import { TransportMode, OutputPathApi } from '../../core/interfaces';
 
@@ -27,7 +27,6 @@ export class InputParametersComponent implements OnInit {
   transportModeSelected!: string;
   editModeStatus!: boolean;
   elevationModeStatus!: boolean;
-  nodesToMap: Nodes = [];
   pathName!: string;
   dataApiOutput!: OutputPathApi;
 

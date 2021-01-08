@@ -11,14 +11,20 @@ export class ParametersToMapService {
     NodesPathToMap: Subject<PathElement> = new Subject<PathElement>();
     MapPathIdToremove: Subject<string> = new Subject<string>();
 
+  feature!: PathElement;
+  featureId!: string;
+
     constructor() { }
 
-    mapFromPathNodes(pathFeat: PathElement): void {
-        this.NodesPathToMap.next(pathFeat);
+
+  mapFromPathNodes(pathFeat: PathElement): void {
+        this.feature = pathFeat
+        this.NodesPathToMap.next(this.feature);
     }
 
-    deletePathMaps(pathId: string): void {
-        this.MapPathIdToremove.next(pathId)
+  deletePathMaps(pathId: string): void {
+    this.featureId = pathId
+    this.MapPathIdToremove.next(this.featureId)
     }
 
 }

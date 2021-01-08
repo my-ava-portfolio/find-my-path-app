@@ -162,7 +162,6 @@ export class NodeFeature {
 }
 
 export class PathElement {
-
     id: string;
     name: string;
     strokeColor: string;
@@ -222,11 +221,12 @@ export class PathElement {
     setNodes(nodes: NodeFeature[]): void {
         this.inputNodes = nodes;
     }
-    addNode(geometry: PointGeometry, properties: any): void {
+  addNode(geometry: PointGeometry, properties: any): void {
         const newNodes = new NodeFeature(
             geometry,
             properties
-        )
+      )
+      this.rebuildNodes();
         this.inputNodes.push(newNodes);
     }
     getNodes(): NodeFeature[] {

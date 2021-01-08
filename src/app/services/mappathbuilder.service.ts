@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Subject, BehaviorSubject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
 import { PathFeature, NodeGeoJson, Nodes, OutputPathApi, PathElement, NodeFeature } from '../core/interfaces';
