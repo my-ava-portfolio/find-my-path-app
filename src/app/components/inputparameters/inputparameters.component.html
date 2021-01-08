@@ -6,68 +6,69 @@
         </div>
 
         <form class="row">
-            <div class="col-md-8">
-                <p>
-                    <button id="btn-del-tab" type="button" class="btn btn-primary pull-right" (click)="deletePathAction(pathData.id)">Delete</button>
-                    <button id="btn-del-tab" type="button" class="btn btn-primary pull-right" (click)="duplicatePathAction(pathData.id)">Duplicate</button>
-                </p>
 
-                <div class="form-group">
-                    <div class="row">
-                        <input type="color" [(ngModel)]="pathData.strokeColor" name="color-Picker" id="strokeColorPicker" (change)="updateStrokeColor($event)"/>
-                        <input type="range" [(ngModel)]="pathData.strokeWidth" class="form-control-range" name="stroke-Picker" id="stroleWidthControlRange"  (input)="updateStrokeWidth($event)" (change)="updateStrokeWidth($event)" min="1" max="10">
-                    </div>
-                </div>
+          <div class="col-md-12">
+                <button id="btn-del-tab" type="button" class="btn btn-primary pull-right" (click)="deletePathAction(pathData.id)">Delete</button>
+                <button id="btn-del-tab" type="button" class="btn btn-primary pull-right" (click)="duplicatePathAction(pathData.id)">Duplicate</button>
+          </div>
 
-                <div class="form-group">
-                    <div class="row">
-                        <legend class="col-form-label col-sm-4 pt-0">Editing</legend>
-                        <div class="col-sm-8">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="edit_mode" name="edit_options" [(ngModel)]="pathData.editingStatus" (change)="updateEditMode($event)">
-                                <label class="form-check-label" for="edit_mode">Edit mode</label>
-                            </div>
+          <div class="col-md-6">
+
+            <div class="form-group">
+                <div class="row">
+                    <legend class="col-form-label col-sm-4 pt-0">Editing</legend>
+                    <div class="col-sm-8">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="edit_mode" name="edit_options" [(ngModel)]="pathData.editingStatus" (change)="updateEditMode($event)">
+                            <label class="form-check-label" for="edit_mode">Edit mode</label>
                         </div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div class="row">
-                        <legend class="col-form-label col-sm-4 pt-0">Transport modes</legend>
-                        <div class="col-sm-8">
-                            <div class="form-check" *ngFor="let mode of TransportModes">
-                                <input class="form-check-input" type="radio" id="mode.value" name="mode_options" [(ngModel)]="pathData.transportMode" [value]="mode.value" (change)="updateTransportMode(mode.value)">
-                                <label class="form-check-label" for="mode">{{mode.title}}</label><br>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div class="row">
-                        <legend class="col-form-label col-sm-4 pt-0">Option</legend>
-                        <div class="col-sm-8">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="elevation_mode" name="elevation_options" [(ngModel)]="pathData.elevationStatus" (change)="updateElevationStatus($event)">
-                                <label class="form-check-label" for="elevation_mode">Elevation output</label>
-                            </div>
-                        </div>
-
                     </div>
                 </div>
             </div>
 
-
-            <div class="col-md-4">
-                <div class="form-group">
-                    <input
-                        class="form-control btn btn-primary"
-                        type="submit"
-                        value="Submit"
-                        (click)="computePath()"
-                    >
+            <div class="form-group">
+                <div class="row">
+                    <legend class="col-form-label col-sm-4 pt-0">Transport modes</legend>
+                    <div class="col-sm-8">
+                        <div class="form-check" *ngFor="let mode of TransportModes">
+                            <input class="form-check-input" type="radio" id="mode.value" name="mode_options" [(ngModel)]="pathData.transportMode" [value]="mode.value" (change)="updateTransportMode(mode.value)">
+                            <label class="form-check-label" for="mode">{{mode.title}}</label><br>
+                        </div>
+                    </div>
                 </div>
             </div>
+
+            <div class="form-group">
+                <div class="row">
+                    <legend class="col-form-label col-sm-4 pt-0">Options</legend>
+                    <div class="col-sm-8">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="elevation_mode" name="elevation_options" [(ngModel)]="pathData.elevationStatus" (change)="updateElevationStatus($event)">
+                            <label class="form-check-label" for="elevation_mode">Elevation output</label>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+          </div>
+
+          <div class="col-md-6">
+
+            <div class="form-group">
+                <div class="row">
+                    <legend class="col-form-label col-sm-4 pt-0">Path style</legend>
+                    <div class="col-sm-8">
+                        <div class="form-check">
+                          <input type="color" [(ngModel)]="pathData.strokeColor" name="color-Picker" id="strokeColorPicker" (input)="updateStrokeColor($event)"  (change)="updateStrokeColor($event)"/>
+                          <input type="range" [(ngModel)]="pathData.strokeWidth" class="form-control-range" name="stroke-Picker" id="stroleWidthControlRange"  (input)="updateStrokeWidth($event)" (change)="updateStrokeWidth($event)" min="1" max="10">
+                        </div>
+                    </div>
+                    <input class="form-control btn btn-primary" type="submit" value="Submit" (click)="computePath()">
+                </div>
+            </div>
+
+          </div>
 
 
         </form>

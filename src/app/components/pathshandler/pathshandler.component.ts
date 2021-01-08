@@ -98,6 +98,7 @@ export class pathsHandlerComponent implements OnInit {
   initPath(name: string = ''): PathElement {
     this.countPath += 1;
     const colorOuput = this.GeneralFunc.randomHexColor();
+    console.log(colorOuput)
     return new PathElement(
       'path' + this.countPath,
       'Path ' + this.countPath + name,

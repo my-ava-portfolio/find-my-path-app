@@ -6,10 +6,11 @@ import { Injectable } from '@angular/core';
 
   export class GeneralUtils {
 
-    constructor() { 
+    constructor() {
     }
-    
+
     randomHexColor(): string{
+        // bug !
         return '#' + Math.floor(Math.random() * 16777215).toString(16);
     }
 
@@ -22,3 +23,4 @@ import { Injectable } from '@angular/core';
         return input;
       }
 }
+

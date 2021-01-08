@@ -4,7 +4,11 @@
             <div class="col-md-12">
                 <h3 class="sub-title">2. Computed</h3>
             </div>
-            <span>Api Status: {{apiStatus}}</span>
+
+            <button id="apiStatus" type="button" class="btn btn-light">
+              Api <span [ngClass]="[apiStatus === 'Ready' ? 'bg-success' : 'bg-warning']" class="badge">{{apiStatus}}</span>
+            </button>
+
             <div class="col-md-12">
                 <p>
                     <button id="btn-add-tab" type="button" class="btn btn-primary pull-right" (click)="addPath()">Add Path</button>

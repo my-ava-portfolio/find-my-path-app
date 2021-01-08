@@ -5,6 +5,7 @@ import { TransportMode, OutputPathApi } from '../../core/interfaces';
 import { MapToParametersService } from '../../services/maptoparameters.service';
 import { ParametersToMapService } from '../../services/parameterstomap.service';
 import { MapPathBuilderService } from '../../services/mappathbuilder.service';
+import { Subscription } from 'rxjs';
 
 import { D3LeafletUtils } from '../../core/d3LeafletUtils';
 
@@ -30,6 +31,9 @@ export class InputParametersComponent implements OnInit {
   pathName!: string;
   dataApiOutput!: OutputPathApi;
 
+  addPointsSubscription!: Subscription;
+  updatePathSubscription!: Subscription;
+
   TransportModes: TransportMode[] = [
     {title: 'Pedestrian', value: 'pedestrian'},
     {title: 'Vehicle', value: 'vehicle'}
@@ -41,11 +45,11 @@ export class InputParametersComponent implements OnInit {
     private PathBuilderService: MapPathBuilderService,
     private MapFuncs: D3LeafletUtils
   ) {
-    this.Map2ParametersService.newPointCoords.subscribe(coordinates => {
+    this.addPointsSubscription = this.Map2ParametersService.newPointCoords.subscribe(coordinates => {
       this.addPointsFromCoords(coordinates)
     });
 
-    this.Map2ParametersService.pathComplete.subscribe(pathDone => {
+    this.updatePathSubscription = this.Map2ParametersService.pathComplete.subscribe(pathDone => {
       this.updatePathWithApiData(pathDone)
     });
 
@@ -56,6 +60,14 @@ export class InputParametersComponent implements OnInit {
     // in order to generate the map by default, each time we create a new tab (useful if duplicate!)
     this.Parameters2MapService.mapFromPathNodes(this.pathData);
     console.log("AAAAAA", this.pathData.id, this.isCurrentTab)
+  }
+
+  ngOnDestroy(): void {
+    console.log("destroyed" + this.pathData.id)
+    // very important to delete the observable related to this component,
+    // to prevent memory leak: close the component instance
+    this.addPointsSubscription.unsubscribe()
+    this.updatePathSubscription.unsubscribe()
   }
 
   deletePathAction(pathId: string): void {
