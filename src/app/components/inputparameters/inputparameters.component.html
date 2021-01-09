@@ -7,15 +7,16 @@
         <form class="row">
 
           <div class="col-md-12">
-            <h6 class="sub-title">Action</h6>
-
-            <button id="btn-valid-tab" type="button" class="btn btn-primary" type="submit" value="Submit" (click)="computePath()">Submit</button>
-            <button id="btn-del-tab" type="button" class="btn btn-primary pull-right" (click)="deletePathAction(pathData.id)">Delete</button>
-            <button id="btn-dupl-tab" type="button" class="btn btn-primary pull-right" (click)="duplicatePathAction(pathData.id)">Duplicate</button>
+            <h6 class="input-group">Action</h6>
+            <div class="col-md-12">
+              <button id="btn-valid-tab" type="button" class="btn btn-primary" type="submit" value="Submit" (click)="computePath()">Submit</button>
+              <button id="btn-del-tab" type="button" class="btn btn-primary pull-right" (click)="deletePathAction(pathData.id)">Delete</button>
+              <button id="btn-dupl-tab" type="button" class="btn btn-primary pull-right" (click)="duplicatePathAction(pathData.id)">Duplicate</button>
+            </div>
           </div>
 
           <div class="col-md-12">
-            <h6 class="sub-title">Configuration</h6>
+            <h6 class="input-group">Configuration</h6>
 
             <div class="form-group">
                 <div class="row">
@@ -58,11 +59,26 @@
                 <div class="row">
                     <legend class="col-form-label col-sm-4 pt-0">Path style</legend>
                     <div class="col-sm-8">
-                        <div class="form-check">
-                          <input type="color" [(ngModel)]="pathData.strokeColor" name="color-Picker" id="strokeColorPicker" (input)="updateStrokeColor($event)"  (change)="updateStrokeColor($event)"/>
-                          <input type="range" [(ngModel)]="pathData.strokeWidth" class="form-control-range" name="stroke-Picker" id="stroleWidthControlRange"  (input)="updateStrokeWidth($event)" (change)="updateStrokeWidth($event)" min="1" max="10">
-                        </div>
+
+                      <div class="col-sm-12">
+                          <div class="row">
+                              <label class="form-check-label" for="style_color">Color</label>
+                              <input class="" type="color" [(ngModel)]="pathData.strokeColor" name="color-Picker" id="strokeColorPicker" (input)="updateStrokeColor($event)"  (change)="updateStrokeColor($event)"/>
+                          </div>
+                      </div>
+
+                      <div class="col-sm-12">
+
+                          <div class="row">
+                              <label class="form-check-label" for="style_width">Width</label>
+                              <input class="" type="range" [(ngModel)]="pathData.strokeWidth" class="" name="stroke-Picker" id="stroleWidthControlRange"  (input)="updateStrokeWidth($event)" (change)="updateStrokeWidth($event)" min="1" max="10">
+                          </div>
+                      </div>
+
                     </div>
+
+
+
                 </div>
             </div>
 

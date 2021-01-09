@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 
 import { NodeFeature, PathElement, NodeGeoJson, Nodes, PathContainer, PathFeature } from '../../core/interfaces';
 
@@ -13,7 +13,8 @@ import { map } from 'leaflet';
 @Component({
   selector: 'app-pathshandler',
   templateUrl: './pathshandler.component.html',
-  styleUrls: ['./pathshandler.component.css']
+  styleUrls: ['./pathshandler.component.css'],
+  encapsulation: ViewEncapsulation.None
 })
 export class pathsHandlerComponent implements OnInit {
   apiStatus!: string;

@@ -1,0 +1,22 @@
+.tools a {
+  margin: 10px;
+  border-radius: 25px!important;
+  border: 1px solid #007bff;
+}
+
+
+.btn {
+  margin: 8px;
+}
+
+#main-tab-content {
+  border-bottom: 1px solid #dee2e6;
+  border-left: 1px solid #dee2e6;
+  border-right: 1px solid #dee2e6;
+}
+
+.tab-pane {
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-bottom: 10px;
+}
