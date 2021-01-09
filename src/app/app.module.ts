@@ -20,6 +20,7 @@ import { ParametersToMapService } from './services/parameterstomap.service';
 import { pathsHandlerComponent } from './components/pathshandler/pathshandler.component';
 import { nodesControlersComponent } from './components/nodescontrolers/nodescontrolers.component';
 import { NodesstatisticsComponent } from './components/nodesstatistics/nodesstatistics.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 // import { NodestopographyComponent } from './components/nodestopography/nodestopography.component';
 
 @NgModule({
@@ -38,7 +39,8 @@ import { NodesstatisticsComponent } from './components/nodesstatistics/nodesstat
     BrowserModule,
     AppRoutingModule,
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
+    NgbModule
   ],
   providers: [
     ApiStatusService,

@@ -22,6 +22,7 @@ export class pathsHandlerComponent implements OnInit {
   isPathFound = false;
   currentTabId!: string | undefined;
   ApiContinuousChecker = interval(5000); // observable which run all the time
+  helpPopup = 'Start a new path!'
 
   constructor(
     private GeneralFunc: GeneralUtils,

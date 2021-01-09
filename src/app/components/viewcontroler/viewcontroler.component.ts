@@ -14,6 +14,7 @@ export class ViewcontrolerComponent implements OnInit {
   HideError = false;
   ErrorMessage = 'Study area not found';
   coordinates: object = {};
+  helpPopup = "Set an location name to zoom!"
 
   constructor(
     private MapViewService: MapViewBuilderService,

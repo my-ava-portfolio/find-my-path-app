@@ -1,17 +1,21 @@
 <div id="paths-controler" class="container-fluid">
         <div class="row">
 
-            <div class="col-md-12">
-                <h3 class="sub-title">2. Computed</h3>
+            <div class="col-md-8">
+                <h3 class="sub-title">Find My Path</h3>
             </div>
 
-            <button id="apiStatus" type="button" class="btn btn-light">
-              Api <span [ngClass]="[apiStatus === 'Ready' ? 'bg-success' : 'bg-warning']" class="badge">{{apiStatus}}</span>
-            </button>
+            <div class="col-md-4 text-right">
+              <div id="apiStatus" class="btn btn-light">
+                Api <span [ngClass]="[apiStatus === 'Ready' ? 'bg-success' : 'bg-warning']" class="badge">{{apiStatus}}</span>
+              </div>
+            </div>
 
             <div class="col-md-12">
                 <p>
-                    <button id="btn-add-tab" type="button" class="btn btn-primary pull-right" (click)="addPath()">Add Path</button>
+                    <button id="btn-add-tab" type="button" class="btn btn-primary pull-right" (click)="addPath()">Add path</button>
+                      <ng-template #popContent>{{helpPopup}}</ng-template>
+                      <span type="button" class="badge badge-danger" [ngbPopover]="popContent" popoverTitle="Help!"  placement="right">?</span>
                 </p>
 
                 <div [hidden]="!isPathFound">
@@ -25,21 +29,48 @@
                     <div id="tab-content" class="tab-content">
                         <div [ngClass]="{ 'show active':currentTabId===path.id}" class="tab-pane fade in" id="{{ path.id }}" *ngFor="let path of PathFeatures; let i = index">
 
-                            <app-inputparameters
-                                (pathEmitToDelete)="deletePath($event)"
-                                (pathEmitToDuplicate)="duplicatePath($event)"
-                                [pathData]="path"
-                                [isCurrentTab]="currentTabId === path.id"
-                            ></app-inputparameters>
 
-                            <app-nodescontrolers
-                                [pathData]="path"
-                                [isCurrentTab]="currentTabId === path.id"
-                            ></app-nodescontrolers>
 
-                            <app-nodesstatistics
-                                [pathData]="path"
-                            ></app-nodesstatistics>
+                          <ul class="nav nav-pills mb-3" id="pills-tab-{{ path.id }}" role="tablist">
+                            <li class="nav-item">
+                              <a class="nav-link active" id="pills-config-tab-{{ path.id }}" data-toggle="pill" href="#pills-config-{{ path.id }}" role="tab" aria-controls="pills-config" aria-selected="true">Configuration</a>
+                            </li>
+                            <li class="nav-item">
+                              <a class="nav-link" id="pills-results-tab-{{ path.id }}" data-toggle="pill" href="#pills-results-{{ path.id }}" role="tab" aria-controls="pills-results" aria-selected="false">Results</a>
+                            </li>
+
+                          </ul>
+
+                          <div class="tab-content" id="pills-tabContent-{{ path.id }}">
+                            <div class="tab-pane fade show active" id="pills-config-{{ path.id }}" role="tabpanel" aria-labelledby="pills-config-tab-{{ path.id }}">
+                              <app-inputparameters
+                                  (pathEmitToDelete)="deletePath($event)"
+                                  (pathEmitToDuplicate)="duplicatePath($event)"
+                                  [pathData]="path"
+                                  [isCurrentTab]="currentTabId === path.id"
+                              ></app-inputparameters>
+
+                              <app-nodescontrolers
+                                  [pathData]="path"
+                                  [isCurrentTab]="currentTabId === path.id"
+                              ></app-nodescontrolers>
+                            </div>
+
+                            <div class="tab-pane fade" id="pills-results-{{ path.id }}" role="tabpanel" aria-labelledby="pills-results-tab-{{ path.id }}">
+                              <app-nodesstatistics
+                                  [pathData]="path"
+                              ></app-nodesstatistics>
+                            </div>
+                          </div>
+
+
+
+
+
+
+
+
+
                         </div>
                     </div>
                 </div>
