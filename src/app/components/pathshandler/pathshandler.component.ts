@@ -16,7 +16,6 @@ export class pathsHandlerComponent implements OnInit {
 
   PathFeatures: PathElement[] = [];
   countPath = 0;
-  isPathFound = false;
   currentTabId!: string | undefined;
   helpPopup = 'Start a new path!';
 
@@ -41,7 +40,6 @@ export class pathsHandlerComponent implements OnInit {
   }
 
   addPath(): void {
-    this.isPathFound = true;
     // TODO add name
     const newPath: PathElement = this.initPath();
     this.PathFeatures.push(newPath);
@@ -53,7 +51,7 @@ export class pathsHandlerComponent implements OnInit {
     this.PathFeatures = this.PathFeatures.filter(
       (path: PathElement): boolean => path.id !== pathId
     );
-    // this.countPath -= 1;
+    this.countPath -= 1;
     const lastPathId: string = this.PathFeatures[this.PathFeatures.length - 1].id
     this.switchTab(lastPathId);
     console.log('REMOVED path', pathId);
