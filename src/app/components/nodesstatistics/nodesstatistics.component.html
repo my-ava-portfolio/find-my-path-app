@@ -1,13 +1,49 @@
 <div id="stats-results">
-    <div class="col-md-12">
+
+    <div class="row">
+
+      <div class="col-sm-12">
+        <h6 class="input-group">Download</h6>
+
+        <div class="col-sm-6">
+          <button 
+            type="button"
+            class="download form-control btn btn-success mx-1 my-1" 
+          >
+            <i class="fas fa-cloud-download-alt"></i> GeoJSON nodes
+          </button>
+        </div>
+
+        <div class="col-sm-6">
+          <button 
+            type="button"
+            class="download form-control btn btn-success mx-1 my-1" 
+          >
+            <i class="fas fa-cloud-download-alt"></i> GeoJSON path
+          </button>
+        </div>
+        
+      </div>
+
+      <div class="col-sm-12">
         <h6 class="input-group">Statistics</h6>
-    </div>
-        <ul>
-            <li>Nodes count: {{pathData.getNodes().length}}</li>
-            <li>Min. height: {{pathData.getStatsPath()?.height_min}}</li>
-            <li>Max. height: {{pathData.getStatsPath()?.height_max}}</li>
-            <li>Diff. height: {{pathData.getStatsPath()?.height_diff}}</li>
-            <li>Length: {{pathData.getStatsPath()?.length}}</li>
-        </ul>
+        <div class="col-md-12">
+          <ul>
+              <li>Nodes count: {{pathData.getNodes().length}}</li>
+              <li>Min. height: {{pathData.getStatsPath()?.height_min}}</li>
+              <li>Max. height: {{pathData.getStatsPath()?.height_max}}</li>
+              <li>Diff. height: {{pathData.getStatsPath()?.height_diff}}</li>
+              <li>Length: {{pathData.getStatsPath()?.length}}</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="col-sm-12">
+        <h6 class="input-group">Topography</h6>
+        <div class="col-md-12">
+
+
+        </div>
+      </div>
 
 </div>

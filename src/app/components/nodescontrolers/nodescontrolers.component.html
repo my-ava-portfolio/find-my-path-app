@@ -1,16 +1,52 @@
 <div class="nodes-results">
-    <div class="col-md-12">
-        <h6 class="sub-title">Nodes created</h6>
-    </div>
+  <div class="col-md-12">
+      <h6 class="sub-title">Nodes created</h6>
+  </div>
+  
+  <div class="col-md-12">
+  <ol class="path-coords-list">
 
-    <ol class="path-coords-list"></ol>
-        <li *ngFor="let node of pathData.getNodes()">
-            
-                <span class="node-name">{{node.properties.path}} {{node.properties.name}} {{node.geometry.coordinates[0]}} {{node.geometry.coordinates[1]}}</span>
-                <span class="remove" (click)="removeNode(node.properties.uuid)">X </span>
-                <span class="up" (click)="upPosition(node.properties.uuid)">UP </span>
-                <span class="down" (click)="botPosition(node.properties.uuid)">DOWN</span>
-        </li>
+    <li *ngFor="let node of pathData.getNodes()">
+          
+      <span class="node-name">{{node.properties.path}} {{node.properties.name}} </span>
+        
+      <ng-template #popContent>{{node.geometry.coordinates[0]}} {{node.geometry.coordinates[1]}}</ng-template>
+      <button 
+        type="button" 
+        class="btn btn-info mx-1 my-1" 
+        [ngbPopover]="popContent" 
+        popoverTitle="Details" 
+        placement="right"
+      >
+        <i class="fas fa-info-circle"></i>
+      </button>
+
+      <button 
+        type="button"
+        class="up form-control btn btn-danger mx-1 my-1" 
+        (click)="upPosition(node.properties.uuid)"
+      >
+        <i class="fas fa-angle-up"></i>
+      </button>
+
+      <button 
+        type="button"
+        class="down form-control btn btn-danger mx-1 my-1" 
+        (click)="botPosition(node.properties.uuid)"
+      >
+        <i class="fas fa-angle-down"></i>
+      </button>
+
+      <button 
+        type="button"
+        class="remove form-control btn btn-danger mx-1 my-1" 
+        (click)="removeNode(node.properties.uuid)"
+      >
+        <i class="far fa-trash-alt"></i>
+      </button>
+
+    </li>
+  </ol>
 
 </div>
 
