@@ -1,91 +1,78 @@
 <div id="nodes-controler" class="container-fluid">
     <div class="row">
 
+      <div class="col-sm-12">
+        <h6 class="input-group">Action</h6>
         <div class="col-md-12">
+          <button id="btn-del-tab" type="button" class="btn btn-primary mx-2 my-2" (click)="deletePathAction(pathData.id)">
+            <i class="fas fa-trash-alt"></i> Delete
+          </button>
+          <button id="btn-dupl-tab" type="button" class="btn btn-primary mx-2 my-2" (click)="duplicatePathAction(pathData.id)">
+            <i class="fas fa-copy"></i> Duplicate
+          </button>
+          <button id="btn-valid-tab" type="button" class="btn btn-success mx-2 my-2" type="submit" value="Submit" (click)="computePath()">
+            Submit
+          </button>
+
         </div>
+      </div>
 
-        <form class="row">
-
-          <div class="col-md-12">
-            <h6 class="input-group">Action</h6>
-            <div class="col-md-12">
-              <button id="btn-valid-tab" type="button" class="btn btn-primary" type="submit" value="Submit" (click)="computePath()">Submit</button>
-              <button id="btn-del-tab" type="button" class="btn btn-primary pull-right" (click)="deletePathAction(pathData.id)">Delete</button>
-              <button id="btn-dupl-tab" type="button" class="btn btn-primary pull-right" (click)="duplicatePathAction(pathData.id)">Duplicate</button>
+      <div class="col-sm-12">
+        <h6 class="input-group" (click)="configureTabOpened = !configureTabOpened">Configure</h6>
+        <div class="col-sm-12" [hidden]="!configureTabOpened">
+          <div class="row mx-2 my-2">
+            <legend class="col-form-label col-sm-4 pt-0">Editing</legend>
+            <div class="col-sm-8">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="edit_mode" name="edit_options" [(ngModel)]="pathData.editingStatus" (change)="updateEditMode($event)">
+                    <label class="form-check-label" for="edit_mode">Edit mode</label>
+                </div>
             </div>
           </div>
 
-          <div class="col-md-12">
-            <h6 class="input-group">Configuration</h6>
-
-            <div class="form-group">
-                <div class="row">
-                    <legend class="col-form-label col-sm-4 pt-0">Editing</legend>
-                    <div class="col-sm-8">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="edit_mode" name="edit_options" [(ngModel)]="pathData.editingStatus" (change)="updateEditMode($event)">
-                            <label class="form-check-label" for="edit_mode">Edit mode</label>
-                        </div>
-                    </div>
+          <div class="row mx-2 my-2">
+            <legend class="col-form-label col-sm-4 pt-0">Transport modes</legend>
+            <div class="col-sm-8">
+                <div class="form-check" *ngFor="let mode of TransportModes">
+                    <input class="form-check-input" type="radio" id="mode.value" name="mode_options" [(ngModel)]="pathData.transportMode" [value]="mode.value" (change)="updateTransportMode(mode.value)">
+                    <label class="form-check-label" for="mode">{{mode.title}}</label><br>
                 </div>
             </div>
-
-            <div class="form-group">
-                <div class="row">
-                    <legend class="col-form-label col-md-4 pt-0">Transport modes</legend>
-                    <div class="col-md-8">
-                        <div class="form-check" *ngFor="let mode of TransportModes">
-                            <input class="form-check-input" type="radio" id="mode.value" name="mode_options" [(ngModel)]="pathData.transportMode" [value]="mode.value" (change)="updateTransportMode(mode.value)">
-                            <label class="form-check-label" for="mode">{{mode.title}}</label><br>
-                        </div>
-                    </div>
+          </div>
+        
+          <div class="row mx-2 my-2">
+            <legend class="col-form-label col-sm-4 pt-0">Options</legend>
+            <div class="col-sm-8">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="elevation_mode" name="elevation_options" [(ngModel)]="pathData.elevationStatus" (change)="updateElevationStatus($event)">
+                    <label class="form-check-label" for="elevation_mode">Elevation output</label>
                 </div>
             </div>
-
-            <div class="form-group">
-                <div class="row">
-                    <legend class="col-form-label col-md-4 pt-0">Options</legend>
-                    <div class="col-md-8">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="elevation_mode" name="elevation_options" [(ngModel)]="pathData.elevationStatus" (change)="updateElevationStatus($event)">
-                            <label class="form-check-label" for="elevation_mode">Elevation output</label>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-            <div class="form-group">
-                <div class="row">
-                    <legend class="col-form-label col-sm-4 pt-0">Path style</legend>
-                    <div class="col-sm-8">
-
-                      <div class="col-sm-12">
-                          <div class="row">
-                              <label class="form-check-label" for="style_color">Color</label>
-                              <input class="" type="color" [(ngModel)]="pathData.strokeColor" name="color-Picker" id="strokeColorPicker" (input)="updateStrokeColor($event)"  (change)="updateStrokeColor($event)"/>
-                          </div>
-                      </div>
-
-                      <div class="col-sm-12">
-
-                          <div class="row">
-                              <label class="form-check-label" for="style_width">Width</label>
-                              <input class="" type="range" [(ngModel)]="pathData.strokeWidth" class="" name="stroke-Picker" id="stroleWidthControlRange"  (input)="updateStrokeWidth($event)" (change)="updateStrokeWidth($event)" min="1" max="10">
-                          </div>
-                      </div>
-
-                    </div>
-
-
-
-                </div>
-            </div>
-
           </div>
 
+          <div class="row mx-2 my-2">
+            <legend class="col-form-label col-sm-4 pt-0">Path style</legend>
+            <div class="col-sm-8">
 
-        </form>
+              <div class="col-sm-12">
+                  <div class="row">
+                      <label class="form-check-label" for="style_color">Color</label>
+                      <input class="mx-2" type="color" [(ngModel)]="pathData.strokeColor" name="color-Picker" id="strokeColorPicker" (input)="updateStrokeColor($event)"  (change)="updateStrokeColor($event)"/>
+                  </div>
+              </div>
+
+              <div class="col-sm-12">
+
+                  <div class="row">
+                      <label class="form-check-label" for="style_width">Width ({{this.pathData.getWidth()}} px)</label>
+                      <input class="mx-2" type="range" [(ngModel)]="pathData.strokeWidth" name="stroke-Picker" id="stroleWidthControlRange"  (input)="updateStrokeWidth($event)" (change)="updateStrokeWidth($event)" min="1" max="10">
+                  </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
 
     </div>
 </div>

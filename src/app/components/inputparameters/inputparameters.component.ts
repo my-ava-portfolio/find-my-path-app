@@ -24,6 +24,8 @@ export class InputParametersComponent implements OnInit {
   @Output() pathEmitToDelete = new EventEmitter<string>();
   @Output() pathEmitToDuplicate = new EventEmitter<string>();
 
+  configureTabOpened = true
+
   colorSelected!: string;
   transportModeSelected!: string;
   editModeStatus!: boolean;

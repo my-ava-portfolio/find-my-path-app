@@ -12,7 +12,7 @@
               <button id="btn-add-tab" type="button" class="btn btn-primary pull-right" (click)="addPath()">
                 <i class="fas fa-plus-circle"></i> Add path
               </button>
-              
+
               <button id="btn-add-tab" type="button" class="btn btn-primary pull-right">
                 <i class="fas fa-snowplow"></i> Clear all
               </button>
@@ -30,14 +30,17 @@
               <div id="main-tab-content" class="tab-content Regular shadow">
                 <div [ngClass]="{ 'show active':currentTabId===path.id}" class="tab-pane fade in" id="{{ path.id }}" *ngFor="let path of PathFeatures; let i = index">
 
-                  <ul class="tools nav nav-pills mb-3" id="pills-tab-{{ path.id }}" role="tablist">
+                  <ul class="tools nav nav-pills" id="pills-tab-{{ path.id }}" role="tablist">
                     <li class="nav-item">
-                      <a class="nav-link active" id="pills-config-tab-{{ path.id }}" data-toggle="pill" href="#pills-config-{{ path.id }}" role="tab" aria-controls="pills-config" aria-selected="true">Configuration</a>
+                      <a class="nav-link active" id="pills-config-tab-{{ path.id }}" data-toggle="pill" href="#pills-config-{{ path.id }}" role="tab" aria-controls="pills-config" aria-selected="true">
+                        <i class="fas fa-tools"></i> Configuration
+                      </a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link" id="pills-results-tab-{{ path.id }}" data-toggle="pill" href="#pills-results-{{ path.id }}" role="tab" aria-controls="pills-results" aria-selected="false">Results</a>
+                      <a class="nav-link" id="pills-results-tab-{{ path.id }}" data-toggle="pill" href="#pills-results-{{ path.id }}" role="tab" aria-controls="pills-results" aria-selected="false">
+                        <i class="fas fa-poll"></i> Results
+                      </a>
                     </li>
-
                   </ul>
 
                   <div class="tab-content" id="pills-tabContent-{{ path.id }}">
