@@ -7,3 +7,7 @@
   point: unset;
 }
 
+.y-scroll {
+  height: 90vh;
+  overflow-y: scroll;
+}
