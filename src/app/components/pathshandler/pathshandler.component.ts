@@ -52,9 +52,12 @@ export class pathsHandlerComponent implements OnInit {
       (path: PathElement): boolean => path.id !== pathId
     );
     this.countPath -= 1;
-    const lastPathId: string = this.PathFeatures[this.PathFeatures.length - 1].id
-    this.switchTab(lastPathId);
-    console.log('REMOVED path', pathId);
+    if (this.countPath !== 0) {
+      const lastPathId: string = this.PathFeatures[this.PathFeatures.length - 1].id;
+      this.switchTab(lastPathId);
+      console.log('REMOVED path', pathId);
+    }
+
     // TODO remove nodes on map
   }
 

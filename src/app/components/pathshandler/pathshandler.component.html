@@ -22,7 +22,7 @@
               </div>
 
               <!-- Tab panes -->
-              <div id="main-tab-content" class="tab-content">
+              <div id="main-tab-content" class="tab-content Regular shadow">
                 <div [ngClass]="{ 'show active':currentTabId===path.id}" class="tab-pane fade in" id="{{ path.id }}" *ngFor="let path of PathFeatures; let i = index">
 
                   <ul class="tools nav nav-pills mb-3" id="pills-tab-{{ path.id }}" role="tablist">
