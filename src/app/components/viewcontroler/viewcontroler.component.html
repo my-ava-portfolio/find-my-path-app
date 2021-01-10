@@ -1,37 +1,41 @@
-<div id="view-controler" class="container-fluid">
+<div id="area-view-controler" class="container-fluid">
     <div class="row">
 
-        <div class="col-md-12">
-            <h3 class="sub-title">Zoom To Area</h3>
-
+        <div class="col-sm-12">
+            <h4 class="sub-title">Zoom To Area
+              <ng-template #popContent>{{helpPopup}}</ng-template>
+              <span class="text-info" [ngbPopover]="popContent" popoverTitle="Help!"  placement="right"><i class="far fa-question-circle"></i></span>
+            </h4>
         </div>
 
-        <form class="form-inline">
-          <div class="form-group mx-sm-3 mb-2">
-            <label for="study_area_input" class="col-form-label">Study area
-              <ng-template #popContent>{{helpPopup}}</ng-template>
-              <span type="button" class="badge badge-danger" [ngbPopover]="popContent" popoverTitle="Help!"  placement="right">?</span>
-            </label>
-            <input
-              class="form-control mx-sm-3"
-              id="study_area_input"
-              type="text"
-              [(ngModel)]="StudyAreaValue"
-              name="StudyAreaValue"
-              required
-            >
-            <div *ngIf="HideError" role="alert">
-                <small>{{ErrorMessage}}</small>
-            </div>
-          </div>
+        <div class="col-sm-12">
 
-          <input
-            class="form-control btn btn-primary"
-            type="button"
-            value="Submit"
-            (click)="computeView()"
-          >
-        </form>
+            <div class="form-inline">
+              <div class="form-group">
+
+                <input
+                  class="form-control mx-2 my-2"
+                  id="study_area_input"
+                  type="text"
+                  [(ngModel)]="StudyAreaValue"
+                  name="StudyAreaValue"
+                  placeholder="Study area name"
+                  required
+                >
+                <input
+                  class="form-control btn btn-primary fas mx-2 my-2"
+                  type="button"
+                  value="&#xf689;"
+                  (click)="computeView()"
+                >
+
+                <small class="mx-2 my-2 text-danger" *ngIf="errorDisplayed" role="alert">
+                  {{resultMessage}}
+                </small>
+
+              </div>
+
+        </div>
 
 
     </div>

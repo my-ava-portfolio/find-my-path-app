@@ -10,6 +10,12 @@
 
           <div id="controlerContainer" class="col-md-4">
 
+                <div class="col-md-12 text-right">
+                  <div id="apiStatus" class="btn btn-dark text-white">
+                    Api <span [ngClass]="[apiStatus === 'Ready' ? 'bg-success' : 'bg-danger']" class="badge">{{apiStatus}}</span>
+                  </div>
+                </div>
+
                 <div id="view-controler">
                     <app-viewcontroler></app-viewcontroler>
                 </div>

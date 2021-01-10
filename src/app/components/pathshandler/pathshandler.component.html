@@ -5,12 +5,6 @@
                 <h3 class="sub-title">Find My Path</h3>
             </div>
 
-            <div class="col-md-4 text-right">
-              <div id="apiStatus" class="btn btn-light">
-                Api <span [ngClass]="[apiStatus === 'Ready' ? 'bg-success' : 'bg-warning']" class="badge">{{apiStatus}}</span>
-              </div>
-            </div>
-
             <div class="col-md-12">
                 <p>
                     <button id="btn-add-tab" type="button" class="btn btn-primary pull-right" (click)="addPath()">Add path</button>

@@ -3,51 +3,31 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { NodeFeature, PathElement, NodeGeoJson, Nodes, PathContainer, PathFeature } from '../../core/interfaces';
 
 import { GeneralUtils } from '../../core/generalUtils';
-import { interval } from 'rxjs';
-import { startWith  } from 'rxjs/operators';
 
-import { ApiStatusService } from '../../services/apistatus.service';
 import { map } from 'leaflet';
 
 
 @Component({
   selector: 'app-pathshandler',
   templateUrl: './pathshandler.component.html',
-  styleUrls: ['./pathshandler.component.css'],
-  encapsulation: ViewEncapsulation.None
+  styleUrls: ['./pathshandler.component.css']
 })
 export class pathsHandlerComponent implements OnInit {
-  apiStatus!: string;
+
   PathFeatures: PathElement[] = [];
   countPath = 0;
   isPathFound = false;
   currentTabId!: string | undefined;
-  ApiContinuousChecker = interval(5000); // observable which run all the time
-  helpPopup = 'Start a new path!'
+  helpPopup = 'Start a new path!';
 
   constructor(
-    private GeneralFunc: GeneralUtils,
-    private ApiCheckService: ApiStatusService
+    private GeneralFunc: GeneralUtils
   ) {
-
-    this.ApiCheckService.apiHealth.subscribe(data =>
-      this.apiStatus = data
-    )
 
   }
 
   ngOnInit(): void {
-    this.checkApiStatus()
   }
-
-
-  checkApiStatus(): void {
-    this.ApiContinuousChecker.pipe(startWith(0)).subscribe(() => {
-        this.ApiCheckService.callApiStatus()
-      }
-    );
-  }
-
 
   switchTab(tabId: string): void {
     const indexPath: number = this.PathFeatures.findIndex(path => path.id === tabId);

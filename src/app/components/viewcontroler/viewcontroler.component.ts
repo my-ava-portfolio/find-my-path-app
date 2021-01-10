@@ -11,18 +11,27 @@ import { MapViewBuilderService } from '../../services/mapviewbuider.service';
 
 export class ViewcontrolerComponent implements OnInit {
   StudyAreaValue!: string;
-  HideError = false;
-  ErrorMessage = 'Study area not found';
+
+  private noneAreaNameMessage = "Area name not defined"
+  resultMessage = 'Study area not found';
+
+  errorDisplayed!: boolean;
+
   coordinates: object = {};
-  helpPopup = "Set an location name to zoom!"
+  helpPopup = "Set a location name to zoom!";
 
   constructor(
     private MapViewService: MapViewBuilderService,
   ) {
 
-    this.MapViewService.ErrorApiFound.subscribe(status => {
-      this.HideError = status;
+    this.MapViewService.errorApiFound.subscribe(status => {
+      this.errorDisplayed = status;
     });
+
+    this.MapViewService.errorMessage.subscribe(error => {
+      this.resultMessage = error;
+    });
+
 
    }
 
@@ -31,7 +40,15 @@ export class ViewcontrolerComponent implements OnInit {
 
 
   public computeView(): void {
-    this.MapViewService.bboxFromLocation(this.StudyAreaValue);
+
+    if (this.StudyAreaValue !== undefined) {
+      this.MapViewService.bboxFromLocation(this.StudyAreaValue);
+
+    } else {
+      this.errorDisplayed = true;
+      this.resultMessage = this.noneAreaNameMessage;
+    }
+
   }
 
 }
