@@ -50,11 +50,13 @@
                         (pathEmitToDuplicate)="duplicatePath($event)"
                         [pathData]="path"
                         [isCurrentTab]="currentTabId === path.id"
+                        [currentTabId]="currentTabId"
                       ></app-inputparameters>
 
                       <app-nodescontrolers
                         [pathData]="path"
                         [isCurrentTab]="currentTabId === path.id"
+                        [currentTabId]="currentTabId"
                       ></app-nodescontrolers>
                     </div>
 

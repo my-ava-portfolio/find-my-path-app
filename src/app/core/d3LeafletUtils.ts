@@ -226,9 +226,9 @@ export class D3LeafletUtils {
     }
 
 
-    computeMapFromPoints(LeafletMap: any, GeoJsonPointFeatures: any[], layerId: string, displayToolTip: boolean = false): void {
+    computeMapFromPoints(LeafletMap: any, GeoJsonPointFeatures: any[], layerId: string, dragEnabled: boolean, displayToolTip: boolean = false): void {
         this.removeFeaturesMapFromLayerId(layerId);
-
+        console.log('drag status', dragEnabled)
         GeoJsonPointFeatures.forEach( (feature, i): void => {
             feature.LatLng = new L.LatLng(
                 feature.geometry.coordinates[1],
@@ -241,45 +241,51 @@ export class D3LeafletUtils {
         const g: any = svg.select('g').attr('class', 'leaflet-zoom-hide path');
 
         const PointsCircles: any = g.selectAll('.PathNodes')
-            .data(GeoJsonPointFeatures)
-            .enter()
-            .append('circle', '.PathNodes')
-            .attr('class', 'PathNodes')
-            .attr('r', '15')
-            .attr('id', (d: any): void => d.properties.id)
-            // .on('mouseover', (d: any): void => {
-            //     LeafletMap.dragging.disable();
-            //     this.initPopup('body', 'popup-' + layerId, d, false);
-            // })
-            // .on('mousemove', (d: any): void => {
-            //     LeafletMap.dragging.disable();
-            //     this.moveResponsivePopup('#popup-' + layerId);
-            // })
-            // .on('mouseout', (d: any): void => {
-            //     LeafletMap.dragging.enable();
-            //     // TODO issue popup sometimes not removed
-            //     d3.select('#popup-' + layerId).remove();
-            // })
+          .data(GeoJsonPointFeatures)
+          .enter()
+          .append('circle', '.PathNodes')
+          .attr('class', 'PathNodes')
+          .attr('r', '15')
+          .attr('id', (d: any): void => d.properties.id)
+          // .on('mouseover', (d: any): void => {
+          //     LeafletMap.dragging.disable();
+          //     this.initPopup('body', 'popup-' + layerId, d, false);
+          // })
+          // .on('mousemove', (d: any): void => {
+          //     LeafletMap.dragging.disable();
+          //     this.moveResponsivePopup('#popup-' + layerId);
+          // })
+          // .on('mouseout', (d: any): void => {
+          //     LeafletMap.dragging.enable();
+          //     // TODO issue popup sometimes not removed
+          //     d3.select('#popup-' + layerId).remove();
+          // })
+
+        if (dragEnabled) {
+          PointsCircles
+            .attr('class', 'PathNodes dragEnabled')
             .call(
-                d3.drag()
-                    .on('drag', (): void => {
-                        LeafletMap.dragging.disable();
-                        d3.select(d3.event.sourceEvent.target)
-                        .style('r', '15')
-                        .attr('transform', (d: any): string => 'translate(' + d3.event.x + ',' + d3.event.y + ')' );
-                })
-                .on('end', (d: any): void => {
-                    const layerCoordsConverter = this.convertLayerCoordsToLatLng.bind(this);
-                    const nodeUuid: number = GeoJsonPointFeatures.findIndex(
-                        (node: any): boolean =>
-                            node.properties.uuid === d.properties.uuid
-                    );
-                    const CoordinatesUpdated = layerCoordsConverter(LeafletMap, { x: d3.event.x, y: d3.event.y });
-                    GeoJsonPointFeatures[nodeUuid].geometry.coordinates = [CoordinatesUpdated.lng, CoordinatesUpdated.lat];
-                    this.computeMapFromPoints(LeafletMap, GeoJsonPointFeatures, layerId, displayToolTip = false);
-                    LeafletMap.dragging.enable();
-                })
+              d3.drag()
+                .on('drag', (): void => {
+                  LeafletMap.dragging.disable();
+                  d3.select(d3.event.sourceEvent.target)
+                    .style('r', '15')
+                    .attr('transform', (d: any): string => 'translate(' + d3.event.x + ',' + d3.event.y + ')' );
+              })
+              .on('end', (d: any): void => {
+                const layerCoordsConverter = this.convertLayerCoordsToLatLng.bind(this);
+                const nodeUuid: number = GeoJsonPointFeatures.findIndex(
+                    (node: any): boolean =>
+                        node.properties.uuid === d.properties.uuid
+                );
+                const CoordinatesUpdated = layerCoordsConverter(LeafletMap, { x: d3.event.x, y: d3.event.y });
+                GeoJsonPointFeatures[nodeUuid].geometry.coordinates = [CoordinatesUpdated.lng, CoordinatesUpdated.lat];
+                this.computeMapFromPoints(LeafletMap, GeoJsonPointFeatures, layerId, dragEnabled, displayToolTip = false);
+                LeafletMap.dragging.enable();
+              })
             );
+          }
+
 
         const textPoints = g.selectAll('.PathNodesText')
             .data(GeoJsonPointFeatures)

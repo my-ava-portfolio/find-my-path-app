@@ -8,8 +8,9 @@ import { ParametersToMapService } from '../../services/parameterstomap.service';
 
 import { MapViewBuilderService } from '../../services/mapviewbuider.service';
 import { MapPathBuilderService } from '../../services/mappathbuilder.service';
+import { PathsToMapService } from '../../services/pathstomap.service';
 
-import { PathFeature, PathContainer, Nodes, Node, Marker,  NodePathGeoJson, NodePathFeature} from '../../core/interfaces';
+import { PathFeature, PathElement, PathContainer, Nodes, Node, Marker,  NodePathGeoJson, NodePathFeature} from '../../core/interfaces';
 import { D3LeafletUtils } from '../../core/d3LeafletUtils';
 
 
@@ -40,9 +41,11 @@ export class MapComponent implements OnInit {
     private Parameters2MapService: ParametersToMapService,
     private MapViewService: MapViewBuilderService,
     private PathBuilderService: MapPathBuilderService,
-    private MapFuncs: D3LeafletUtils
+    private MapFuncs: D3LeafletUtils,
+    private paths2MapService: PathsToMapService,
   ) {
 
+    // to set the map view from the API
     this.MapViewService.bboxCoords.subscribe(data => {
       this.map.fitBounds([
         [data[0], data[2]],
@@ -50,16 +53,18 @@ export class MapComponent implements OnInit {
       ]);
     });
 
-    // map from a path nodes
-    this.Parameters2MapService.NodesPathToMap.subscribe(NodesPath => {
-      this.MapFuncs.computeMapFromPoints(
-        this.map,
-        NodesPath.getNodes(),
-        this.nodesMapPrefix + NodesPath.id
-      )
-    })
 
-    // go to handler service
+    // refresh path if a switch is done from the pathshandler component
+    this.paths2MapService.pathToRefresh.subscribe(pathFeature => {
+      this.displayNodesOnMap(pathFeature);
+    });
+
+    // map from a path nodes from the inputparameters component
+    this.Parameters2MapService.NodesPathToMap.subscribe(pathFeature => {
+      this.displayNodesOnMap(pathFeature);
+    });
+
+    // map the path from nodes by using the API
     this.PathBuilderService.pathApiOutputs.subscribe(PathData => {
       this.MapFuncs.computeAnimatePointsOnLine(
         this.map,
@@ -102,9 +107,15 @@ export class MapComponent implements OnInit {
       event.latlng.lng
     ];
     this.Map2ParametersService.getPointCoords(coordinates)
-
-
   }
 
 
+  displayNodesOnMap(pathFeature: PathElement): void {
+    this.MapFuncs.computeMapFromPoints(
+      this.map,
+      pathFeature.getNodes(),
+      this.nodesMapPrefix + pathFeature.id,
+      pathFeature.getEdit()
+    )
+  }
 }

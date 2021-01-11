@@ -1,5 +1,5 @@
 #map {
-    height: 90vh; 
+    height: 90vh;
     width: 100%;
 }
 
@@ -12,7 +12,10 @@
     stroke-width: 1px;
     stroke-opacity: 1;
     font-size: 45px;
-    cursor: pointer;
+}
+
+.dragEnabled {
+  cursor: pointer;
 }
 
 #map svg circle.PathNodes:first-child {

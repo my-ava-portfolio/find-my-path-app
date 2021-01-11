@@ -20,18 +20,15 @@ import { NodeFeature, PathElement, Nodes } from '../../core/interfaces';
 export class InputParametersComponent implements OnInit {
   @Input() pathData!: PathElement;
   @Input() isCurrentTab!: boolean;
+  @Input() currentTabId!: string | undefined;
 
   @Output() pathEmitToDelete = new EventEmitter<string>();
   @Output() pathEmitToDuplicate = new EventEmitter<string>();
 
   configureTabOpened = true
 
-  colorSelected!: string;
-  transportModeSelected!: string;
-  editModeStatus!: boolean;
-  elevationModeStatus!: boolean;
   pathName!: string;
-  dataApiOutput!: OutputPathApi;
+  transportModeSelected!: string;
 
   addPointsSubscription!: Subscription;
   updatePathSubscription!: Subscription;
@@ -61,15 +58,21 @@ export class InputParametersComponent implements OnInit {
     this.displayPathParams();
     // in order to generate the map by default, each time we create a new tab (useful if duplicate!)
     this.Parameters2MapService.mapFromPathNodes(this.pathData);
-    console.log("AAAAAA", this.pathData.id, this.isCurrentTab)
+    this.pathName = this.pathData.name
+    console.log("init ", this.pathData.id, this.isCurrentTab, this.currentTabId)
   }
 
   ngOnDestroy(): void {
-    console.log("destroyed" + this.pathData.id)
+    console.log("destroyed " + this.pathData.id)
     // very important to delete the observable related to this component,
     // to prevent memory leak: close the component instance
     this.addPointsSubscription.unsubscribe()
     this.updatePathSubscription.unsubscribe()
+  }
+
+  updatePathName(event: any): void {
+    this.pathName = event.target.value;
+    this.pathData.name = this.pathName
   }
 
   deletePathAction(pathId: string): void {
@@ -106,11 +109,13 @@ export class InputParametersComponent implements OnInit {
 
   updateEditMode(event: any): void {
     this.pathData.setEdit(event.target.checked);
+    this.Parameters2MapService.mapFromPathNodes(this.pathData) // in order to enable or disable drag nodes
     console.log('update edit', this.pathData.editingStatus)
   }
 
   updateTransportMode(newValue: string): void {
     this.pathData.setTransportMode(newValue);
+    this.transportModeSelected = newValue
     console.log('update transportMode', this.pathData.getTransportMode())
   }
 
@@ -122,8 +127,9 @@ export class InputParametersComponent implements OnInit {
 
   addPointsFromCoords(coordinates: number[]): void {
     // here the magic part! update only the active tab and if edit is true of course
-    if (this.pathData.getEdit() === true && this.isCurrentTab) {
-      console.log('Nodes inserted', this.pathData, this.isCurrentTab)
+    console.log('lol ', this.pathData.id , ' ', this.currentTabId)
+    if (this.pathData.getEdit() === true && this.pathData.id === this.currentTabId) {
+      console.log('Nodes inserted', this.pathData, this.currentTabId)
       const currentNodesPosition: number = this.pathData.getNodes().length;
       // TODO add class for point
       this.pathData.addNode(
@@ -146,7 +152,7 @@ export class InputParametersComponent implements OnInit {
   }
 
   updatePathWithApiData(path: PathElement): void {
-    if ( this.isCurrentTab ) {
+    if ( this.pathData.id === this.currentTabId ) {
       this.pathData = path;
       console.log('finito', this.isCurrentTab, this.pathData)
       // TODO from here to paths handler to create the plot

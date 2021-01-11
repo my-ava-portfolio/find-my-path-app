@@ -1,10 +1,12 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 
 import { NodeFeature, PathElement, NodeGeoJson, Nodes, PathContainer, PathFeature } from '../../core/interfaces';
 
 import { GeneralUtils } from '../../core/generalUtils';
 
 import { map } from 'leaflet';
+import { Subscription } from 'rxjs';
+import { PathsToMapService } from '../../services/pathstomap.service';
 
 
 @Component({
@@ -20,7 +22,8 @@ export class pathsHandlerComponent implements OnInit {
   helpPopup = 'Start a new path!';
 
   constructor(
-    private GeneralFunc: GeneralUtils
+    private GeneralFunc: GeneralUtils,
+    private pathsToMapService: PathsToMapService
   ) {
 
   }
@@ -29,10 +32,21 @@ export class pathsHandlerComponent implements OnInit {
   }
 
   switchTab(tabId: string): void {
-    const indexPath: number = this.PathFeatures.findIndex(path => path.id === tabId);
+    // USELESS
+    // console.log('start switch', this.currentTabId)
+    if (this.currentTabId !== undefined) {
+      // disable edition interactivity on the current path
+      const indexCurrentPath: number = this.PathFeatures.findIndex(path => path.id === this.currentTabId);
+      this.PathFeatures[indexCurrentPath].setEdit(false);
+      // console.log(this.currentTabId, this.PathFeatures[indexCurrentPath].getEdit())
+      this.pathsToMapService.refreshPathNodesFromPathId(this.PathFeatures[indexCurrentPath]);
+    }
 
+    // go to switch
+    const indexPath: number = this.PathFeatures.findIndex(path => path.id === tabId);
     if (indexPath >= 0) {
-      this.currentTabId = this.PathFeatures[indexPath].id
+      this.currentTabId = this.PathFeatures[indexPath].id;
+      this.pathsToMapService.refreshPathNodesFromPathId(this.PathFeatures[indexPath]);
     } else {
       this.currentTabId = undefined;
     }
