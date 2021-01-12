@@ -7,6 +7,8 @@ import { GeneralUtils } from '../../core/generalUtils';
 import { map } from 'leaflet';
 import { Subscription } from 'rxjs';
 import { PathsToMapService } from '../../services/pathstomap.service';
+import { PathsToInputs } from '../../services/pathstoinputs.service';
+
 import { D3LeafletUtils } from '../../core/d3LeafletUtils';
 
 
@@ -27,7 +29,8 @@ export class pathsHandlerComponent implements OnInit {
   constructor(
     private GeneralFunc: GeneralUtils,
     private pathsToMapService: PathsToMapService,
-    private d3LeafletUtils: D3LeafletUtils
+    private d3LeafletUtils: D3LeafletUtils,
+    private pathsToInputs: PathsToInputs
   ) {
 
   }
@@ -36,11 +39,12 @@ export class pathsHandlerComponent implements OnInit {
   }
 
   switchTab(tabId: string): void {
-    // USELESS
     // console.log('start switch', this.currentTabId)
-    if (this.currentTabId !== undefined) {
+
       // disable edition interactivity on the current path
-      const indexCurrentPath: number = this.PathFeatures.findIndex(path => path.id === this.currentTabId);
+    const indexCurrentPath: number = this.PathFeatures.findIndex(path => path.id === this.currentTabId);
+    if (indexCurrentPath !== -1) {
+      console.log('wsixtch', indexCurrentPath, this.currentTabId, this.PathFeatures[indexCurrentPath])
       this.PathFeatures[indexCurrentPath].setEdit(false);
       // console.log(this.currentTabId, this.PathFeatures[indexCurrentPath].getEdit())
       this.pathsToMapService.refreshPathNodesFromPathId(this.PathFeatures[indexCurrentPath]);
@@ -66,8 +70,19 @@ export class pathsHandlerComponent implements OnInit {
     // TODO add name
     const newPath: PathElement = this.initPath();
     this.PathFeatures.push(newPath);
+    this.currentTabId = newPath.id;
     this.switchTab(newPath.id);
     console.log('ADDED path');
+  }
+
+  clearPaths(): void {
+    this.PathFeatures.reverse().forEach((item: PathElement) => {
+      this.pathsToInputs.emitPathId(item.id)
+    });
+    // this.currentTabId = undefined;
+    this.topoChartDisplayed = false;
+    // this.countPath = 0;
+    console.log('CLEAR', this.PathFeatures, this.countPath, this.currentTabId)
   }
 
   comparePath(): void {
@@ -77,8 +92,8 @@ export class pathsHandlerComponent implements OnInit {
       const margin = {top: 30, right: 25, bottom: 30, left: 30};
       const width = 400;
       const height = 400;
-  
-      this.d3LeafletUtils.createLinesChart('globalChart', this.PathFeatures, margin, width, height); 
+
+      this.d3LeafletUtils.createLinesChart('globalChart', this.PathFeatures, margin, width, height);
     }
 
   }
@@ -87,8 +102,8 @@ export class pathsHandlerComponent implements OnInit {
     this.PathFeatures = this.PathFeatures.filter(
       (path: PathElement): boolean => path.id !== pathId
     );
-    this.countPath -= 1;
-    if (this.countPath !== 0) {
+    if (this.countPath > 0) {
+      this.countPath -= 1;
       const lastPathId: string = this.PathFeatures[this.PathFeatures.length - 1].id;
       this.switchTab(lastPathId);
       console.log('REMOVED path', pathId);

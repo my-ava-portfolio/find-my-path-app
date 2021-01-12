@@ -10,7 +10,6 @@ export class ApiStatusService {
     // private REST_API_SERVER = 'https://find-my-path.herokuapp.com/api/v1/path?';
     private REST_API_SERVER = 'http://192.168.1.16:5000/api/v1/health';
     apiHealth: Subject<string> = new Subject<string>();
-    startingMessage = from(['', '.', '..', '...']);
 
     constructor(
         private http: HttpClient

@@ -5,6 +5,8 @@ import { TransportMode, OutputPathApi } from '../../core/interfaces';
 import { MapToParametersService } from '../../services/maptoparameters.service';
 import { ParametersToMapService } from '../../services/parameterstomap.service';
 import { MapPathBuilderService } from '../../services/mappathbuilder.service';
+import { PathsToInputs } from '../../services/pathstoinputs.service';
+
 import { Subscription } from 'rxjs';
 
 import { D3LeafletUtils } from '../../core/d3LeafletUtils';
@@ -33,6 +35,7 @@ export class InputParametersComponent implements OnInit, OnDestroy {
 
   addPointsSubscription!: Subscription;
   updatePathSubscription!: Subscription;
+  pathIdFromPathsSubscription!: Subscription;
 
   TransportModes: TransportMode[] = [
     {title: 'Pedestrian', value: 'pedestrian'},
@@ -43,7 +46,8 @@ export class InputParametersComponent implements OnInit, OnDestroy {
     private Parameters2MapService: ParametersToMapService,
     private Map2ParametersService: MapToParametersService,
     private PathBuilderService: MapPathBuilderService,
-    private MapFuncs: D3LeafletUtils
+    private MapFuncs: D3LeafletUtils,
+    private pathsToInputs: PathsToInputs
   ) {
     this.addPointsSubscription = this.Map2ParametersService.newPointCoords.subscribe(coordinates => {
       this.addPointsFromCoords(coordinates)
@@ -53,6 +57,10 @@ export class InputParametersComponent implements OnInit, OnDestroy {
       this.updatePathWithApiData(pathDone)
       this.changePathHandlerAction(true)   // activate buttons : path is finished
     });
+
+    this.pathIdFromPathsSubscription = this.pathsToInputs.pathId.subscribe(pathId => {
+      this.deletePathAction(pathId)
+    })
 
   }
 
@@ -70,6 +78,7 @@ export class InputParametersComponent implements OnInit, OnDestroy {
     // to prevent memory leak: close the component instance
     this.addPointsSubscription.unsubscribe()
     this.updatePathSubscription.unsubscribe()
+    this.pathIdFromPathsSubscription.unsubscribe()
   }
 
   updatePathName(event: any): void {

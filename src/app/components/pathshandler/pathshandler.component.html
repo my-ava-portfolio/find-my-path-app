@@ -1,103 +1,103 @@
 <div id="paths-controler" class="container-fluid">
-        <div class="row">
+  <div class="row mb-4">
 
-            <div class="col-sm-12 topic">
-              <h4 class="sub-title">Find My Path
-                <ng-template #popContent>{{helpPopup}}</ng-template>
-                <span class="text-info" [ngbPopover]="popContent" popoverTitle="Help!"  placement="right"><i class="far fa-question-circle"></i></span>
-              </h4>
+    <div class="col-sm-12 topic">
+      <h4 class="sub-title">Find My Path
+        <ng-template #popContent>{{helpPopup}}</ng-template>
+        <span class="text-info" [ngbPopover]="popContent" popoverTitle="Help!"  placement="right"><i class="far fa-question-circle"></i></span>
+      </h4>
+    </div>
+
+    <div class="col-sm-12 my-2 subtopic">
+      <button
+        id="btn-add-tab"
+        type="button"
+        class="btn btn-primary pull-right"
+        (click)="addPath()"
+        [disabled]="!pathActionButtonEnabled ? 'disabled': null"
+      >
+        <i class="fas fa-plus-circle"></i> Add path
+      </button>
+
+      <button id="btn-compare-tab" type="button" class="btn btn-primary pull-right" (click)="comparePath()" [disabled]="countPath <= 1 ? 'disabled': null">
+        <i class="far fa-images"></i> Compare all
+      </button>
+
+      <button id="btn-clear-tab" type="button" class="btn btn-primary pull-right"  [disabled]="countPath === 0 ? 'disabled': null" (click)="clearPaths()">
+        <i class="fas fa-snowplow"></i> Clear all
+      </button>
+    </div>
+
+    <div class="col-sm-12 my-2 subtopic" [hidden]="!topoChartDisplayed">
+      <h5>Topo Paths Charts</h5>
+      <div id="globalChart"></div>
+    </div>
+
+    <div class="col-sm-12 my-2 subtopic" [hidden]="countPath === 0">
+      <h5>Paths </h5>
+
+      <!-- Nav tabs -->
+      <div id="main-tab-list" class="nav nav-tabs" role="tablist">
+        <button
+          [ngClass]="{ 'active':currentTabId===path.id}"
+          class="nav-item nav-link" id="{{ 'nav-' + path.id }}"
+          *ngFor="let path of PathFeatures; let i = index"
+          [disabled]="!pathActionButtonEnabled ? 'disabled': null"
+          (click)="switchTab(path.id)" role="tab" data-toggle="tab" aria-controls="tab" aria-selected="true"
+          >
+            <a href="{{ '#' + path.id }}" >{{path.name}}</a>
+        </button>
+      </div>
+
+      <!-- Tab panes -->
+      <div id="main-tab-content" class="tab-content Regular shadow">
+        <div [ngClass]="{ 'show active':currentTabId===path.id}" class="tab-pane fade in" id="{{ path.id }}" *ngFor="let path of PathFeatures; let i = index">
+
+          <ul class="tools nav nav-pills" id="pills-tab-{{ path.id }}" role="tablist">
+            <li class="nav-item">
+              <a class="nav-link active" id="pills-config-tab-{{ path.id }}" data-toggle="pill" href="#pills-config-{{ path.id }}" role="tab" aria-controls="pills-config" aria-selected="true">
+                <i class="fas fa-tools"></i> Configuration
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="pills-results-tab-{{ path.id }}" data-toggle="pill" href="#pills-results-{{ path.id }}" role="tab" aria-controls="pills-results" aria-selected="false">
+                <i class="fas fa-poll"></i> Results
+              </a>
+            </li>
+          </ul>
+
+          <div class="tab-content" id="pills-tabContent-{{ path.id }}">
+            <div class="tab-pane fade show active" id="pills-config-{{ path.id }}" role="tabpanel" aria-labelledby="pills-config-tab">
+              <app-inputparameters
+                (pathEmitToDelete)="deletePath($event)"
+                (pathEmitToDuplicate)="duplicatePath($event)"
+                (emitChangePathsHandlerStatus)="desactivateButtons($event)"
+                [pathData]="path"
+                [isCurrentTab]="currentTabId === path.id"
+                [currentTabId]="currentTabId"
+              ></app-inputparameters>
+
+              <app-nodescontrolers
+                [pathData]="path"
+                [isCurrentTab]="currentTabId === path.id"
+                [currentTabId]="currentTabId"
+              ></app-nodescontrolers>
             </div>
 
-            <div class="col-sm-12 my-2 subtopic">
-              <button
-                id="btn-add-tab"
-                type="button"
-                class="btn btn-primary pull-right"
-                (click)="addPath()"
-                [disabled]="!pathActionButtonEnabled ? 'disabled': null"
-              >
-                <i class="fas fa-plus-circle"></i> Add path
-              </button>
-
-              <button id="btn-compare-tab" type="button" class="btn btn-primary pull-right" (click)="comparePath()" [disabled]="countPath <= 1 ? 'disabled': null">
-                <i class="far fa-images"></i> Compare all
-              </button>
-
-              <button id="btn-clear-tab" type="button" class="btn btn-primary pull-right"  [disabled]="countPath === 0 ? 'disabled': null">
-                <i class="fas fa-snowplow"></i> Clear all
-              </button>
+            <div class="tab-pane fade" id="pills-results-{{ path.id }}" role="tabpanel" aria-labelledby="pills-results-tab">
+              <app-nodesstatistics
+                [pathData]="path"
+                [currentTabId]="currentTabId"
+              ></app-nodesstatistics>
             </div>
 
-            <div class="col-sm-12 my-2 subtopic" [hidden]="!topoChartDisplayed">
-              <h5>Topo Paths Charts</h5>
-              <div id="globalChart"></div>
-            </div>
-
-            <div class="col-sm-12 my-2 subtopic" [hidden]="countPath === 0">
-              <h5>Paths </h5>
-
-              <!-- Nav tabs -->
-              <div id="main-tab-list" class="nav nav-tabs" role="tablist">
-                <button
-                  [ngClass]="{ 'active':currentTabId===path.id}"
-                  class="nav-item nav-link" id="{{ 'nav-' + path.id }}"
-                  *ngFor="let path of PathFeatures; let i = index"
-                  [disabled]="!pathActionButtonEnabled ? 'disabled': null"
-                  (click)="switchTab(path.id)" role="tab" data-toggle="tab" aria-controls="tab" aria-selected="true"
-                  >
-                    <a href="{{ '#' + path.id }}" >{{path.name}}</a>
-                </button>
-              </div>
-
-              <!-- Tab panes -->
-              <div id="main-tab-content" class="tab-content Regular shadow">
-                <div [ngClass]="{ 'show active':currentTabId===path.id}" class="tab-pane fade in" id="{{ path.id }}" *ngFor="let path of PathFeatures; let i = index">
-
-                  <ul class="tools nav nav-pills" id="pills-tab-{{ path.id }}" role="tablist">
-                    <li class="nav-item">
-                      <a class="nav-link active" id="pills-config-tab-{{ path.id }}" data-toggle="pill" href="#pills-config-{{ path.id }}" role="tab" aria-controls="pills-config" aria-selected="true">
-                        <i class="fas fa-tools"></i> Configuration
-                      </a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link" id="pills-results-tab-{{ path.id }}" data-toggle="pill" href="#pills-results-{{ path.id }}" role="tab" aria-controls="pills-results" aria-selected="false">
-                        <i class="fas fa-poll"></i> Results
-                      </a>
-                    </li>
-                  </ul>
-
-                  <div class="tab-content" id="pills-tabContent-{{ path.id }}">
-                    <div class="tab-pane fade show active" id="pills-config-{{ path.id }}" role="tabpanel" aria-labelledby="pills-config-tab">
-                      <app-inputparameters
-                        (pathEmitToDelete)="deletePath($event)"
-                        (pathEmitToDuplicate)="duplicatePath($event)"
-                        (emitChangePathsHandlerStatus)="desactivateButtons($event)"
-                        [pathData]="path"
-                        [isCurrentTab]="currentTabId === path.id"
-                        [currentTabId]="currentTabId"
-                      ></app-inputparameters>
-
-                      <app-nodescontrolers
-                        [pathData]="path"
-                        [isCurrentTab]="currentTabId === path.id"
-                        [currentTabId]="currentTabId"
-                      ></app-nodescontrolers>
-                    </div>
-
-                    <div class="tab-pane fade" id="pills-results-{{ path.id }}" role="tabpanel" aria-labelledby="pills-results-tab">
-                      <app-nodesstatistics
-                        [pathData]="path"
-                        [currentTabId]="currentTabId"
-                      ></app-nodesstatistics>
-                    </div>
-
-                  </div>
-
-                </div>
-              </div>
-
-            </div>
+          </div>
 
         </div>
+      </div>
+
     </div>
+
+  </div>
+</div>
 
