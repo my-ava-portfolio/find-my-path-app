@@ -20,11 +20,16 @@ import { D3LeafletUtils } from '../../core/d3LeafletUtils';
 export class pathsHandlerComponent implements OnInit {
 
   PathFeatures: PathElement[] = [];
-  countPath = 0;
+  countPath = 0; // to delete action
+  countTotalPath = 0; // for id
   currentTabId!: string | undefined;
   helpPopup = 'Start a new path!';
   topoChartDisplayed = false;
   pathActionButtonEnabled = true;
+
+  private margin = {top: 30, right: 25, bottom: 30, left: 30};
+  private width = 400;
+  private height = 400;
 
   constructor(
     private GeneralFunc: GeneralUtils,
@@ -32,6 +37,14 @@ export class pathsHandlerComponent implements OnInit {
     private d3LeafletUtils: D3LeafletUtils,
     private pathsToInputs: PathsToInputs
   ) {
+
+    this.pathsToInputs.refreshGlobalChart.subscribe(refresh => {
+      console.log('SOL', this.PathFeatures)
+      if (refresh) {
+        console.log('LA', this.PathFeatures)
+        this.d3LeafletUtils.createLinesChart('globalChart', this.PathFeatures, this.margin, this.width, this.height);
+      }
+    });
 
   }
 
@@ -89,11 +102,7 @@ export class pathsHandlerComponent implements OnInit {
     if (this.countPath > 1) {
       this.topoChartDisplayed = !this.topoChartDisplayed;
       // TODO add name
-      const margin = {top: 30, right: 25, bottom: 30, left: 30};
-      const width = 400;
-      const height = 400;
-
-      this.d3LeafletUtils.createLinesChart('globalChart', this.PathFeatures, margin, width, height);
+      // this.d3LeafletUtils.createLinesChart('globalChart', this.PathFeatures, this.margin, this.width, this.height);
     }
 
   }
@@ -107,6 +116,7 @@ export class pathsHandlerComponent implements OnInit {
       const lastPathId: string = this.PathFeatures[this.PathFeatures.length - 1].id;
       this.switchTab(lastPathId);
       console.log('REMOVED path', pathId);
+      this.d3LeafletUtils.createLinesChart('globalChart', this.PathFeatures, this.margin, this.width, this.height);
     }
 
     // TODO remove nodes on map
@@ -131,11 +141,12 @@ export class pathsHandlerComponent implements OnInit {
 
   initPath(name: string = ''): PathElement {
     this.countPath += 1;
+    this.countTotalPath += 1;
     const colorOuput = this.GeneralFunc.randomHexColor();
     console.log(colorOuput);
     return new PathElement(
-      'path' + this.countPath,
-      'Path ' + this.countPath + name,
+      'path' + this.countTotalPath,
+      'Path ' + this.countTotalPath + name,
       colorOuput
     );
 }

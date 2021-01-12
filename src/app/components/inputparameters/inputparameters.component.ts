@@ -53,10 +53,14 @@ export class InputParametersComponent implements OnInit, OnDestroy {
       this.addPointsFromCoords(coordinates)
     });
 
-    this.updatePathSubscription = this.Map2ParametersService.pathComplete.subscribe(pathDone => {
-      this.updatePathWithApiData(pathDone)
-      this.changePathHandlerAction(true)   // activate buttons : path is finished
-    });
+    this.updatePathSubscription = this.Map2ParametersService.pathComplete.subscribe(
+      pathDone => {
+        this.updatePathWithApiData(pathDone)
+        this.changePathHandlerAction(true)  // activate buttons : path is finished
+
+      }
+      
+    );
 
     this.pathIdFromPathsSubscription = this.pathsToInputs.pathId.subscribe(pathId => {
       this.deletePathAction(pathId)
@@ -105,8 +109,8 @@ export class InputParametersComponent implements OnInit, OnDestroy {
     const nodesCreated: NodeFeature[] = this.pathData.getNodes()
     if (nodesCreated.length > 0) {
       this.changePathHandlerAction(false)  // desactivate buttons to avoid conflicts between path during path computing
-
       this.PathBuilderService.getPostProcData(this.pathData);
+
       console.log('Compute Path', this.pathData.id)
     } else {
       alert(nodesCreated.length + '  nodes found');
@@ -171,6 +175,7 @@ export class InputParametersComponent implements OnInit, OnDestroy {
   updatePathWithApiData(path: PathElement): void {
     if ( this.pathData.id === this.currentTabId ) {
       this.pathData = path;
+      this.pathsToInputs.emitChartRefreshing()
       console.log('finito', this.isCurrentTab, this.pathData)
       // TODO from here to paths handler to create the plot
     }

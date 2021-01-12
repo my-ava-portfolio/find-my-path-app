@@ -381,6 +381,7 @@ export class D3LeafletUtils {
     }
 
     createLinesChart(chartId: string, data: any[], margin: any, width: number, height: number): void {
+      console.log('YAAAAAATTTTAAAA', data)
       // list of paths
       const defaultChartClass = 'multiLineChart' + '-' + chartId;
 
