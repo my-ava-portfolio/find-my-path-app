@@ -1,28 +1,27 @@
-<div id="stats-results">
-
+<div [id]="'stats-results-' + pathData.id" class="container-fluid">
     <div class="row">
 
       <div class="col-sm-12">
         <h6 class="input-group">Download</h6>
 
         <div class="col-sm-6">
-          <button 
+          <button
             type="button"
-            class="download form-control btn btn-success mx-1 my-1" 
+            class="download form-control btn btn-success mx-1 my-1"
           >
             <i class="fas fa-cloud-download-alt"></i> GeoJSON nodes
           </button>
         </div>
 
         <div class="col-sm-6">
-          <button 
+          <button
             type="button"
-            class="download form-control btn btn-success mx-1 my-1" 
+            class="download form-control btn btn-success mx-1 my-1"
           >
             <i class="fas fa-cloud-download-alt"></i> GeoJSON path
           </button>
         </div>
-        
+
       </div>
 
       <div class="col-sm-12">
@@ -40,10 +39,7 @@
 
       <div class="col-sm-12">
         <h6 class="input-group">Topography</h6>
-        <div class="col-md-12">
-
-
-        </div>
+        <div [id]="'TopoLineChart-' + this.pathData.id"></div>
       </div>
 
 </div>

@@ -1,29 +1,52 @@
 <div id="paths-controler" class="container-fluid">
         <div class="row">
 
-            <div class="col-sm-12">
+            <div class="col-sm-12 topic">
               <h4 class="sub-title">Find My Path
                 <ng-template #popContent>{{helpPopup}}</ng-template>
                 <span class="text-info" [ngbPopover]="popContent" popoverTitle="Help!"  placement="right"><i class="far fa-question-circle"></i></span>
               </h4>
             </div>
 
-            <div class="col-sm-12">
-              <button id="btn-add-tab" type="button" class="btn btn-primary pull-right" (click)="addPath()">
+            <div class="col-sm-12 my-2 subtopic">
+              <button
+                id="btn-add-tab"
+                type="button"
+                class="btn btn-primary pull-right"
+                (click)="addPath()"
+                [disabled]="!pathActionButtonEnabled ? 'disabled': null"
+              >
                 <i class="fas fa-plus-circle"></i> Add path
               </button>
 
-              <button id="btn-add-tab" type="button" class="btn btn-primary pull-right">
+              <button id="btn-compare-tab" type="button" class="btn btn-primary pull-right" (click)="comparePath()" [disabled]="countPath <= 1 ? 'disabled': null">
+                <i class="far fa-images"></i> Compare all
+              </button>
+
+              <button id="btn-clear-tab" type="button" class="btn btn-primary pull-right"  [disabled]="countPath === 0 ? 'disabled': null">
                 <i class="fas fa-snowplow"></i> Clear all
               </button>
             </div>
 
-            <div class="col-sm-12" [hidden]="countPath === 0">
+            <div class="col-sm-12 my-2 subtopic" [hidden]="!topoChartDisplayed">
+              <h5>Topo Paths Charts</h5>
+              <div id="globalChart"></div>
+            </div>
+
+            <div class="col-sm-12 my-2 subtopic" [hidden]="countPath === 0">
+              <h5>Paths </h5>
 
               <!-- Nav tabs -->
               <div id="main-tab-list" class="nav nav-tabs" role="tablist">
-                <a [ngClass]="{ 'active':currentTabId===path.id}" class="nav-item nav-link" id="{{ 'nav-' + path.id }}" *ngFor="let path of PathFeatures; let i = index" href="{{ '#' + path.id }}" (click)="switchTab(path.id)" role="tab" data-toggle="tab" aria-controls="tab" aria-selected="true">{{path.name}}
-                </a>
+                <button
+                  [ngClass]="{ 'active':currentTabId===path.id}"
+                  class="nav-item nav-link" id="{{ 'nav-' + path.id }}"
+                  *ngFor="let path of PathFeatures; let i = index"
+                  [disabled]="!pathActionButtonEnabled ? 'disabled': null"
+                  (click)="switchTab(path.id)" role="tab" data-toggle="tab" aria-controls="tab" aria-selected="true"
+                  >
+                    <a href="{{ '#' + path.id }}" >{{path.name}}</a>
+                </button>
               </div>
 
               <!-- Tab panes -->
@@ -48,6 +71,7 @@
                       <app-inputparameters
                         (pathEmitToDelete)="deletePath($event)"
                         (pathEmitToDuplicate)="duplicatePath($event)"
+                        (emitChangePathsHandlerStatus)="desactivateButtons($event)"
                         [pathData]="path"
                         [isCurrentTab]="currentTabId === path.id"
                         [currentTabId]="currentTabId"
@@ -63,10 +87,12 @@
                     <div class="tab-pane fade" id="pills-results-{{ path.id }}" role="tabpanel" aria-labelledby="pills-results-tab">
                       <app-nodesstatistics
                         [pathData]="path"
+                        [currentTabId]="currentTabId"
                       ></app-nodesstatistics>
                     </div>
+
                   </div>
-                    
+
                 </div>
               </div>
 

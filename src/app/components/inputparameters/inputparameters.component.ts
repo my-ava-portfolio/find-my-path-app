@@ -17,13 +17,14 @@ import { NodeFeature, PathElement, Nodes } from '../../core/interfaces';
   templateUrl: './inputparameters.component.html',
   styleUrls: ['./inputparameters.component.css']
 })
-export class InputParametersComponent implements OnInit {
+export class InputParametersComponent implements OnInit, OnDestroy {
   @Input() pathData!: PathElement;
   @Input() isCurrentTab!: boolean;
   @Input() currentTabId!: string | undefined;
 
   @Output() pathEmitToDelete = new EventEmitter<string>();
   @Output() pathEmitToDuplicate = new EventEmitter<string>();
+  @Output() emitChangePathsHandlerStatus = new EventEmitter<boolean>();
 
   configureTabOpened = true
 
@@ -50,6 +51,7 @@ export class InputParametersComponent implements OnInit {
 
     this.updatePathSubscription = this.Map2ParametersService.pathComplete.subscribe(pathDone => {
       this.updatePathWithApiData(pathDone)
+      this.changePathHandlerAction(true)   // activate buttons : path is finished
     });
 
   }
@@ -63,7 +65,7 @@ export class InputParametersComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
-    console.log("destroyed " + this.pathData.id)
+    console.log("destroyed inputparameters" + this.pathData.id)
     // very important to delete the observable related to this component,
     // to prevent memory leak: close the component instance
     this.addPointsSubscription.unsubscribe()
@@ -81,7 +83,11 @@ export class InputParametersComponent implements OnInit {
   }
 
   duplicatePathAction(pathId: string): void {
-    this.pathEmitToDuplicate.emit(pathId)
+    this.pathEmitToDuplicate.emit(pathId);
+  }
+
+  changePathHandlerAction(status: boolean): void {
+    this.emitChangePathsHandlerStatus.emit(status);
   }
 
   computePath(): void {
@@ -89,6 +95,8 @@ export class InputParametersComponent implements OnInit {
     this.displayPathParams();
     const nodesCreated: NodeFeature[] = this.pathData.getNodes()
     if (nodesCreated.length > 0) {
+      this.changePathHandlerAction(false)  // desactivate buttons to avoid conflicts between path during path computing
+
       this.PathBuilderService.getPostProcData(this.pathData);
       console.log('Compute Path', this.pathData.id)
     } else {

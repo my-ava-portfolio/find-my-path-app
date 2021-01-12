@@ -7,6 +7,7 @@ import { GeneralUtils } from '../../core/generalUtils';
 import { map } from 'leaflet';
 import { Subscription } from 'rxjs';
 import { PathsToMapService } from '../../services/pathstomap.service';
+import { D3LeafletUtils } from '../../core/d3LeafletUtils';
 
 
 @Component({
@@ -20,10 +21,13 @@ export class pathsHandlerComponent implements OnInit {
   countPath = 0;
   currentTabId!: string | undefined;
   helpPopup = 'Start a new path!';
+  topoChartDisplayed = false;
+  pathActionButtonEnabled = true;
 
   constructor(
     private GeneralFunc: GeneralUtils,
-    private pathsToMapService: PathsToMapService
+    private pathsToMapService: PathsToMapService,
+    private d3LeafletUtils: D3LeafletUtils
   ) {
 
   }
@@ -53,12 +57,30 @@ export class pathsHandlerComponent implements OnInit {
     console.log('Get tab: ' + this.currentTabId);
   }
 
+  desactivateButtons(status: boolean): void {
+    console.log('blooom', status)
+    this.pathActionButtonEnabled = status;
+  }
+
   addPath(): void {
     // TODO add name
     const newPath: PathElement = this.initPath();
     this.PathFeatures.push(newPath);
     this.switchTab(newPath.id);
     console.log('ADDED path');
+  }
+
+  comparePath(): void {
+    if (this.countPath > 1) {
+      this.topoChartDisplayed = !this.topoChartDisplayed;
+      // TODO add name
+      const margin = {top: 30, right: 25, bottom: 30, left: 30};
+      const width = 400;
+      const height = 400;
+  
+      this.d3LeafletUtils.createLinesChart('globalChart', this.PathFeatures, margin, width, height); 
+    }
+
   }
 
   deletePath(pathId: string): void {
@@ -95,7 +117,7 @@ export class pathsHandlerComponent implements OnInit {
   initPath(name: string = ''): PathElement {
     this.countPath += 1;
     const colorOuput = this.GeneralFunc.randomHexColor();
-    console.log(colorOuput)
+    console.log(colorOuput);
     return new PathElement(
       'path' + this.countPath,
       'Path ' + this.countPath + name,

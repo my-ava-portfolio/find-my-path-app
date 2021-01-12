@@ -42,11 +42,11 @@ export class D3LeafletUtils {
       const path: any = d3.selectAll('.lineConnect_pathMap-' + layerId);
 
       if (strokeColor !== undefined) {
-        path.style('stroke', strokeColor)
+        path.style('stroke', strokeColor);
       }
 
       if (strokeWidth !== undefined) {
-        path.style('stroke-width', strokeWidth)
+        path.style('stroke-width', strokeWidth);
       }
   }
 
@@ -228,7 +228,7 @@ export class D3LeafletUtils {
 
     computeMapFromPoints(LeafletMap: any, GeoJsonPointFeatures: any[], layerId: string, dragEnabled: boolean, displayToolTip: boolean = false): void {
         this.removeFeaturesMapFromLayerId(layerId);
-        console.log('drag status', dragEnabled)
+        console.log('drag status', dragEnabled);
         GeoJsonPointFeatures.forEach( (feature, i): void => {
             feature.LatLng = new L.LatLng(
                 feature.geometry.coordinates[1],
@@ -246,7 +246,7 @@ export class D3LeafletUtils {
           .append('circle', '.PathNodes')
           .attr('class', 'PathNodes')
           .attr('r', '15')
-          .attr('id', (d: any): void => d.properties.id)
+          .attr('id', (d: any): void => d.properties.id);
           // .on('mouseover', (d: any): void => {
           //     LeafletMap.dragging.disable();
           //     this.initPopup('body', 'popup-' + layerId, d, false);
@@ -380,6 +380,112 @@ export class D3LeafletUtils {
             });
     }
 
+    createLinesChart(chartId: string, data: any[], margin: any, width: number, height: number): void {
+      // list of paths
+      const defaultChartClass = 'multiLineChart' + '-' + chartId;
 
+      d3.select('#' + defaultChartClass).remove();
+      const svg: any = d3.select("#" + chartId).append('svg');
+
+      const contentWidth: number = width;
+      const contentHeight: number = height + margin.top + margin.bottom;
+
+      const g: any = svg
+        .attr('width', '100%')
+        .attr('height', contentHeight)
+        .attr('id', defaultChartClass)
+        .append('g')
+        .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+
+      // Set the ranges
+      const x: any = d3.scaleLinear().range([0, contentWidth]);
+      const y: any = d3.scaleLinear().range([contentHeight, 0]);
+
+      // Define the axes
+      const xAxis: any = d3.axisBottom(x);
+      const yAxis: any = d3.axisLeft(y);
+
+      // Define the line
+      const lineBuilder: any = d3.line<any>()
+        .x( (d: any) => x(d.properties.distance) )
+        .y( (d: any) => y(d.properties.height) )
+        .curve(d3.curveCatmullRom);
+
+      // Scale the range of the data
+      const xValues: number[] = [];
+      const yValues: number[] = [];
+      data.forEach((item: any) => {
+        xValues.push(item.statsPath.length)
+        yValues.push(item.statsPath.height_min - 2)
+        yValues.push(item.statsPath.height_max + 2)
+      });
+
+      x.domain([
+        0,
+        d3.max(xValues)
+      ]);
+      y.domain([
+        d3.min(yValues),
+        d3.max(yValues)
+      ]);
+
+      data.forEach((item: any) => {
+
+        const features: any[] = item.getPointsPath().features;
+        console.log("aaaaAAAAAAAAAAAAAAA", features);
+
+        // Add the line_value path.
+        g.append('path')
+          .attr('class', 'line')
+          .attr('d', lineBuilder(features))
+          .style('fill', 'none') // add a color
+          .style('opacity', 'unset') // add 0 to hide the path
+          .style('stroke', item.strokeColor)
+          .style('stroke-width', '4')
+          .style('overflow', 'overlay');
+
+        // // Add the valueline path.
+        // g.selectAll('circle')
+        // .data(features)
+        // .enter()
+        // .append('circle')
+        // .attr('r', 3)
+        // .style('stroke', 'none')
+        // .style('stroke-width', 20)
+        // .attr('pointer-events', 'all')
+        // .style('cursor', 'pointer')
+        // .attr('cx', (d: NodePathFeature) => x(d.properties.distance))
+        // .attr('cy', (d: NodePathFeature) => y(d.properties.height));
+        
+      });
+  
+      // Add X axis
+      g.append('g')
+        .attr('class', 'x axis')
+        .attr('transform', 'translate(0,' + height + ')')
+        .call(xAxis);
+  
+      // text label x axis
+      g.append('text')
+        .attr('transform', 'translate(' + (width + 0) + ' ,' + (height - 5) + ')')
+        .style('text-anchor', 'end')
+        .style('font-size', '10px')
+        .text('Distance parcourue (mètre)');
+  
+      // Add Y axis
+      g.append('g')
+          .attr('class', 'y axis')
+          .call(yAxis);
+  
+      // text label y axis
+      g.append('text')
+        .attr('transform', 'rotate(-90)')
+        .attr('y', 5)
+        .attr('x', 0)
+        .attr('dy', '1em')
+        .style('text-anchor', 'end')
+        .style('font-size', '10px')
+        .text('Altitude (mètres)');
+    }
 
 }

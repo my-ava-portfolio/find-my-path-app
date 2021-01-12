@@ -168,11 +168,11 @@ export class PathElement {
     strokeWidth = '2';
     editingStatus = false;
     transportMode = 'pedestrian';
-    elevationStatus = false;
+    elevationStatus = true;
     private inputNodes: NodeFeature[] = [];
     private pointsPath!: NodePathGeoJson;
     private linePath!: LinePathGeoJson;
-    private statsPath!: PathStatistics;
+    statsPath!: PathStatistics;
 
     constructor(
         id: string,
@@ -221,12 +221,12 @@ export class PathElement {
     setNodes(nodes: NodeFeature[]): void {
         this.inputNodes = nodes;
     }
-  addNode(geometry: PointGeometry, properties: any): void {
+    addNode(geometry: PointGeometry, properties: any): void {
         const newNodes = new NodeFeature(
             geometry,
             properties
       )
-      this.rebuildNodes();
+    this.rebuildNodes();
         this.inputNodes.push(newNodes);
     }
     getNodes(): NodeFeature[] {

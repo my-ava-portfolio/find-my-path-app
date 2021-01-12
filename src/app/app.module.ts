@@ -22,7 +22,6 @@ import { pathsHandlerComponent } from './components/pathshandler/pathshandler.co
 import { nodesControlersComponent } from './components/nodescontrolers/nodescontrolers.component';
 import { NodesstatisticsComponent } from './components/nodesstatistics/nodesstatistics.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-// import { NodestopographyComponent } from './components/nodestopography/nodestopography.component';
 
 @NgModule({
   declarations: [
