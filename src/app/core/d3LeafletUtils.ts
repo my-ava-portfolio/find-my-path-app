@@ -249,7 +249,7 @@ export class D3LeafletUtils {
           .attr('class', 'PathNodes')
           .attr('r', '15')
           .attr('id', (d: any): void => d.properties.id)
-          .style('stroke', colorStroke)
+          .style('stroke', colorStroke);
           // .on('mouseover', (d: any): void => {
           //     LeafletMap.dragging.disable();
           //     this.initPopup('body', 'popup-' + layerId, d, false);
@@ -344,52 +344,52 @@ export class D3LeafletUtils {
 
     initPopup(containerId: string, popupId: string, feature: any, staticMode: boolean = false): void {
 
-        const popupDiv: any = d3.select(containerId).append('div')
-            .attr('class', 'shadow bg-white rounded ' + this.popupClassName)
-            .attr('id', popupId);
-             // .style('opacity', 1)
-        // TODO improve to display all the properties nicely
-        popupDiv.html(feature.properties.name);
+      const popupDiv: any = d3.select(containerId).append('div')
+        .attr('class', 'shadow bg-white rounded ' + this.popupClassName)
+        .attr('id', popupId);
+          // .style('opacity', 1)
+      // TODO improve to display all the properties nicely
+      popupDiv.html(feature.properties.name);
 
-        if (staticMode) {
-            const popup: any = d3.selectAll('#' + popupId);
-            popup
-                .style('left', (d3.event.pageX)  + 'px')
-                .style('top', (d3.event.pageY - 20) + 'px');
-        }
+      if (staticMode) {
+        const popup: any = d3.selectAll('#' + popupId);
+        popup
+          .style('left', (d3.event.pageX)  + 'px')
+          .style('top', (d3.event.pageY - 20) + 'px');
+      }
     }
 
     moveResponsivePopup(popupId: string): void {
-        const popup: any = d3.selectAll(popupId);
+      const popup: any = d3.selectAll(popupId);
 
-        // do not change with let or you'll have value issue
-        // TODO improve
-        const popupWidth: number = 50;
-        const popupHeight: number = 10;
-        popup
-            .style('left', (): string => {
-                if (d3.event.pageX + popupWidth + 20 > this.windowWidth) {
-                    return d3.event.pageX - popupWidth - 15 + 'px';
-                } else {
-                    return d3.event.pageX + 15 + 'px';
-                }
-            })
-            .style('top', (): string => {
-                if (d3.event.pageY + popupHeight + 20 > this.windowHeight) {
-                    return d3.event.pageY - popupHeight - 15 + 'px';
-                } else {
-                    return d3.event.pageY + 15 + 'px';
-                }
-            });
+      // do not change with let or you'll have value issue
+      // TODO improve
+      const popupWidth: number = 50;
+      const popupHeight: number = 10;
+      popup
+        .style('left', (): string => {
+            if (d3.event.pageX + popupWidth + 20 > this.windowWidth) {
+                return d3.event.pageX - popupWidth - 15 + 'px';
+            } else {
+                return d3.event.pageX + 15 + 'px';
+            }
+        })
+        .style('top', (): string => {
+            if (d3.event.pageY + popupHeight + 20 > this.windowHeight) {
+                return d3.event.pageY - popupHeight - 15 + 'px';
+            } else {
+                return d3.event.pageY + 15 + 'px';
+            }
+        });
     }
 
     createLinesChart(chartId: string, data: any[], margin: any, width: number, height: number): void {
-      console.log('YAAAAAATTTTAAAA', data)
+      console.log('YAAAAAATTTTAAAA', data);
       // list of paths
       const defaultChartClass = 'multiLineChart' + '-' + chartId;
 
       d3.select('#' + defaultChartClass).remove();
-      const svg: any = d3.select("#" + chartId).append('svg');
+      const svg: any = d3.select('#' + chartId).append('svg');
 
       const contentWidth: number = width;
       const contentHeight: number = height + margin.top + margin.bottom;
@@ -419,9 +419,9 @@ export class D3LeafletUtils {
       const xValues: number[] = [];
       const yValues: number[] = [];
       data.forEach((item: any) => {
-        xValues.push(item.statsPath.length)
-        yValues.push(item.statsPath.height_min - 2)
-        yValues.push(item.statsPath.height_max + 2)
+        xValues.push(item.statsPath.length);
+        yValues.push(item.statsPath.height_min - 2);
+        yValues.push(item.statsPath.height_max + 2);
       });
 
       x.domain([
@@ -436,30 +436,78 @@ export class D3LeafletUtils {
       data.forEach((item: any) => {
 
         const features: any[] = item.getPointsPath().features;
-        console.log("aaaaAAAAAAAAAAAAAAA", features);
-
+        console.log('aaaaAAAAAAAAAAAAAAA', features);
+        const innerG: any = g.append('g')
         // Add the line_value path.
-        g.append('path')
-          .attr('class', 'line')
-          .attr('d', lineBuilder(features))
-          .style('fill', 'none') // add a color
-          .style('opacity', 'unset') // add 0 to hide the path
-          .style('stroke', item.strokeColor)
-          .style('stroke-width', '4')
-          .style('overflow', 'overlay');
+        innerG.append('path')
+        .attr('class', 'line')
+        .attr('d', lineBuilder(features))
+        .style('fill', 'none') // add a color
+        .style('opacity', 'unset') // add 0 to hide the path
+        .style('stroke', item.strokeColor)
+        .style('stroke-width', '4')
+        .style('overflow', 'overlay');
 
-        // // Add the valueline path.
-        // g.selectAll('circle')
-        // .data(features)
-        // .enter()
-        // .append('circle')
-        // .attr('r', 3)
-        // .style('stroke', 'none')
-        // .style('stroke-width', 20)
-        // .attr('pointer-events', 'all')
-        // .style('cursor', 'pointer')
-        // .attr('cx', (d: NodePathFeature) => x(d.properties.distance))
-        // .attr('cy', (d: NodePathFeature) => y(d.properties.height));
+        // Add the valueline path.
+        innerG.selectAll('circle')
+        .data(features)
+        .enter()
+        .append('circle')
+        .attr('r', 3)
+        .style('stroke', 'none')
+        .style('stroke-width', 20)
+        .attr('pointer-events', 'all')
+        .style('cursor', 'pointer')
+        .attr('cx', (d: any) => x(d.properties.distance))
+        .attr('cy', (d: any) => y(d.properties.height))
+        .on('mouseover', (d: any) => {
+          const tooltip_div: any = d3.select('body').append('div')
+            .attr('id', 'topoTooltip')
+            .attr('class', 'border shadow')
+            .style('opacity', 0)
+            .style('position', 'absolute')
+            .style('width', '170px')
+            .style('height', '65px')
+            .style('background-color', item.getColor());
+
+          tooltip_div.transition()
+            .duration(200)
+            .style('opacity', .9);
+          tooltip_div.html('<p>Nom: ' + item.name + '<br>Altitude: ' + d.properties.height + ' mètres<br>Distance: ' + Math.round(d.properties.distance)  + ' mètres</p>')
+            .style('left', (d3.event.pageX + 10) + 'px')
+            .style('top', (d3.event.pageY - 10) + 'px');
+        })
+        .on('mouseout', () => {
+          d3.selectAll('#topoTooltip').remove();
+        })
+        .on('mousemove', () => {
+          // always only 1 popup
+          const current_popup = d3.selectAll('#topoTooltip');
+
+          // to get the size of the popup...
+          // const popup_width: number = d3.selectAll("#topoTooltip").node().getBoundingClientRect().width
+          // const popup_height: number = d3.selectAll("#topoTooltip").node().getBoundingClientRect().height
+          // console.log(popup_width, popup_height)
+          const popup_width: number = parseInt(d3.selectAll('#topoTooltip').style('width').replace('px', ''), 10);
+          const popup_height: number = parseInt(d3.selectAll('#topoTooltip').style('height').replace('px', ''), 10);
+
+          current_popup
+          .style('left', () => {
+            if (d3.event.pageX + popup_width + 10 > window.outerWidth) {
+                  return d3.event.pageX - popup_width - 10 + 'px';
+              } else {
+                  return d3.event.pageX + 10 + 'px';
+              }
+          })
+          .style('top', () => {
+              if (d3.event.pageY + popup_height + 10 > window.outerHeight) {
+                  return d3.event.pageY - popup_height - 10 + 'px';
+              } else {
+                  return d3.event.pageY + 10 + 'px';
+              }
+          });
+
+        });
 
       });
 
@@ -490,6 +538,8 @@ export class D3LeafletUtils {
         .style('text-anchor', 'end')
         .style('font-size', '10px')
         .text('Altitude (mètres)');
+
     }
+
 
 }

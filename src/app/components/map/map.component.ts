@@ -75,6 +75,7 @@ export class MapComponent implements OnInit {
       );
       console.log("animated path", this.pathMapPrefix + PathData.id)
       this.Map2ParametersService.pushCompletePath(PathData)
+      this.displayNodesOnMap(PathData);
     });
 
     // delete node path from parameter button
