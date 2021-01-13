@@ -1,5 +1,5 @@
 <div id="paths-controler" class="container-fluid">
-  <div class="row mb-4">
+  <div class="row mt-4 border border-primary rounded">
 
     <div class="col-sm-12 topic">
       <h4 class="sub-title">Find My Path
@@ -50,7 +50,7 @@
       </div>
 
       <!-- Tab panes -->
-      <div id="main-tab-content" class="tab-content Regular shadow">
+      <div id="main-tab-content" class="tab-content">
         <div [ngClass]="{ 'show active':currentTabId===path.id}" class="tab-pane fade in" id="{{ path.id }}" *ngFor="let path of PathFeatures; let i = index">
 
           <ul class="tools nav nav-pills" id="pills-tab-{{ path.id }}" role="tablist">

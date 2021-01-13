@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 
-import { NodeFeature, PathElement, NodeGeoJson, Nodes, PathContainer, PathFeature } from '../../core/interfaces';
+import { NodeFeature, PathElement, NodeGeoJson, Nodes, PathContainer, colorsPalettes } from '../../core/interfaces';
 
 import { GeneralUtils } from '../../core/generalUtils';
 
@@ -26,6 +26,7 @@ export class pathsHandlerComponent implements OnInit {
   helpPopup = 'Start a new path!';
   topoChartDisplayed = false;
   pathActionButtonEnabled = true;
+  colorsPredefined = new colorsPalettes().colorsBrewer;
 
   private margin = {top: 30, right: 25, bottom: 30, left: 30};
   private width = 400;
@@ -140,14 +141,19 @@ export class pathsHandlerComponent implements OnInit {
   }
 
   initPath(name: string = ''): PathElement {
+
+    let colorOutput = this.GeneralFunc.randomHexColor();
+    if (this.countPath <= this.colorsPredefined.length) {
+      colorOutput = this.colorsPredefined[this.countPath]
+      console.log("blaaaaaaaaaaaaaaaaaaaaaaa", colorOutput)
+    }
     this.countPath += 1;
     this.countTotalPath += 1;
-    const colorOuput = this.GeneralFunc.randomHexColor();
-    console.log(colorOuput);
+    console.log(colorOutput);
     return new PathElement(
       'path' + this.countTotalPath,
       'Path ' + this.countTotalPath + name,
-      colorOuput
+      colorOutput
     );
 }
 

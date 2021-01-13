@@ -1,38 +1,28 @@
   <app-header [NavBarTitle]="AppTitle"></app-header>
 
   <div id="content" class="container-fluid">
-      <div class="row">
+    <div class="row">
 
-          <div id="mapContainer" class="col-sm-8">
-              <app-map></app-map>
-
-          </div>
-
-          <div id="controlerContainer" class="col-sm-4 y-scroll">
-
-                <div class="col-md-12 text-right">
-                  <div id="apiStatus" class="btn btn-dark text-white">
-                    Api <span [ngClass]="[apiStatus === 'Ready' ? 'bg-success' : 'bg-danger']" class="badge">{{apiStatus}}</span>
-                  </div>
-                </div>
-
-                <div id="view-controler">
-                    <app-viewcontroler></app-viewcontroler>
-                </div>
-
-                <div id="nodes-computed">
-                    <app-pathshandler></app-pathshandler>
-                </div>
-
-<!--                <div id="topoChart-computed" class="col-md-4">
-                    <app-nodestopography></app-nodestopography>
-                </div>
--->
-          </div>
-
-
+      <div id="mapContainer" class="col-sm-8">
+        <app-map></app-map>
 
       </div>
+
+      <div id="controlerContainer" class="col-sm-4 y-scroll">
+
+        <div id="view-controler" class="tool">
+          <app-viewcontroler></app-viewcontroler>
+        </div>
+
+        <div id="nodes-computed" class="tool">
+          <app-pathshandler></app-pathshandler>
+        </div>
+
+      </div>
+
+
+
+    </div>
   </div>
 
   <app-footer></app-footer>

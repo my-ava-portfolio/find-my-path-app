@@ -1,4 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { interval } from 'rxjs';
+import { startWith  } from 'rxjs/operators';
+
+import { ApiStatusService } from '../../services/apistatus.service';
 
 @Component({
   selector: 'app-header',
@@ -8,12 +12,30 @@ import { Component, OnInit, Input } from '@angular/core';
 export class HeaderComponent implements OnInit {
   @Input() NavBarTitle = 'Nav bar title';
 
+  apiStatus!: string;
+  ApiContinuousChecker = interval(5000); // observable which run all the time
 
-  // useful to inject dependencies
-  constructor() { }
+  constructor(
+    private ApiCheckService: ApiStatusService
+  ) {
 
-  // executed only when Angular component initialization is done
-  // @input() will be initialized inside it
-  ngOnInit(): void {
+    this.ApiCheckService.apiHealth.subscribe(data =>
+      this.apiStatus = data
+    )
+
   }
+
+
+  ngOnInit(): void {
+    this.checkApiStatus()
+  }
+
+
+  checkApiStatus(): void {
+    this.ApiContinuousChecker.pipe(startWith(0)).subscribe(() => {
+        this.ApiCheckService.callApiStatus()
+      }
+    );
+  }
+
 }

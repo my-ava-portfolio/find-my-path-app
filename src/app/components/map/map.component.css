@@ -1,38 +1,39 @@
 #map {
     height: 90vh;
     width: 100%;
+    z-index: 0;
 }
 
 #map svg circle.PathNodes {
     font-family: 'Font Awesome 5 Free';
     font-weight: 900;
-    fill: orange;
+    fill: rgb(255, 255, 255);
     opacity: 0.8;
-    stroke: black;
-    stroke-width: 1px;
+    /* stroke: black; */
+    stroke-width: 4px;
     stroke-opacity: 1;
-    font-size: 45px;
+    font-size: 20px;
 }
 
 .dragEnabled {
   cursor: pointer;
 }
 
-#map svg circle.PathNodes:first-child {
+#map svg text.PathNodesText:first-of-type {
     fill: red;
 }
 
-#map svg circle.PathNodes:last-of-type {
+#map svg text.PathNodesText:last-of-type {
     fill: green;
 }
 
 #map svg text {
-    fill: black;
+    /* fill: black; */
     display: block;
-    margin: auto;
+    /* margin: auto; */
+    font-size: 18px;
     font-weight: bold;
-    stroke-width: 1px;
-    text-shadow: 2px 2px 5px #000000;
+    /* stroke-width: 1px; */
 }
 
 .popup-feature {

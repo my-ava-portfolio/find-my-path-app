@@ -115,7 +115,8 @@ export class MapComponent implements OnInit {
       this.map,
       pathFeature.getNodes(),
       this.nodesMapPrefix + pathFeature.id,
-      pathFeature.getEdit()
+      pathFeature.getEdit(),
+      pathFeature.getColor()
     )
   }
 }

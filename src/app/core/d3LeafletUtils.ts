@@ -40,9 +40,11 @@ export class D3LeafletUtils {
 
     UpdatePathStyleFromLayerId(layerId: string, strokeColor?: string, strokeWidth?: string): void {
       const path: any = d3.selectAll('.lineConnect_pathMap-' + layerId);
+      const nodes: any = d3.selectAll('#nodesMap-' + layerId + ' circle');
 
       if (strokeColor !== undefined) {
         path.style('stroke', strokeColor);
+        nodes.style('stroke', strokeColor);
       }
 
       if (strokeWidth !== undefined) {
@@ -226,7 +228,7 @@ export class D3LeafletUtils {
     }
 
 
-    computeMapFromPoints(LeafletMap: any, GeoJsonPointFeatures: any[], layerId: string, dragEnabled: boolean, displayToolTip: boolean = false): void {
+    computeMapFromPoints(LeafletMap: any, GeoJsonPointFeatures: any[], layerId: string, dragEnabled: boolean, colorStroke: string,displayToolTip: boolean = false): void {
         this.removeFeaturesMapFromLayerId(layerId);
         console.log('drag status', dragEnabled);
         GeoJsonPointFeatures.forEach( (feature, i): void => {
@@ -246,7 +248,8 @@ export class D3LeafletUtils {
           .append('circle', '.PathNodes')
           .attr('class', 'PathNodes')
           .attr('r', '15')
-          .attr('id', (d: any): void => d.properties.id);
+          .attr('id', (d: any): void => d.properties.id)
+          .style('stroke', colorStroke)
           // .on('mouseover', (d: any): void => {
           //     LeafletMap.dragging.disable();
           //     this.initPopup('body', 'popup-' + layerId, d, false);
@@ -280,7 +283,7 @@ export class D3LeafletUtils {
                 );
                 const CoordinatesUpdated = layerCoordsConverter(LeafletMap, { x: d3.event.x, y: d3.event.y });
                 GeoJsonPointFeatures[nodeUuid].geometry.coordinates = [CoordinatesUpdated.lng, CoordinatesUpdated.lat];
-                this.computeMapFromPoints(LeafletMap, GeoJsonPointFeatures, layerId, dragEnabled, displayToolTip = false);
+                this.computeMapFromPoints(LeafletMap, GeoJsonPointFeatures, layerId, dragEnabled, colorStroke, displayToolTip = false);
                 LeafletMap.dragging.enable();
               })
             );
@@ -295,14 +298,14 @@ export class D3LeafletUtils {
                 const name = d.properties.name;
                 const position = d.properties.position;
 
-                if (name.length > 0) {
-                    return name;
-                } else {
+                // if (name.length > 0) {
+                //     return name;
+                // } else {
                     return position;
-                }
+                // }
             })
             .attr('text-anchor', 'middle')
-            .attr('y', -20)
+            .attr('alignment-baseline', 'middle')
             .attr('class', 'PathNodesText');
 
         // Reposition the SVG to cover the features.
@@ -457,27 +460,27 @@ export class D3LeafletUtils {
         // .style('cursor', 'pointer')
         // .attr('cx', (d: NodePathFeature) => x(d.properties.distance))
         // .attr('cy', (d: NodePathFeature) => y(d.properties.height));
-        
+
       });
-  
+
       // Add X axis
       g.append('g')
         .attr('class', 'x axis')
         .attr('transform', 'translate(0,' + height + ')')
         .call(xAxis);
-  
+
       // text label x axis
       g.append('text')
         .attr('transform', 'translate(' + (width + 0) + ' ,' + (height - 5) + ')')
         .style('text-anchor', 'end')
         .style('font-size', '10px')
         .text('Distance parcourue (mètre)');
-  
+
       // Add Y axis
       g.append('g')
           .attr('class', 'y axis')
           .call(yAxis);
-  
+
       // text label y axis
       g.append('text')
         .attr('transform', 'rotate(-90)')

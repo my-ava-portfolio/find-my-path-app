@@ -1,9 +1,13 @@
-<header class="footer">
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-12">
-                <h1>{{NavBarTitle}}</h1>
-            </div>
-        </div>
+<nav class="navbar navbar-light bg-light shadow header">
+
+  <div class="col-md-6 text-left">
+    <h1 class="navbar-brand">{{NavBarTitle}}</h1>
+  </div>
+
+  <div class="col-md-6 text-right">
+    <div id="apiStatus" class="btn btn-dark text-white">
+      Api <span [ngClass]="[apiStatus === 'Ready' ? 'bg-success' : 'bg-danger']" class="badge">{{apiStatus}}</span>
     </div>
-</header>
+  </div>
+
+</nav>

@@ -16,7 +16,7 @@ export class nodesControlersComponent implements OnInit {
   @Input() pathData!: PathElement;
   @Input() isCurrentTab!: boolean;
   @Input() currentTabId!: string | undefined;
-
+  
   constructor(
     private Parameters2MapService: ParametersToMapService,
     private GeneralFunc: GeneralUtils,
