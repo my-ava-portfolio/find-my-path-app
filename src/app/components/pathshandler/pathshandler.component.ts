@@ -100,6 +100,7 @@ export class pathsHandlerComponent implements OnInit {
   }
 
   comparePath(): void {
+    // TODO check if path has been computed than check the count paths
     if (this.countPath > 1) {
       this.topoChartDisplayed = !this.topoChartDisplayed;
       // TODO add name
