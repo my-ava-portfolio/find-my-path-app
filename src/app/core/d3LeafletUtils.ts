@@ -96,8 +96,10 @@ export class D3LeafletUtils {
             .data(GeoJsonPointFeatures)
             .enter()
             .append('circle')
-            .attr('r', 3)
+            .attr('r', 10)
+            .attr('fill', 'red')  // TODO add css
             .attr('class', 'waypoints_' + layerId)
+            .attr('id', (d: any) => d.properties.uuid)
             .style('opacity', '0');
 
         // Here we will make the points into a single
@@ -476,8 +478,13 @@ export class D3LeafletUtils {
           tooltip_div.html('<p>Nom: ' + item.name + '<br>Altitude: ' + d.properties.height + ' mètres<br>Distance: ' + Math.round(d.properties.distance)  + ' mètres</p>')
             .style('left', (d3.event.pageX + 10) + 'px')
             .style('top', (d3.event.pageY - 10) + 'px');
+
+          // display node on map from chart
+          d3.selectAll('#' + d.properties.uuid).style('opacity', '1')
         })
-        .on('mouseout', () => {
+          .on('mouseout', (d) => {
+          // reset display node on map from chart
+          d3.selectAll('#' + d.properties.uuid).style('opacity', '0')
           d3.selectAll('#topoTooltip').remove();
         })
         .on('mousemove', () => {

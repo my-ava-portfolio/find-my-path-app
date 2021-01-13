@@ -66,8 +66,10 @@ export interface NodePathFeature {
     type: string;
     geometry: PointGeometry;
     properties: {
-        height: number;
-        distance: number;
+      height: number;
+      distance: number;
+      step: string; // TODO seems useless, check API
+      uuid: string; // to link to the chart and map
     };
     LatLng?: any;
 }
