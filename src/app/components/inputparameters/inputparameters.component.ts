@@ -28,7 +28,7 @@ export class InputParametersComponent implements OnInit, OnDestroy {
   @Output() pathEmitToDuplicate = new EventEmitter<string>();
   @Output() emitChangePathsHandlerStatus = new EventEmitter<boolean>();
 
-  configureTabOpened = true
+  configureTabOpened = true;
   colorsPredefined = new colorsPalettes().colorsBrewer;
   pathName!: string;
   transportModeSelected!: string;
@@ -50,21 +50,19 @@ export class InputParametersComponent implements OnInit, OnDestroy {
     private pathsToInputs: PathsToInputs
   ) {
     this.addPointsSubscription = this.Map2ParametersService.newPointCoords.subscribe(coordinates => {
-      this.addPointsFromCoords(coordinates)
+      this.addPointsFromCoords(coordinates);
     });
 
     this.updatePathSubscription = this.Map2ParametersService.pathComplete.subscribe(
       pathDone => {
-        this.updatePathWithApiData(pathDone)
-        this.changePathHandlerAction(true)  // activate buttons : path is finished
-
+        this.updatePathWithApiData(pathDone);
+        this.buttonsStatus(true); // activate buttons : path is finished
       }
-      
     );
 
     this.pathIdFromPathsSubscription = this.pathsToInputs.pathId.subscribe(pathId => {
-      this.deletePathAction(pathId)
-    })
+      this.deletePathAction(pathId);
+    });
 
   }
 
@@ -72,85 +70,77 @@ export class InputParametersComponent implements OnInit, OnDestroy {
     this.displayPathParams();
     // in order to generate the map by default, each time we create a new tab (useful if duplicate!)
     this.Parameters2MapService.mapFromPathNodes(this.pathData);
-    this.pathName = this.pathData.name
-    console.log("init ", this.pathData.id, this.isCurrentTab, this.currentTabId)
+    this.pathName = this.pathData.name;
   }
 
   ngOnDestroy(): void {
-    console.log("destroyed inputparameters" + this.pathData.id)
+    // destroyed inputparameters
     // very important to delete the observable related to this component,
     // to prevent memory leak: close the component instance
-    this.addPointsSubscription.unsubscribe()
-    this.updatePathSubscription.unsubscribe()
-    this.pathIdFromPathsSubscription.unsubscribe()
+    this.addPointsSubscription.unsubscribe();
+    this.updatePathSubscription.unsubscribe();
+    this.pathIdFromPathsSubscription.unsubscribe();
   }
 
   updatePathName(event: any): void {
     this.pathName = event.target.value;
-    this.pathData.name = this.pathName
+    this.pathData.name = this.pathName;
   }
 
   deletePathAction(pathId: string): void {
-    this.pathEmitToDelete.emit(pathId)
-    this.Parameters2MapService.deletePathMaps(pathId)
+    this.pathEmitToDelete.emit(pathId);
+    this.Parameters2MapService.deletePathMaps(pathId);
   }
 
   duplicatePathAction(pathId: string): void {
     this.pathEmitToDuplicate.emit(pathId);
   }
 
-  changePathHandlerAction(status: boolean): void {
+  buttonsStatus(status: boolean): void {
     this.emitChangePathsHandlerStatus.emit(status);
   }
 
   computePath(): void {
-
     this.displayPathParams();
-    const nodesCreated: NodeFeature[] = this.pathData.getNodes()
+    const nodesCreated: NodeFeature[] = this.pathData.getNodes();
     if (nodesCreated.length > 0) {
-      this.changePathHandlerAction(false)  // desactivate buttons to avoid conflicts between path during path computing
+      this.buttonsStatus(false);  // desactivate buttons to avoid conflicts between path during path computing
       this.PathBuilderService.getPostProcData(this.pathData);
-
-      console.log('Compute Path', this.pathData.id)
     } else {
+      // TODO display an error message
       alert(nodesCreated.length + '  nodes found');
     }
-
   }
+
   updateStrokeWidth(event: any): void {
-    this.pathData.setWidth(event.target.value)
-    this.MapFuncs.UpdatePathStyleFromLayerId(this.pathData.id, undefined, event.target.value)
-    console.log('update width', this.pathData.getWidth())
+    this.pathData.setWidth(event.target.value);
+    this.MapFuncs.UpdatePathStyleFromLayerId(this.pathData.id, undefined, event.target.value);
   }
   updateStrokeColor(event: any): void {
-    this.pathData.setColor(event.target.value)
-    this.MapFuncs.UpdatePathStyleFromLayerId(this.pathData.id, event.target.value)
-    console.log('update color', this.pathData.getColor())
+    this.pathData.setColor(event.target.value);
+    this.MapFuncs.UpdatePathStyleFromLayerId(this.pathData.id, event.target.value);
   }
 
   updateEditMode(event: any): void {
     this.pathData.setEdit(event.target.checked);
-    this.Parameters2MapService.mapFromPathNodes(this.pathData) // in order to enable or disable drag nodes
-    console.log('update edit', this.pathData.editingStatus)
+    this.Parameters2MapService.mapFromPathNodes(this.pathData); // in order to enable or disable drag nodes
   }
 
   updateTransportMode(newValue: string): void {
     this.pathData.setTransportMode(newValue);
-    this.transportModeSelected = newValue
-    console.log('update transportMode', this.pathData.getTransportMode())
+    this.transportModeSelected = newValue;
+    console.log('update transportMode', this.pathData.getTransportMode());
   }
 
   updateElevationStatus(event: any): void {
     this.pathData.setElevation(event.target.checked);
-    console.log('update elevationMode', this.pathData.getElevation())
+    console.log('update elevationMode', this.pathData.getElevation());
   }
-
 
   addPointsFromCoords(coordinates: number[]): void {
     // here the magic part! update only the active tab and if edit is true of course
-    console.log('lol ', this.pathData.id , ' ', this.currentTabId)
     if (this.pathData.getEdit() === true && this.pathData.id === this.currentTabId) {
-      console.log('Nodes inserted', this.pathData, this.currentTabId)
+      // Nodes inserted
       const currentNodesPosition: number = this.pathData.getNodes().length;
       // TODO add class for point
       this.pathData.addNode(
@@ -175,8 +165,8 @@ export class InputParametersComponent implements OnInit, OnDestroy {
   updatePathWithApiData(path: PathElement): void {
     if ( this.pathData.id === this.currentTabId ) {
       this.pathData = path;
-      this.pathsToInputs.emitChartRefreshing()
-      console.log('finito', this.isCurrentTab, this.pathData)
+      this.pathsToInputs.emitChartRefreshing();
+      console.log('finito', this.isCurrentTab, this.pathData);
       // TODO from here to paths handler to create the plot
     }
   }
@@ -184,7 +174,7 @@ export class InputParametersComponent implements OnInit, OnDestroy {
   private displayPathParams(): void {
     console.log(
       this.pathData
-    )
+    );
   }
 
 }

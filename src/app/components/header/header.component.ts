@@ -25,11 +25,9 @@ export class HeaderComponent implements OnInit {
 
   }
 
-
   ngOnInit(): void {
     this.checkApiStatus()
   }
-
 
   checkApiStatus(): void {
     this.ApiContinuousChecker.pipe(startWith(0)).subscribe(() => {

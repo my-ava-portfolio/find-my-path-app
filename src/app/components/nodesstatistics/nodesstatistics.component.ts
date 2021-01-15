@@ -46,10 +46,9 @@ export class NodesstatisticsComponent implements OnInit, OnDestroy {
 
 
   ngOnDestroy(): void {
-    console.log("destroyed nodestatistics" + this.pathData.id)
     // very important to delete the observable related to this component,
     // to prevent memory leak: close the component instance
     this.computedChartSubscription.unsubscribe()
   }
- 
+
 }

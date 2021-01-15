@@ -40,9 +40,8 @@ export class pathsHandlerComponent implements OnInit {
   ) {
 
     this.pathsToInputs.refreshGlobalChart.subscribe(refresh => {
-      console.log('SOL', this.PathFeatures)
       if (refresh) {
-        console.log('LA', this.PathFeatures)
+        // refresh the chart
         this.d3LeafletUtils.createLinesChart('globalChart', this.PathFeatures, this.margin, this.width, this.height);
       }
     });
@@ -53,12 +52,9 @@ export class pathsHandlerComponent implements OnInit {
   }
 
   switchTab(tabId: string): void {
-    // console.log('start switch', this.currentTabId)
-
       // disable edition interactivity on the current path
     const indexCurrentPath: number = this.PathFeatures.findIndex(path => path.id === this.currentTabId);
     if (indexCurrentPath !== -1) {
-      console.log('wsixtch', indexCurrentPath, this.currentTabId, this.PathFeatures[indexCurrentPath])
       this.PathFeatures[indexCurrentPath].setEdit(false);
       // console.log(this.currentTabId, this.PathFeatures[indexCurrentPath].getEdit())
       this.pathsToMapService.refreshPathNodesFromPathId(this.PathFeatures[indexCurrentPath]);
@@ -72,11 +68,9 @@ export class pathsHandlerComponent implements OnInit {
     } else {
       this.currentTabId = undefined;
     }
-    console.log('Get tab: ' + this.currentTabId);
   }
 
   desactivateButtons(status: boolean): void {
-    console.log('blooom', status)
     this.pathActionButtonEnabled = status;
   }
 
@@ -86,17 +80,13 @@ export class pathsHandlerComponent implements OnInit {
     this.PathFeatures.push(newPath);
     this.currentTabId = newPath.id;
     this.switchTab(newPath.id);
-    console.log('ADDED path');
   }
 
   clearPaths(): void {
     this.PathFeatures.reverse().forEach((item: PathElement) => {
-      this.pathsToInputs.emitPathId(item.id)
+      this.pathsToInputs.emitPathId(item.id);
     });
-    // this.currentTabId = undefined;
     this.topoChartDisplayed = false;
-    // this.countPath = 0;
-    console.log('CLEAR', this.PathFeatures, this.countPath, this.currentTabId)
   }
 
   comparePath(): void {
@@ -104,7 +94,6 @@ export class pathsHandlerComponent implements OnInit {
     if (this.countPath > 1) {
       this.topoChartDisplayed = !this.topoChartDisplayed;
       // TODO add name
-      // this.d3LeafletUtils.createLinesChart('globalChart', this.PathFeatures, this.margin, this.width, this.height);
     }
 
   }
@@ -117,7 +106,6 @@ export class pathsHandlerComponent implements OnInit {
       this.countPath -= 1;
       const lastPathId: string = this.PathFeatures[this.PathFeatures.length - 1].id;
       this.switchTab(lastPathId);
-      console.log('REMOVED path', pathId);
       this.d3LeafletUtils.createLinesChart('globalChart', this.PathFeatures, this.margin, this.width, this.height);
     }
 
@@ -137,8 +125,6 @@ export class pathsHandlerComponent implements OnInit {
 
     this.PathFeatures.push(newPath);
     this.switchTab(newPath.id);
-
-    console.log('DUPL path', newPath, this.PathFeatures);
   }
 
   initPath(name: string = ''): PathElement {
@@ -146,11 +132,9 @@ export class pathsHandlerComponent implements OnInit {
     let colorOutput = this.GeneralFunc.randomHexColor();
     if (this.countPath <= this.colorsPredefined.length) {
       colorOutput = this.colorsPredefined[this.countPath]
-      console.log("blaaaaaaaaaaaaaaaaaaaaaaa", colorOutput)
     }
     this.countPath += 1;
     this.countTotalPath += 1;
-    console.log(colorOutput);
     return new PathElement(
       'path' + this.countTotalPath,
       'Path ' + this.countTotalPath + name,

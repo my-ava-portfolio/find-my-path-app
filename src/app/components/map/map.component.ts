@@ -24,8 +24,8 @@ import { D3LeafletUtils } from '../../core/d3LeafletUtils';
 export class MapComponent implements OnInit {
 
   private InitialViewCoords: any = [45.754649, 4.858618];
-  private url = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-  private attribution = '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors';
+  private backgroundMapUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+  private backgroundMapAttribution = '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors';
   private zoom = 10;
 
   private nodesMapPrefix = 'nodesMap-';
@@ -73,7 +73,6 @@ export class MapComponent implements OnInit {
         PathData.strokeColor,
         PathData.strokeWidth
       );
-      console.log("animated path", this.pathMapPrefix + PathData.id)
       this.Map2ParametersService.pushCompletePath(PathData)
       this.displayNodesOnMap(PathData);
     });
@@ -93,16 +92,16 @@ export class MapComponent implements OnInit {
   initMap(): void {
     this.map = L.map('map').setView(this.InitialViewCoords, this.zoom);
     L.tileLayer(
-      this.url,
+      this.backgroundMapUrl,
       {
-        attribution: this.attribution
+        attribution: this.backgroundMapAttribution
       }
     ).addTo(this.map);
     this.map.on('click', this.onMapClickWithD3.bind(this));
   }
 
   onMapClickWithD3(event: any): void {
-    console.log("create point on map")
+    // get coordinates from map click
     const coordinates: any = [
       event.latlng.lat,
       event.latlng.lng

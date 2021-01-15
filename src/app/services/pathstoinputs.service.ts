@@ -18,7 +18,6 @@ export class PathsToInputs {
   };
 
   emitChartRefreshing(): void {
-      console.log("ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ")
       this.refreshGlobalChart.next(true);
     };
 }

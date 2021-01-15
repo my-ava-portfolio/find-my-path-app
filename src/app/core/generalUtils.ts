@@ -10,7 +10,7 @@ import { Injectable } from '@angular/core';
     }
 
     randomHexColor(): string{
-        // bug !
+        // TODO bug ! color returned is not always a color
         return '#' + Math.floor(Math.random() * 16777215).toString(16);
     }
 
