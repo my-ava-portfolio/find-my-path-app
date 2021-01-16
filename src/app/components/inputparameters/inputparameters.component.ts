@@ -126,6 +126,15 @@ export class InputParametersComponent implements OnInit, OnDestroy {
     this.Parameters2MapService.mapFromPathNodes(this.pathData); // in order to enable or disable drag nodes
   }
 
+  changeEditMode(): void {
+    if (this.pathData.getEdit()) {
+      this.pathData.setEdit(false);
+    } else {
+      this.pathData.setEdit(true);
+    }
+    this.Parameters2MapService.mapFromPathNodes(this.pathData); // in order to enable or disable drag nodes
+  }
+
   updateTransportMode(newValue: string): void {
     this.pathData.setTransportMode(newValue);
     this.transportModeSelected = newValue;

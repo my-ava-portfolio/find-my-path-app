@@ -4,14 +4,17 @@
       <div class="col-sm-12">
         <h6 class="input-group">Action</h6>
         <div class="col-md-12">
+          <button id="btn-edit-tab" type="button" class="btn btn-primary mx-2 my-2" [ngClass]="pathData.editingStatus ? 'btn-danger': 'btn-primary'" (click)="changeEditMode()">
+            <i class="fas fa-edit"></i> Edit
+          </button>
+          <button id="btn-valid-tab" type="button" class="btn btn-success mx-2 my-2" type="submit" value="Submit" (click)="computePath()" [disabled]="pathData.getNodes().length < 2 ? 'disabled': null">
+            Compute path
+          </button>
           <button id="btn-del-tab" type="button" class="btn btn-primary mx-2 my-2" (click)="deletePathAction(pathData.id)">
             <i class="fas fa-trash-alt"></i> Delete
           </button>
           <button id="btn-dupl-tab" type="button" class="btn btn-primary mx-2 my-2" (click)="duplicatePathAction(pathData.id)">
             <i class="fas fa-copy"></i> Duplicate
-          </button>
-          <button id="btn-valid-tab" type="button" class="btn btn-success mx-2 my-2" type="submit" value="Submit" (click)="computePath()" [disabled]="pathData.getNodes().length < 2 ? 'disabled': null">
-            Submit
           </button>
 
         </div>

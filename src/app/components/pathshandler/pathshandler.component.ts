@@ -42,7 +42,9 @@ export class pathsHandlerComponent implements OnInit {
     this.pathsToInputs.refreshGlobalChart.subscribe(refresh => {
       if (refresh) {
         // refresh the chart
-        this.d3LeafletUtils.createLinesChart('globalChart', this.PathFeatures, this.margin, this.width, this.height);
+        const pathsToChartFound = this.pathsReadyToChart();
+        console.log(pathsToChartFound);
+        this.d3LeafletUtils.createLinesChart('globalChart', pathsToChartFound, this.margin, this.width, this.height);
       }
     });
 
@@ -54,6 +56,7 @@ export class pathsHandlerComponent implements OnInit {
   switchTab(tabId: string): void {
       // disable edition interactivity on the current path
     const indexCurrentPath: number = this.PathFeatures.findIndex(path => path.id === this.currentTabId);
+    console.log("aaaa", tabId, indexCurrentPath);
     if (indexCurrentPath !== -1) {
       this.PathFeatures[indexCurrentPath].setEdit(false);
       this.pathsToMapService.refreshPathNodesFromPathId(this.PathFeatures[indexCurrentPath]);
@@ -77,7 +80,7 @@ export class pathsHandlerComponent implements OnInit {
     // TODO add name
     const newPath: PathElement = this.initPath();
     this.PathFeatures.push(newPath);
-    this.currentTabId = newPath.id;
+    // this.currentTabId = newPath.id;
     this.switchTab(newPath.id);
   }
 
@@ -89,10 +92,9 @@ export class pathsHandlerComponent implements OnInit {
   }
 
   comparePath(): void {
-    // TODO check if path has been computed than check the count paths
+    // TODO ? check if path has been computed than check the count paths
     if (this.countPath > 1) {
       this.topoChartDisplayed = !this.topoChartDisplayed;
-      // TODO add name
     }
 
   }
@@ -107,13 +109,27 @@ export class pathsHandlerComponent implements OnInit {
     if (this.countPath > 0) {
       const lastPathId: string = this.PathFeatures[this.PathFeatures.length - 1].id;
       this.switchTab(lastPathId);
-      this.d3LeafletUtils.createLinesChart('globalChart', this.PathFeatures, this.margin, this.width, this.height);
+      // filter paths to chart (only if path has been computed)
+      const pathsToChartFound = this.pathsReadyToChart();
+      console.log(pathsToChartFound);
+      this.d3LeafletUtils.createLinesChart('globalChart', pathsToChartFound, this.margin, this.width, this.height);
     }
 
     if (this.countPath <= 1) {
       // to hide comparison topo chart
       this.topoChartDisplayed = false;
     }
+  }
+
+  pathsReadyToChart(): PathElement[] {
+    // to select only the path ready to be charted
+    const pathsToChart: PathElement[] = [];
+    this.PathFeatures.forEach((d) => {
+      if (d.isPathComputed()) {
+        pathsToChart.push(d);
+      }
+    });
+    return pathsToChart;
   }
 
   duplicatePath(pathId: string): void {
@@ -135,7 +151,7 @@ export class pathsHandlerComponent implements OnInit {
 
     let colorOutput = this.GeneralFunc.randomHexColor();
     if (this.countPath <= this.colorsPredefined.length) {
-      colorOutput = this.colorsPredefined[this.countPath]
+      colorOutput = this.colorsPredefined[this.countPath];
     }
     this.countPath += 1;
     this.countTotalPath += 1;

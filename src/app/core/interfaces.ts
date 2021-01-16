@@ -290,9 +290,13 @@ export class PathElement {
         });
     }
 
-    getCopy(): PathElement{
+    getCopy(): PathElement {
         return (JSON.parse(JSON.stringify(this)));
     }
+
+  isPathComputed(): boolean {
+    return this.pointsPath !== undefined;
+  }
 
 }
 
