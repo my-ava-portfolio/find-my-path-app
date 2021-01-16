@@ -98,11 +98,13 @@ export class pathsHandlerComponent implements OnInit {
   }
 
   deletePath(pathId: string): void {
+    this.countPath -= 1;
+
     this.PathFeatures = this.PathFeatures.filter(
       (path: PathElement): boolean => path.id !== pathId
     );
+
     if (this.countPath > 0) {
-      this.countPath -= 1;
       const lastPathId: string = this.PathFeatures[this.PathFeatures.length - 1].id;
       this.switchTab(lastPathId);
       this.d3LeafletUtils.createLinesChart('globalChart', this.PathFeatures, this.margin, this.width, this.height);
