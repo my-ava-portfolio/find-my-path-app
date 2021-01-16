@@ -107,7 +107,7 @@ export class InputParametersComponent implements OnInit, OnDestroy {
       this.buttonsStatus(false);  // desactivate buttons to avoid conflicts between path during path computing
       this.PathBuilderService.getPostProcData(this.pathData);
     } else {
-      // TODO display an error message
+      // this alert should not happen because button is enabled only if 2 or more nodes exist
       alert(nodesCreated.length + '  nodes found');
     }
   }

@@ -1,3 +1,4 @@
+import { getTestBed } from '@angular/core/testing';
 import { Injectable } from '@angular/core';
 
 import * as L from 'leaflet';
@@ -377,7 +378,7 @@ export class D3LeafletUtils {
       .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
     // Set the ranges
-    const x: any = d3.scaleLinear().range([0, contentWidth]);
+    const x: any = d3.scaleLinear().range([5, contentWidth]); // add 5 not 0, to dispatch the x axis and the y axis
     const y: any = d3.scaleLinear().range([contentHeight, 0]);
 
     // Define the axes
@@ -392,11 +393,12 @@ export class D3LeafletUtils {
 
     // Scale the range of the data
     const xValues: number[] = [];
-    const yValues: number[] = [];
+    const yValuesMin: number[] = [];
+    const yValuesMax: number[] = [];
     data.forEach((item: any) => {
       xValues.push(item.statsPath.length);
-      yValues.push(item.statsPath.height_min - 2);
-      yValues.push(item.statsPath.height_max + 2);
+      yValuesMin.push(item.statsPath.height_min - 10);
+      yValuesMax.push(item.statsPath.height_max + 5);
     });
 
     x.domain([
@@ -404,10 +406,30 @@ export class D3LeafletUtils {
       d3.max(xValues)
     ]);
     y.domain([
-      d3.min(yValues),
-      d3.max(yValues)
+      d3.min(yValuesMin),
+      d3.max(yValuesMax)
     ]);
 
+    // legend process
+    const legend = g.selectAll('g')
+    .data(data)
+    .enter()
+    .append('g')
+    .attr('class', 'legend');
+
+    legend.append('rect')
+    .attr('x', width - 70)
+    .attr('y', (d: any, i: number) => i *  20)
+    .attr('width', 10)
+    .attr('height', 10)
+    .style('fill', (d: any) => d.strokeColor);
+
+    legend.append('text')
+    .attr('x', width - 55)
+    .attr('y', (d: any, i: number) => (i *  20) + 9)
+    .text( (d: any) => d.name);
+
+    // data process
     data.forEach((item: any) => {
 
       const features: any[] = item.getPointsPath().features;

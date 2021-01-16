@@ -10,7 +10,7 @@
           <button id="btn-dupl-tab" type="button" class="btn btn-primary mx-2 my-2" (click)="duplicatePathAction(pathData.id)">
             <i class="fas fa-copy"></i> Duplicate
           </button>
-          <button id="btn-valid-tab" type="button" class="btn btn-success mx-2 my-2" type="submit" value="Submit" (click)="computePath()">
+          <button id="btn-valid-tab" type="button" class="btn btn-success mx-2 my-2" type="submit" value="Submit" (click)="computePath()" [disabled]="pathData.getNodes().length < 2 ? 'disabled': null">
             Submit
           </button>
 
@@ -68,7 +68,7 @@
                         <datalist id="presetColors">
                           <option *ngFor="let color of colorsPredefined" [value]="color">
                         </datalist>
-                        
+
                   </div>
               </div>
 

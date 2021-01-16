@@ -56,7 +56,6 @@ export class pathsHandlerComponent implements OnInit {
     const indexCurrentPath: number = this.PathFeatures.findIndex(path => path.id === this.currentTabId);
     if (indexCurrentPath !== -1) {
       this.PathFeatures[indexCurrentPath].setEdit(false);
-      // console.log(this.currentTabId, this.PathFeatures[indexCurrentPath].getEdit())
       this.pathsToMapService.refreshPathNodesFromPathId(this.PathFeatures[indexCurrentPath]);
     }
 
@@ -109,7 +108,10 @@ export class pathsHandlerComponent implements OnInit {
       this.d3LeafletUtils.createLinesChart('globalChart', this.PathFeatures, this.margin, this.width, this.height);
     }
 
-    // TODO remove nodes on map
+    if (this.countPath <= 1) {
+      // to hide comparison topo chart
+      this.topoChartDisplayed = false;
+    }
   }
 
   duplicatePath(pathId: string): void {
