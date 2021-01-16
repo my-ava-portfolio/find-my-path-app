@@ -1,3 +1,7 @@
 .header {
     z-index: 1
 }
+
+.navbar {
+  display: list-item;
+}
