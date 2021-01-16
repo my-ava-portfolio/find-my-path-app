@@ -22,7 +22,7 @@ import { PathsToInputs } from './services/pathstoinputs.service';
 
 
 
-import { pathsHandlerComponent } from './components/pathshandler/pathshandler.component';
+import { PathsHandlerComponent } from './components/pathshandler/pathshandler.component';
 import { nodesControlersComponent } from './components/nodescontrolers/nodescontrolers.component';
 import { NodesstatisticsComponent } from './components/nodesstatistics/nodesstatistics.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -34,7 +34,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     FooterComponent,
     MapComponent,
     ViewcontrolerComponent,
-    pathsHandlerComponent,
+    PathsHandlerComponent,
     InputParametersComponent,
     nodesControlersComponent,
     NodesstatisticsComponent

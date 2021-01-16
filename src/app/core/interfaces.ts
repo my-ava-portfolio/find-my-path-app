@@ -1,4 +1,4 @@
-export class colorsPalettes {
+export class ColorsPalettes {
   colorsBrewer = [
     '#1f78b4',
     '#33a02c',
@@ -110,7 +110,7 @@ export interface OutputPathApi {
 }
 
 
-export interface configuration {
+export interface Configuration {
     EditingStatus: boolean;
     transportModeStatus: string;
     elevationStatus: boolean;
@@ -121,7 +121,7 @@ export interface PathFeature {
     id: string;
     name: string;
     color: string;
-    configuration: configuration;
+    configuration: Configuration;
     inputNodes: NodeGeoJson;
     points_path?: NodePathGeoJson;
     line_path?: LinePathGeoJson;
@@ -241,12 +241,12 @@ export class PathElement {
         this.inputNodes = nodes;
     }
     addNode(geometry: PointGeometry, properties: any): void {
-        const newNodes = new NodeFeature(
+      const newNodes = new NodeFeature(
             geometry,
             properties
-      )
-    this.rebuildNodes();
-        this.inputNodes.push(newNodes);
+      );
+      this.rebuildNodes();
+      this.inputNodes.push(newNodes);
     }
     getNodes(): NodeFeature[] {
         return this.inputNodes;
@@ -276,17 +276,17 @@ export class PathElement {
     // deprecated, only used to debug the duplication action
     updatePath(pathId: string): void {
         this.getNodes().forEach((element: NodeFeature) => {
-            element.properties.path = pathId
+            element.properties.path = pathId;
         });
     }
     rebuildNodes(): void {
         const nodesToReworked: NodeFeature[] = this.getNodes();
-        this.inputNodes = []
+        this.inputNodes = [];
         nodesToReworked.forEach((element: NodeFeature) => {
             this.addNode(
                 createCopy(element.geometry),
                 createCopy(element.properties)
-            )
+            );
         });
     }
 

@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 
-import { NodeFeature, PathElement, NodeGeoJson, Nodes, PathContainer, colorsPalettes } from '../../core/interfaces';
+import { NodeFeature, PathElement, NodeGeoJson, Nodes, PathContainer, ColorsPalettes } from '../../core/interfaces';
 
 import { GeneralUtils } from '../../core/generalUtils';
 
@@ -17,7 +17,7 @@ import { D3LeafletUtils } from '../../core/d3LeafletUtils';
   templateUrl: './pathshandler.component.html',
   styleUrls: ['./pathshandler.component.css']
 })
-export class pathsHandlerComponent implements OnInit {
+export class PathsHandlerComponent implements OnInit {
 
   PathFeatures: PathElement[] = [];
   countPath = 0; // to delete action
@@ -26,7 +26,7 @@ export class pathsHandlerComponent implements OnInit {
   helpPopup = 'Start a new path!';
   topoChartDisplayed = false;
   pathActionButtonEnabled = true;
-  colorsPredefined = new colorsPalettes().colorsBrewer;
+  colorsPredefined = new ColorsPalettes().colorsBrewer;
 
   private margin = {top: 30, right: 25, bottom: 30, left: 30};
   private width = 400;
@@ -42,9 +42,7 @@ export class pathsHandlerComponent implements OnInit {
     this.pathsToInputs.refreshGlobalChart.subscribe(refresh => {
       if (refresh) {
         // refresh the chart
-        const pathsToChartFound = this.pathsReadyToChart();
-        console.log(pathsToChartFound);
-        this.d3LeafletUtils.createLinesChart('globalChart', pathsToChartFound, this.margin, this.width, this.height);
+        this.pathsReadyCharted();
       }
     });
 
@@ -54,9 +52,8 @@ export class pathsHandlerComponent implements OnInit {
   }
 
   switchTab(tabId: string): void {
-      // disable edition interactivity on the current path
+    // disable edition interactivity on the current path
     const indexCurrentPath: number = this.PathFeatures.findIndex(path => path.id === this.currentTabId);
-    console.log("aaaa", tabId, indexCurrentPath);
     if (indexCurrentPath !== -1) {
       this.PathFeatures[indexCurrentPath].setEdit(false);
       this.pathsToMapService.refreshPathNodesFromPathId(this.PathFeatures[indexCurrentPath]);
@@ -89,6 +86,7 @@ export class pathsHandlerComponent implements OnInit {
       this.pathsToInputs.emitPathId(item.id);
     });
     this.topoChartDisplayed = false;
+    this.pathsReadyCharted(); // we refresh the chart to clean it!
   }
 
   comparePath(): void {
@@ -100,19 +98,18 @@ export class pathsHandlerComponent implements OnInit {
   }
 
   deletePath(pathId: string): void {
-    this.countPath -= 1;
+
 
     this.PathFeatures = this.PathFeatures.filter(
       (path: PathElement): boolean => path.id !== pathId
     );
 
     if (this.countPath > 0) {
+      this.countPath -= 1;
       const lastPathId: string = this.PathFeatures[this.PathFeatures.length - 1].id;
       this.switchTab(lastPathId);
       // filter paths to chart (only if path has been computed)
-      const pathsToChartFound = this.pathsReadyToChart();
-      console.log(pathsToChartFound);
-      this.d3LeafletUtils.createLinesChart('globalChart', pathsToChartFound, this.margin, this.width, this.height);
+      this.pathsReadyCharted();
     }
 
     if (this.countPath <= 1) {
@@ -121,7 +118,7 @@ export class pathsHandlerComponent implements OnInit {
     }
   }
 
-  pathsReadyToChart(): PathElement[] {
+  pathsReadyCharted(): void {
     // to select only the path ready to be charted
     const pathsToChart: PathElement[] = [];
     this.PathFeatures.forEach((d) => {
@@ -129,7 +126,7 @@ export class pathsHandlerComponent implements OnInit {
         pathsToChart.push(d);
       }
     });
-    return pathsToChart;
+    this.d3LeafletUtils.createLinesChart('globalChart', pathsToChart, this.margin, this.width, this.height);
   }
 
   duplicatePath(pathId: string): void {

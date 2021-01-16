@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { pathsHandlerComponent } from './pathshandler.component';
+import { PathsHandlerComponent } from './pathshandler.component';
 
 describe('PathshandlerComponent', () => {
-  let component: pathsHandlerComponent;
-  let fixture: ComponentFixture<pathsHandlerComponent>;
+  let component: PathsHandlerComponent;
+  let fixture: ComponentFixture<PathsHandlerComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ pathsHandlerComponent ]
+      declarations: [ PathsHandlerComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(pathsHandlerComponent);
+    fixture = TestBed.createComponent(PathsHandlerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -11,7 +11,7 @@ import { Subscription } from 'rxjs';
 
 import { D3LeafletUtils } from '../../core/d3LeafletUtils';
 
-import { NodeFeature, PathElement, Nodes, colorsPalettes } from '../../core/interfaces';
+import { NodeFeature, PathElement, Nodes, ColorsPalettes } from '../../core/interfaces';
 
 
 @Component({
@@ -29,7 +29,7 @@ export class InputParametersComponent implements OnInit, OnDestroy {
   @Output() emitChangePathsHandlerStatus = new EventEmitter<boolean>();
 
   configureTabOpened = true;
-  colorsPredefined = new colorsPalettes().colorsBrewer;
+  colorsPredefined = new ColorsPalettes().colorsBrewer;
   pathName!: string;
   transportModeSelected!: string;
 

@@ -21,17 +21,17 @@ export class HeaderComponent implements OnInit {
 
     this.ApiCheckService.apiHealth.subscribe(data =>
       this.apiStatus = data
-    )
+    );
 
   }
 
   ngOnInit(): void {
-    this.checkApiStatus()
+    this.checkApiStatus();
   }
 
   checkApiStatus(): void {
     this.ApiContinuousChecker.pipe(startWith(0)).subscribe(() => {
-        this.ApiCheckService.callApiStatus()
+        this.ApiCheckService.callApiStatus();
       }
     );
   }
