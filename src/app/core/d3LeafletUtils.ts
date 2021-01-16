@@ -39,13 +39,19 @@ export class D3LeafletUtils {
         d3.selectAll('#' + layerId).remove();
     }
 
-    UpdatePathStyleFromLayerId(layerId: string, strokeColor?: string, strokeWidth?: string): void {
+  UpdatePathStyleFromLayerId(layerId: string, strokeColor?: string, strokeWidth?: string): void {
+      // path , nodes, line chart are updated when color is changed
       const path: any = d3.selectAll('.lineConnect_pathMap-' + layerId);
       const nodes: any = d3.selectAll('#nodesMap-' + layerId + ' circle');
 
+      const chartLine =  d3.selectAll('.chart-line-' + layerId)
+      const chartLineLegend =  d3.selectAll('.chart-legend-' + layerId)
+    
       if (strokeColor !== undefined) {
         path.style('stroke', strokeColor);
         nodes.style('stroke', strokeColor);
+        chartLine.style('stroke', strokeColor);
+        chartLineLegend.style('fill', strokeColor);
       }
 
       if (strokeWidth !== undefined) {
@@ -422,6 +428,7 @@ export class D3LeafletUtils {
     .attr('y', (d: any, i: number) => i *  20)
     .attr('width', 10)
     .attr('height', 10)
+    .attr('class', (d) => 'chart-legend-' + d.id)
     .style('fill', (d: any) => d.strokeColor);
 
     legend.append('text')
@@ -436,7 +443,7 @@ export class D3LeafletUtils {
       const innerG: any = g.append('g')
       // Add the line_value path.
       innerG.append('path')
-      .attr('class', 'line')
+      .attr('class', (d) => 'chart-line-' + item.id)
       .attr('d', lineBuilder(features))
       .style('fill', 'none') // add a color
       .style('opacity', 'unset') // add 0 to hide the path
