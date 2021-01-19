@@ -28,10 +28,11 @@ export class InputParametersComponent implements OnInit, OnDestroy {
   @Output() pathEmitToDuplicate = new EventEmitter<string>();
   @Output() emitChangePathsHandlerStatus = new EventEmitter<boolean>();
 
-  configureTabOpened = true;
+  tabOpened = true;
   colorsPredefined = new ColorsPalettes().colorsBrewer;
   pathName!: string;
   transportModeSelected!: string;
+  editStatus = "off"
 
   addPointsSubscription!: Subscription;
   updatePathSubscription!: Subscription;
@@ -85,6 +86,8 @@ export class InputParametersComponent implements OnInit, OnDestroy {
   updatePathName(event: any): void {
     this.pathName = event.target.value;
     this.pathData.name = this.pathName;
+    this.PathBuilderService.chartPathToRefresh.next(this.pathData)
+    this.pathsToInputs.emitGlobalChartRefreshing();
   }
 
   deletePathAction(pathId: string): void {
@@ -121,16 +124,14 @@ export class InputParametersComponent implements OnInit, OnDestroy {
     this.MapFuncs.UpdatePathStyleFromLayerId(this.pathData.id, event.target.value);
   }
 
-  updateEditMode(event: any): void {
-    this.pathData.setEdit(event.target.checked);
-    this.Parameters2MapService.mapFromPathNodes(this.pathData); // in order to enable or disable drag nodes
-  }
-
   changeEditMode(): void {
     if (this.pathData.getEdit()) {
       this.pathData.setEdit(false);
+      this.editStatus = "off"
     } else {
       this.pathData.setEdit(true);
+      this.editStatus = "on"
+
     }
     this.Parameters2MapService.mapFromPathNodes(this.pathData); // in order to enable or disable drag nodes
   }
@@ -174,9 +175,9 @@ export class InputParametersComponent implements OnInit, OnDestroy {
   updatePathWithApiData(path: PathElement): void {
     if ( this.pathData.id === this.currentTabId ) {
       this.pathData = path;
-      this.pathsToInputs.emitChartRefreshing();
+      this.pathsToInputs.emitGlobalChartRefreshing();
       console.log('finito', this.isCurrentTab, this.pathData);
-      // TODO from here to paths handler to create the plot
+
     }
   }
 

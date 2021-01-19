@@ -10,8 +10,9 @@ export class MapPathBuilderService {
 
   // private REST_API_SERVER = 'https://find-my-path.herokuapp.com/api/v1/path?';
   private apiUrl = 'http://192.168.1.16:5000/api/v1/path?';
-  pathApiOutputs: Subject<PathElement> = new Subject<PathElement>();
+  pathBuilt: Subject<PathElement> = new Subject<PathElement>();
   ErrorApiFound: Subject<boolean> = new Subject<boolean>();
+  chartPathToRefresh: Subject<PathElement> = new Subject<PathElement>();
 
   constructor(
       private http: HttpClient
@@ -34,7 +35,7 @@ export class MapPathBuilderService {
         path.setLinePath(response?.line_path);
         path.setPointsPath(response?.points_path);
         path.setStatsPath(response?.stats_path);
-        this.pathApiOutputs.next(path);
+        this.pathBuilt.next(path);
       },
       (error) => {
         // TODO improve error message, but API need improvments
@@ -42,4 +43,9 @@ export class MapPathBuilderService {
       }
     );
   }
+
+  refreshChartPath(path: PathElement): void  {
+    this.chartPathToRefresh.next(path);
+  }
+
 }

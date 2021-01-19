@@ -117,7 +117,7 @@ export class D3LeafletUtils {
       .style('stroke-width', lineWidth)
       .style('overflow', 'overlay');
 
-    // the traveling circle along the path
+      // the traveling circle along the path
     const marker: any  = g.append('circle')
       .attr('r', 10)
       .attr('id', 'marker_' + layerId)
@@ -171,14 +171,19 @@ export class D3LeafletUtils {
     };
 
     function transition(): void {
-    linePath.transition()
-      .duration(7500)
-      .attrTween('stroke-dasharray', tweenDash)
-      .on('end', (): void => {
-        marker.style('opacity', '0');
-        textmarker.style('opacity', '0');
-        // d3.select(this).call(transition);// infinite loop
-      });
+      linePath.transition()
+        .duration(7500)
+        .attrTween('stroke-dasharray', tweenDash)
+        .on('end', (): void => {
+          marker.style('opacity', '0');
+          textmarker.style('opacity', '0');
+          // d3.select(this).call(transition);// infinite loop
+          linePath.style('stroke-dasharray', '0')
+          // value of this property is depending from the zoom... if we zoom the context change and the style is not adapted.
+          // so we remove the stroke-dasharray style to be sure to display the path as usual
+        })
+        ;
+
     }
 
     // this function feeds the attrTween operator above with the

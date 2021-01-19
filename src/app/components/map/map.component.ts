@@ -65,7 +65,7 @@ export class MapComponent implements OnInit {
     });
 
     // map the path from nodes by using the API
-    this.PathBuilderService.pathApiOutputs.subscribe(PathData => {
+    this.PathBuilderService.pathBuilt.subscribe(PathData => {
       this.MapFuncs.computeAnimatePointsOnLine(
         this.map,
         PathData.getPointsPath().features,
@@ -73,7 +73,7 @@ export class MapComponent implements OnInit {
         PathData.strokeColor,
         PathData.strokeWidth
       );
-      this.Map2ParametersService.pushCompletePath(PathData)
+      this.Map2ParametersService.pushCompletePath(PathData);
       this.displayNodesOnMap(PathData);
     });
 

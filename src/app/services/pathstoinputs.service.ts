@@ -10,14 +10,14 @@ export class PathsToInputs {
 
   refreshGlobalChart: Subject<boolean> = new Subject<boolean>();  // input parameters to paths
 
-    constructor(
-    ) {}
+  constructor(
+  ) {}
 
-    emitPathId(pathId: string): void {
-      this.pathId.next(pathId);
+  emitPathId(pathId: string): void {
+    this.pathId.next(pathId);
   };
 
-  emitChartRefreshing(): void {
-      this.refreshGlobalChart.next(true);
-    };
+  emitGlobalChartRefreshing(): void {
+    this.refreshGlobalChart.next(true);
+  };
 }

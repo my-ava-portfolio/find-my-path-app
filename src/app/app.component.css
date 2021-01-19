@@ -8,10 +8,11 @@
 #apiStatus {
   width: 130px;
   point: unset;
+  height: fit-content;
 }
 
 .y-scroll {
-  height: 90vh;
+  height: 89vh;
   overflow-y: scroll;
 }
 
@@ -19,4 +20,6 @@
   background-color: ghostwhite;
 }
 
-
+.navbar {
+  padding: .4rem 1rem;
+}
