@@ -1,8 +1,9 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import * as d3 from 'd3';
+import {DomSanitizer, SafeResourceUrl, SafeUrl} from '@angular/platform-browser';
 
 import { MapPathBuilderService } from '../../services/mappathbuilder.service';
-import { NodePathFeature, PathElement, Margin } from '../../core/interfaces';
+import { NodePathGeoJson, LinePathGeoJson, PathElement, Margin } from '../../core/interfaces';
 import { D3LeafletUtils } from '../../core/d3LeafletUtils';
 import { Subscription } from 'rxjs';
 
@@ -19,18 +20,33 @@ export class NodesstatisticsComponent implements OnInit, OnDestroy {
   computedChartSubscription!: Subscription;
   refreshedChartSubscription!: Subscription;
 
+  downloadJsonOriginalNodes!: SafeUrl;
+
+  nodesOutputData!: NodePathGeoJson;
+  downloadJsonNodes!: SafeUrl;
+
+  pathOutputData!: LinePathGeoJson;
+  downloadJsonPath!: SafeUrl;
+    
   private margin: Margin = {top: 30, right: 25, bottom: 30, left: 30};
   private width = 400;
   private height = 300;
 
   constructor(
-    private PathBuilderService: MapPathBuilderService,
-    private d3LeafletUtils: D3LeafletUtils
+    private PathBuilderService: MapPathBuilderService,  // TODO create a new service between nodescontrolers and nodes statistics
+    private d3LeafletUtils: D3LeafletUtils,
+    private sanitizer: DomSanitizer
   ) {
 
     this.computedChartSubscription = this.PathBuilderService.pathBuilt.subscribe(pathData => {
       if (this.pathData.id === this.currentTabId) {
         this.createPathChart(pathData)
+
+        this.pathOutputData = pathData.getLinePath()
+        this.generateDownloadJsonUriForPath(this.pathOutputData)
+
+        this.nodesOutputData = pathData.getPointsPath()
+        this.generateDownloadJsonUriForNodes(this.nodesOutputData)
       }
     });
 
@@ -60,6 +76,37 @@ export class NodesstatisticsComponent implements OnInit, OnDestroy {
       this.width,
       this.height
     ); // get a list of pointsPath
+  }
+
+  generateDownloadJsonUriForPath(data: LinePathGeoJson): void {
+    let jsonData = JSON.stringify(data);
+    let blob = new Blob([jsonData], { type: 'text/json' });
+    let url= window.URL.createObjectURL(blob);
+    let uri:SafeUrl = this.sanitizer.bypassSecurityTrustUrl(url);
+    this.downloadJsonPath = uri;
+  }
+
+  generateDownloadJsonUriForNodes(data: NodePathGeoJson): void {
+    let jsonData = JSON.stringify(data);
+    let blob = new Blob([jsonData], { type: 'text/json' });
+    let url= window.URL.createObjectURL(blob);
+    let uri:SafeUrl = this.sanitizer.bypassSecurityTrustUrl(url);
+    this.downloadJsonNodes = uri;
+  }
+
+  generateDownloadJsonUriForOriginalNodes(): void {
+    if (this.pathData !== undefined) {
+      if (this.pathData.getNodes().length > 0) {
+        let jsonData = JSON.stringify({
+          "type": "FeatureCollection",
+          "features": this.pathData.getNodes()
+        });
+        let blob = new Blob([jsonData], { type: 'text/json' });
+        let url= window.URL.createObjectURL(blob);
+        let uri:SafeUrl = this.sanitizer.bypassSecurityTrustUrl(url);
+        this.downloadJsonOriginalNodes = uri;
+      };
+    };
   }
 
 }

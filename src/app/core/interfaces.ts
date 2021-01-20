@@ -81,7 +81,7 @@ interface TopoPath {
     length: number;
 }
 
-interface LinePathGeoJson {
+export interface LinePathGeoJson {
     type: string;
     features: {
         type: string;
@@ -165,7 +165,7 @@ export interface Node {
 }
 
 export class NodeFeature {
-    private type = 'feature';
+    private type = 'Feature';
     geometry: PointGeometry;
     properties: any;
 
@@ -192,7 +192,7 @@ export class PathElement {
     private pointsPath!: NodePathGeoJson;
     private linePath!: LinePathGeoJson;
     statsPath!: PathStatistics;
-
+    
     constructor(
         id: string,
         name: string,

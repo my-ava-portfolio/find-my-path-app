@@ -60,7 +60,7 @@ export class D3LeafletUtils {
 
   computeAnimatePointsOnLine(LeafletMap: any, GeoJsonPointFeatures: any[], layerId: string, lineColor: string, lineWidth: string): void {
     this.removeFeaturesMapFromLayerId(layerId);
-
+    const input_data: any[] = JSON.parse(JSON.stringify(GeoJsonPointFeatures)) 
     const convertLatLngToLayerCoords = (d: any): any => {
         return LeafletMap.latLngToLayerPoint(
             new L.LatLng(
@@ -70,7 +70,7 @@ export class D3LeafletUtils {
         );
     };
 
-    GeoJsonPointFeatures.forEach( (feature, i) => {
+    input_data.forEach( (feature, i) => {
         feature.LatLng = new L.LatLng(
             feature.geometry.coordinates[1],
             feature.geometry.coordinates[0]
@@ -91,7 +91,7 @@ export class D3LeafletUtils {
     // points that make the path, we'll be used to display them with the line chart
     // we make them transparent
     const ptFeatures: any = g.selectAll('circle')
-      .data(GeoJsonPointFeatures)
+      .data(input_data)
       .enter()
       .append('circle')
       .attr('r', 10)
@@ -101,13 +101,13 @@ export class D3LeafletUtils {
       .style('opacity', '0');
 
     // Here we will make the points into a single
-    // line/path. Note that we surround the GeoJsonPointFeatures
+    // line/path. Note that we surround the input_data
     // with [] to tell d3 to treat all the points as a
     // single line. For now these are basically points
     // but below we set the "d" attribute using the
     // line creator function from above.
     const linePath: any  = g.selectAll('.lineConnect_' + layerId)
-      .data([GeoJsonPointFeatures])
+      .data([input_data])
       .enter()
       .append('path')
       .attr('class', 'lineConnect_' + layerId)
@@ -146,8 +146,8 @@ export class D3LeafletUtils {
       // we get the stating point
       marker.attr('transform',
         (): string => {
-          const y: number = GeoJsonPointFeatures[0].geometry.coordinates[1];
-          const x: number = GeoJsonPointFeatures[0].geometry.coordinates[0];
+          const y: number = input_data[0].geometry.coordinates[1];
+          const x: number = input_data[0].geometry.coordinates[0];
           return 'translate(' +
             LeafletMap.latLngToLayerPoint(new L.LatLng(y, x)).x + ',' +
             LeafletMap.latLngToLayerPoint(new L.LatLng(y, x)).y +
@@ -157,8 +157,8 @@ export class D3LeafletUtils {
 
       textmarker.attr('transform',
         (): string => {
-        const y: number = GeoJsonPointFeatures[0].geometry.coordinates[1];
-        const x: number = GeoJsonPointFeatures[0].geometry.coordinates[0];
+        const y: number = input_data[0].geometry.coordinates[1];
+        const x: number = input_data[0].geometry.coordinates[0];
         return 'translate(' +
             LeafletMap.latLngToLayerPoint(new L.LatLng(y, x)).x + ',' +
             LeafletMap.latLngToLayerPoint(new L.LatLng(y, x)).y +
@@ -222,7 +222,9 @@ export class D3LeafletUtils {
   computeMapFromPoints(LeafletMap: any, GeoJsonPointFeatures: any[], layerId: string, dragEnabled: boolean, colorStroke: string, displayToolTip: boolean = false): void {
     this.removeFeaturesMapFromLayerId(layerId);
     console.log('drag status', dragEnabled);
-    GeoJsonPointFeatures.forEach( (feature, i): void => {
+    const input_data: any[] = JSON.parse(JSON.stringify(GeoJsonPointFeatures)) 
+
+    input_data.forEach( (feature, i): void => {
       feature.LatLng = new L.LatLng(
         feature.geometry.coordinates[1],
         feature.geometry.coordinates[0]
@@ -234,7 +236,7 @@ export class D3LeafletUtils {
     const g: any = svg.select('g').attr('class', 'leaflet-zoom-hide path');
 
     const PointsCircles: any = g.selectAll('.PathNodes')
-      .data(GeoJsonPointFeatures)
+      .data(input_data)
       .enter()
       .append('circle', '.PathNodes')
       .attr('class', 'PathNodes')
@@ -268,13 +270,13 @@ export class D3LeafletUtils {
           })
           .on('end', (d: any): void => {
             const layerCoordsConverter = this.convertLayerCoordsToLatLng.bind(this);
-            const nodeUuid: number = GeoJsonPointFeatures.findIndex(
+            const nodeUuid: number = input_data.findIndex(
                 (node: any): boolean =>
                     node.properties.uuid === d.properties.uuid
             );
             const CoordinatesUpdated = layerCoordsConverter(LeafletMap, { x: d3.event.x, y: d3.event.y });
-            GeoJsonPointFeatures[nodeUuid].geometry.coordinates = [CoordinatesUpdated.lng, CoordinatesUpdated.lat];
-            this.computeMapFromPoints(LeafletMap, GeoJsonPointFeatures, layerId, dragEnabled, colorStroke, displayToolTip = false);
+            input_data[nodeUuid].geometry.coordinates = [CoordinatesUpdated.lng, CoordinatesUpdated.lat];
+            this.computeMapFromPoints(LeafletMap, input_data, layerId, dragEnabled, colorStroke, displayToolTip = false);
             LeafletMap.dragging.enable();
           })
         );

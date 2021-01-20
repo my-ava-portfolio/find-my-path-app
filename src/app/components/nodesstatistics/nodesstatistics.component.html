@@ -9,8 +9,10 @@
             <button
               type="button"
               class="download form-control btn btn-success mx-1 my-1"
+              (click)="generateDownloadJsonUriForOriginalNodes()"
+              [disabled]="pathData.getNodes().length === 0 ? 'disabled': null"
             >
-              <i class="fas fa-cloud-download-alt"></i> GeoJSON nodes
+              <i class="fas fa-cloud-download-alt"></i>  <a [href]="downloadJsonOriginalNodes" [download]="'original_nodes_' + pathData.name + '.geojson'"> GeoJSON original nodes</a>
             </button>
           </div>
 
@@ -18,8 +20,20 @@
             <button
               type="button"
               class="download form-control btn btn-success mx-1 my-1"
+              [disabled]="nodesOutputData === undefined ? 'disabled': null"
             >
-              <i class="fas fa-cloud-download-alt"></i> GeoJSON path
+              <i class="fas fa-cloud-download-alt"></i>  <a [href]="downloadJsonNodes" [download]="'nodes_' + pathData.name + '.geojson'"> GeoJSON nodes</a>
+            </button>
+          </div>
+
+          <div class="col-lg-6">
+            <button
+              type="button"
+              class="download form-control btn btn-success mx-1 my-1"
+              [disabled]="pathOutputData === undefined ? 'disabled': null"
+            >
+              <i class="fas fa-cloud-download-alt"></i>  <a [href]="downloadJsonPath" [download]="'path_' + pathData.name + '.geojson'"> GeoJSON path</a>
+
             </button>
           </div>
         </div>
@@ -30,7 +44,7 @@
         <h6 class="input-group">Statistics</h6>
         <div class="col-md-12">
           <ul>
-              <li>Nodes count: {{pathData.getNodes().length}}</li>
+              <li (change)="generateDownloadJsonUriForOriginalNodes()">Nodes count: {{pathData.getNodes().length}}</li>
               <li>Min. height: {{pathData.getStatsPath()?.height_min}}</li>
               <li>Max. height: {{pathData.getStatsPath()?.height_max}}</li>
               <li>Diff. height: {{pathData.getStatsPath()?.height_diff}}</li>
