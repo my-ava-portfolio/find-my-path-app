@@ -1,20 +1,31 @@
 name: Build and Deploy
+
 on:
   push:
     branches:
       - master
 jobs:
-  build:
-
+  build-and-deploy:
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v2
-    - name: All things angular
-      uses: AhsanAyaz/angular-deploy-gh-pages-actions@v1.3.1
+    - name: Checkout
+      uses: actions/checkout@v2
+    - uses: actions/setup-node@v1 #this installs node and npm for us
       with:
-        github_access_token: ${{ secrets.GITHUB_TOKEN }}
-        build_configuration: production # The build environment for the app. please look configurations in your angular.json
-        base_href: /Find-My-Path/   # make sure this corresponds to https://<your_username>.github.io/<base_href>/
-        deploy_branch: gh-pages # The branch the action should deploy to.
-        angular_dist_build_folder: Find-My-Path/dist # The folder where your project is supposed to be after running ng build by the action.
+        node-version: '10.x'
+    - uses: actions/cache@v1 # this allows for re-using node_modules caching, making builds a bit faster.
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+    - name: Build
+      run: |
+        npm install
+        npm run-script deploy
+    - name: GitHub Pages action
+      uses: peaceiris/actions-gh-pages@v3.6.1
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: dist/find-my-path
+
