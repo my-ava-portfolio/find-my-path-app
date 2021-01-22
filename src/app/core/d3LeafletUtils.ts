@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 
 import * as L from 'leaflet';
 import * as d3 from 'd3';
+import { AnyNsRecord } from 'dns';
 
 
 
@@ -33,6 +34,14 @@ export class D3LeafletUtils {
   private popupClassName = 'popup-feature';
 
   constructor() { }
+
+  pinPathCubicBezier(width: number, height:number): string {
+    // https://medium.com/welldone-software/map-pins-using-svg-path-9fdfebb74501
+    const deltaX = width * Math.sqrt(3)
+    const deltaY = height * 4 / 3
+    return `M 0,0 C ${-deltaX},${-deltaY}
+        ${deltaX},${-deltaY} 0,0 z`
+}
 
   removeFeaturesMapFromLayerId(layerId: string): void {
     d3.selectAll('#' + layerId).remove();
@@ -229,20 +238,42 @@ export class D3LeafletUtils {
         feature.geometry.coordinates[1],
         feature.geometry.coordinates[0]
       );
+      feature.properties.uuid = "node_" + feature.properties.uuid
     });
 
     const svgLayer: any = L.svg().addTo(LeafletMap);
-    const svg: any = d3.select(svgLayer._container).attr('id', layerId).attr('pointer-events', 'auto');
-    const g: any = svg.select('g').attr('class', 'leaflet-zoom-hide path');
+    const svg: any = d3.select(svgLayer._container)
+      .attr('id', layerId)
+      .attr('pointer-events', 'auto')
+      .attr('class', 'svg-shadow');
+    const g: any = svg.select('g').attr('class', 'leaflet-zoom-hide');
 
-    const PointsCircles: any = g.selectAll('.PathNodes')
+    const path = this.pinPathCubicBezier(25, 35)
+    const PathNodes: any = g.selectAll('.MapMarkers')
       .data(input_data)
       .enter()
-      .append('circle', '.PathNodes')
+      .append('g')
+      .attr('class', "MapMarkers")
+      .attr('id', (d: any): void => d.properties.uuid); // very important for the drag move
+
+    PathNodes
+      .append('path')
+      .attr('d', path)
       .attr('class', 'PathNodes')
-      .attr('r', '15')
-      .attr('id', (d: any): void => d.properties.id)
-      .style('stroke', colorStroke);
+      .style('stroke', colorStroke)
+      .style('stroke-width', '5px');
+
+    
+    PathNodes
+      .append('text')
+      .text((d: any): string => {
+        return d.properties.position;
+      })
+      .attr('text-anchor', 'middle')
+      .attr('alignment-baseline', 'middle')
+      .attr('class', 'PathNodesText')
+      .attr('y', '-20');
+    
       // .on('mouseover', (d: any): void => {
       //     LeafletMap.dragging.disable();
       //     this.initPopup('body', 'popup-' + layerId, d, false);
@@ -258,15 +289,17 @@ export class D3LeafletUtils {
       // })
 
     if (dragEnabled) {
-      PointsCircles
-        .attr('class', 'PathNodes dragEnabled')
+      PathNodes
+        .attr('class', 'MapMarkers dragEnabled')
         .call(
           d3.drag()
-            .on('drag', (): void => {
+            .on('drag', (d: AnyNsRecord): void => {
               LeafletMap.dragging.disable();
-              d3.select(d3.event.sourceEvent.target)
-                .style('r', '15')
-                .attr('transform', (d: any): string => 'translate(' + d3.event.x + ',' + d3.event.y + ')' );
+              console.log("AAAAAAAAAAAAAA")
+              d3.select('#' + d.properties.uuid)
+                // .style('r', '15')
+                .attr('transform', 'translate(' + d3.event.x + ',' + d3.event.y + ')' );
+
           })
           .on('end', (d: any): void => {
             const layerCoordsConverter = this.convertLayerCoordsToLatLng.bind(this);
@@ -275,36 +308,27 @@ export class D3LeafletUtils {
                     node.properties.uuid === d.properties.uuid
             );
             const CoordinatesUpdated = layerCoordsConverter(LeafletMap, { x: d3.event.x, y: d3.event.y });
-            input_data[nodeUuid].geometry.coordinates = [CoordinatesUpdated.lng, CoordinatesUpdated.lat];
-            this.computeMapFromPoints(LeafletMap, input_data, layerId, dragEnabled, colorStroke, displayToolTip = false);
+            // use the original input data to update data path (inherit)
+            GeoJsonPointFeatures[nodeUuid].geometry.coordinates = [CoordinatesUpdated.lng, CoordinatesUpdated.lat];
+            this.computeMapFromPoints(LeafletMap, GeoJsonPointFeatures, layerId, dragEnabled, colorStroke, displayToolTip = false);
             LeafletMap.dragging.enable();
           })
         );
     }
 
-    const textPoints = g.selectAll('.PathNodesText')
-      .data(GeoJsonPointFeatures)
-      .enter()
-      .append('text')
-      .text( (d: any): string => {
-          return d.properties.position;
-      })
-      .attr('text-anchor', 'middle')
-      .attr('alignment-baseline', 'middle')
-      .attr('class', 'PathNodesText');
 
     // Reposition the SVG to cover the features.
     const reset = (): void => {
       const latLngConverter = this.convertLatLngToLayerCoords.bind(this);
       // convert from latlong to map units
-      textPoints.attr('transform',
-        (d: any): string =>
-          'translate(' +
-          latLngConverter(LeafletMap, d.geometry).x + ',' +
-          latLngConverter(LeafletMap, d.geometry).y +
-        ')'
-      );
-      PointsCircles.attr('transform',
+      // textPoints.attr('transform',
+      //   (d: any): string =>
+      //     'translate(' +
+      //     latLngConverter(LeafletMap, d.geometry).x + ',' +
+      //     latLngConverter(LeafletMap, d.geometry).y +
+      //   ')'
+      // );
+      PathNodes.attr('transform',
         (d: any): string => 'translate(' +
           latLngConverter(LeafletMap, d.geometry).x + ',' +
           latLngConverter(LeafletMap, d.geometry).y +

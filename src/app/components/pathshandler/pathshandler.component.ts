@@ -103,9 +103,10 @@ export class PathsHandlerComponent implements OnInit {
     this.PathFeatures = this.PathFeatures.filter(
       (path: PathElement): boolean => path.id !== pathId
     );
+    this.countPath -= 1;
 
     if (this.countPath > 0) {
-      this.countPath -= 1;
+
       const lastPathId: string = this.PathFeatures[this.PathFeatures.length - 1].id;
       this.switchTab(lastPathId);
       // filter paths to chart (only if path has been computed)
