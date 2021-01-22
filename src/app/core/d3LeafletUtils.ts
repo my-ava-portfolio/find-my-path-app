@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 
 import * as L from 'leaflet';
 import * as d3 from 'd3';
-import { AnyNsRecord } from 'dns';
 
 
 
@@ -67,9 +66,9 @@ export class D3LeafletUtils {
     }
   }
 
-  computeAnimatePointsOnLine(LeafletMap: any, GeoJsonPointFeatures: any[], layerId: string, lineColor: string, lineWidth: string): void {
+  computeAnimatePointsOnLine(LeafletMap: any, GeoJsonPointFeatures: any[], layerId: string, lineColor: string, lineWidth: string,  transportMode: string,): void {
     this.removeFeaturesMapFromLayerId(layerId);
-    const input_data: any[] = JSON.parse(JSON.stringify(GeoJsonPointFeatures)) 
+    const input_data: any[] = JSON.parse(JSON.stringify(GeoJsonPointFeatures))
     const convertLatLngToLayerCoords = (d: any): any => {
         return LeafletMap.latLngToLayerPoint(
             new L.LatLng(
@@ -131,12 +130,21 @@ export class D3LeafletUtils {
       .attr('r', 10)
       .attr('id', 'marker_' + layerId)
       .attr('class', 'travelMarker_' + layerId)
-      .style('fill', 'yellow');
+      .style('fill', 'red'); // TODO add css
 
     const textmarker: any  = g.append('text')
       .attr('font-family', '\'Font Awesome 5 Free\'')
       .attr('font-weight', 900)
-      .text('\uf238')
+      .text((d: any): string => {
+          if (transportMode === 'pedestrian') {
+            return '\uf554';
+          } else if ( transportMode === 'vehicle') {
+            return '\uf5e4';
+          } else {
+            return '\uf128';
+          }
+        }
+      )
       .attr('x', -5)
       .attr('y', 5)
       .attr('id', 'markerText_' + layerId)
@@ -144,13 +152,6 @@ export class D3LeafletUtils {
 
     // Reposition the SVG to cover the features.
     const reset = (): void => {
-      ptFeatures.attr(
-          'transform',
-          (d: any): string => 'translate(' +
-            convertLatLngToLayerCoords(d).x + ',' +
-            convertLatLngToLayerCoords(d).y +
-          ')'
-      );
 
       // we get the stating point
       marker.attr('transform',
@@ -177,6 +178,19 @@ export class D3LeafletUtils {
 
       linePath.attr('d', toLine);
 
+      if (d3.selectAll('.' + 'travelFixedMarkerText_' + layerId).size() > 0) {
+        // refresh
+        createAllFixedMarkers()
+      }
+
+      ptFeatures.attr(
+        'transform',
+        (d: any): string => 'translate(' +
+          convertLatLngToLayerCoords(d).x + ',' +
+          convertLatLngToLayerCoords(d).y +
+        ')'
+      );
+      
     };
 
     function transition(): void {
@@ -190,8 +204,53 @@ export class D3LeafletUtils {
           linePath.style('stroke-dasharray', '0')
           // value of this property is depending from the zoom... if we zoom the context change and the style is not adapted.
           // so we remove the stroke-dasharray style to be sure to display the path as usual
+
+          // put some transport mode markers on the line
+          createAllFixedMarkers()
         })
         ;
+
+    }
+
+    function createAllFixedMarkers(): any {
+      d3.selectAll('.travelFixedMarkerText_' + layerId).remove();
+      createOneFixMarkerOnPath(0.25, 'marker1' + layerId);
+      createOneFixMarkerOnPath(0.50, 'marker2' + layerId);
+      createOneFixMarkerOnPath(0.75, 'marker3' + layerId);
+    }
+
+    function createOneFixMarkerOnPath(fractionT: number, markerId: string): any {
+
+      const l: any = linePath.node().getTotalLength();
+      const p = linePath.node().getPointAtLength(fractionT * l);
+
+      g.append('circle')
+        .attr('r', 10)
+        .attr('id', 'marker_' + layerId)
+        .attr('class', 'travelFixedMarkerText_' + layerId)
+        .attr('transform', 'translate(' + p.x + ',' + p.y + ')')
+        .style('fill', lineColor) // TODO add css
+
+      g.append('text')
+        .attr('font-family', '\'Font Awesome 5 Free\'')
+        .attr('font-weight', 900)
+        .text((d: any): string => {
+            if (transportMode === 'pedestrian') {
+              return '\uf554';
+            } else if ( transportMode === 'vehicle') {
+              return '\uf5e4';
+            } else {
+              return '\uf128';
+            }
+          }
+        )
+        .attr('text-anchor', 'middle')
+        .attr('alignment-baseline', 'middle')
+        .attr('id', markerId)
+        .attr('class', 'travelFixedMarkerText_' + layerId)
+        .attr('transform', 'translate(' + p.x + ',' + p.y + ')')
+        .style('fill', 'white')
+        .style('opacity', '1');
 
     }
 
@@ -201,7 +260,7 @@ export class D3LeafletUtils {
       return (t: any): any => {
         // total length of path (single value)
         const l: any = linePath.node().getTotalLength();
-
+        console.log(t)
         const interpolate: any = d3.interpolateString('0,' + l, l + ',' + l);
         // t is fraction of time 0-1 since transition began
         const markerSelected: any = d3.select('#marker_' + layerId);
@@ -231,14 +290,14 @@ export class D3LeafletUtils {
   computeMapFromPoints(LeafletMap: any, GeoJsonPointFeatures: any[], layerId: string, dragEnabled: boolean, colorStroke: string, displayToolTip: boolean = false): void {
     this.removeFeaturesMapFromLayerId(layerId);
     console.log('drag status', dragEnabled);
-    const input_data: any[] = JSON.parse(JSON.stringify(GeoJsonPointFeatures)) 
+    const input_data: any[] = JSON.parse(JSON.stringify(GeoJsonPointFeatures))
 
     input_data.forEach( (feature, i): void => {
       feature.LatLng = new L.LatLng(
         feature.geometry.coordinates[1],
         feature.geometry.coordinates[0]
       );
-      feature.properties.uuid = "node_" + feature.properties.uuid
+      feature.properties.uuid = 'node_' + feature.properties.uuid + '_' + layerId // layerId to avoid conflic between paths !
     });
 
     const svgLayer: any = L.svg().addTo(LeafletMap);
@@ -253,7 +312,7 @@ export class D3LeafletUtils {
       .data(input_data)
       .enter()
       .append('g')
-      .attr('class', "MapMarkers")
+      .attr('class', 'MapMarkers')
       .attr('id', (d: any): void => d.properties.uuid); // very important for the drag move
 
     PathNodes
@@ -263,7 +322,7 @@ export class D3LeafletUtils {
       .style('stroke', colorStroke)
       .style('stroke-width', '5px');
 
-    
+
     PathNodes
       .append('text')
       .text((d: any): string => {
@@ -273,7 +332,7 @@ export class D3LeafletUtils {
       .attr('alignment-baseline', 'middle')
       .attr('class', 'PathNodesText')
       .attr('y', '-20');
-    
+
       // .on('mouseover', (d: any): void => {
       //     LeafletMap.dragging.disable();
       //     this.initPopup('body', 'popup-' + layerId, d, false);
@@ -288,28 +347,38 @@ export class D3LeafletUtils {
       //     d3.select('#popup-' + layerId).remove();
       // })
 
+    const layerCoordsConverter = this.convertLayerCoordsToLatLng.bind(this);
+
+    function refreshInputDataCoordinates(sourceData: any, featureUpdated: any): any {
+      const nodeUuid: number = input_data.findIndex(
+          (node: any): boolean =>
+              node.properties.uuid === featureUpdated.properties.uuid
+      );
+      const CoordinatesUpdated = layerCoordsConverter(LeafletMap, { x: d3.event.x, y: d3.event.y });
+      sourceData[nodeUuid].geometry.coordinates = [CoordinatesUpdated.lng, CoordinatesUpdated.lat];
+
+      return sourceData;
+    }
+
     if (dragEnabled) {
       PathNodes
         .attr('class', 'MapMarkers dragEnabled')
         .call(
           d3.drag()
-            .on('drag', (d: AnyNsRecord): void => {
-              LeafletMap.dragging.disable();
-              console.log("AAAAAAAAAAAAAA")
-              d3.select('#' + d.properties.uuid)
-                // .style('r', '15')
-                .attr('transform', 'translate(' + d3.event.x + ',' + d3.event.y + ')' );
+            .on('drag', (d: any): void => {
+            LeafletMap.dragging.disable();
+            d3.select('#' + d.properties.uuid)
+              // .style('r', '15')
+              .attr('transform', 'translate(' + d3.event.x + ',' + d3.event.y + ')' );
 
+            // to refresh the nodecontrolers part
+            // use the original input data to update data path (inherit)
+            refreshInputDataCoordinates(GeoJsonPointFeatures, d)
           })
           .on('end', (d: any): void => {
-            const layerCoordsConverter = this.convertLayerCoordsToLatLng.bind(this);
-            const nodeUuid: number = input_data.findIndex(
-                (node: any): boolean =>
-                    node.properties.uuid === d.properties.uuid
-            );
-            const CoordinatesUpdated = layerCoordsConverter(LeafletMap, { x: d3.event.x, y: d3.event.y });
+            // to refresh the nodecontrolers part
             // use the original input data to update data path (inherit)
-            GeoJsonPointFeatures[nodeUuid].geometry.coordinates = [CoordinatesUpdated.lng, CoordinatesUpdated.lat];
+            GeoJsonPointFeatures = refreshInputDataCoordinates(GeoJsonPointFeatures, d)
             this.computeMapFromPoints(LeafletMap, GeoJsonPointFeatures, layerId, dragEnabled, colorStroke, displayToolTip = false);
             LeafletMap.dragging.enable();
           })

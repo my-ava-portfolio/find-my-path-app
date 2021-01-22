@@ -29,7 +29,7 @@
     fill: green;
 }
 
-#map svg text {
+#map svg text.PathNodesText{
     /* fill: black; */
     display: block;
     /* margin: auto; */

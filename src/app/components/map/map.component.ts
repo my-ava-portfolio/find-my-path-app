@@ -71,7 +71,8 @@ export class MapComponent implements OnInit {
         PathData.getPointsPath().features,
         this.pathMapPrefix + PathData.id,
         PathData.strokeColor,
-        PathData.strokeWidth
+        PathData.strokeWidth,
+        PathData.getTransportMode(),
       );
       this.Map2ParametersService.pushCompletePath(PathData);
       this.displayNodesOnMap(PathData);
