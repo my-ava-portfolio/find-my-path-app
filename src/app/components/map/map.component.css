@@ -21,14 +21,6 @@
   pointer-events: bounding-box;
 }
 
-#map svg text.PathNodesText:first-of-type {
-    fill: red;
-}
-
-#map svg text.PathNodesText:last-of-type {
-    fill: green;
-}
-
 #map svg text.PathNodesText{
     /* fill: black; */
     display: block;

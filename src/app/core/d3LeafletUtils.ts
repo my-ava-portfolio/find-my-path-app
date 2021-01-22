@@ -49,7 +49,8 @@ export class D3LeafletUtils {
   UpdatePathStyleFromLayerId(layerId: string, strokeColor?: string, strokeWidth?: string): void {
     // path , nodes, line chart are updated when color is changed
     const path: any = d3.selectAll('.lineConnect_pathMap-' + layerId);
-    const nodes: any = d3.selectAll('#nodesMap-' + layerId + ' circle');
+    const nodes: any = d3.selectAll('.MapMarkers-nodesMap-' + layerId + '  path');
+    const TransportMarkersCircle: any = d3.selectAll('circle.travelFixedMarker_pathMap-' + layerId);
 
     const chartLine: any =  d3.selectAll('.chart-line-' + layerId);
     const chartLineLegend: any =  d3.selectAll('.chart-legend-' + layerId);
@@ -59,6 +60,7 @@ export class D3LeafletUtils {
       nodes.style('stroke', strokeColor);
       chartLine.style('stroke', strokeColor);
       chartLineLegend.style('fill', strokeColor);
+      TransportMarkersCircle.style('fill', strokeColor);
     }
 
     if (strokeWidth !== undefined) {
@@ -178,7 +180,7 @@ export class D3LeafletUtils {
 
       linePath.attr('d', toLine);
 
-      if (d3.selectAll('.' + 'travelFixedMarkerText_' + layerId).size() > 0) {
+      if (d3.selectAll('.' + 'travelFixedMarker_' + layerId).size() > 0) {
         // refresh
         createAllFixedMarkers()
       }
@@ -213,7 +215,7 @@ export class D3LeafletUtils {
     }
 
     function createAllFixedMarkers(): any {
-      d3.selectAll('.travelFixedMarkerText_' + layerId).remove();
+      d3.selectAll('.travelFixedMarker_' + layerId).remove();
       createOneFixMarkerOnPath(0.25, 'marker1' + layerId);
       createOneFixMarkerOnPath(0.50, 'marker2' + layerId);
       createOneFixMarkerOnPath(0.75, 'marker3' + layerId);
@@ -227,7 +229,7 @@ export class D3LeafletUtils {
       g.append('circle')
         .attr('r', 10)
         .attr('id', 'marker_' + layerId)
-        .attr('class', 'travelFixedMarkerText_' + layerId)
+        .attr('class', 'travelFixedMarker_' + layerId)
         .attr('transform', 'translate(' + p.x + ',' + p.y + ')')
         .style('fill', lineColor) // TODO add css
 
@@ -247,7 +249,7 @@ export class D3LeafletUtils {
         .attr('text-anchor', 'middle')
         .attr('alignment-baseline', 'middle')
         .attr('id', markerId)
-        .attr('class', 'travelFixedMarkerText_' + layerId)
+        .attr('class', 'travelFixedMarker_' + layerId)
         .attr('transform', 'translate(' + p.x + ',' + p.y + ')')
         .style('fill', 'white')
         .style('opacity', '1');
@@ -308,7 +310,7 @@ export class D3LeafletUtils {
     const g: any = svg.select('g').attr('class', 'leaflet-zoom-hide');
 
     const path = this.pinPathCubicBezier(25, 35)
-    const PathNodes: any = g.selectAll('.MapMarkers')
+    const PathNodes: any = g.selectAll('.MapMarkers-' + layerId)
       .data(input_data)
       .enter()
       .append('g')
@@ -331,6 +333,7 @@ export class D3LeafletUtils {
       .attr('text-anchor', 'middle')
       .attr('alignment-baseline', 'middle')
       .attr('class', 'PathNodesText')
+      .attr('id', 'textMarker-' + layerId)
       .attr('y', '-20');
 
       // .on('mouseover', (d: any): void => {
@@ -362,7 +365,7 @@ export class D3LeafletUtils {
 
     if (dragEnabled) {
       PathNodes
-        .attr('class', 'MapMarkers dragEnabled')
+        .attr('class', 'MapMarkers-' + layerId + ' dragEnabled')
         .call(
           d3.drag()
             .on('drag', (d: any): void => {
