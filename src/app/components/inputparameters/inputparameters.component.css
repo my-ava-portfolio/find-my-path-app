@@ -1,0 +1,7 @@
+.edit-buttons {
+  display: inline-grid;
+}
+
+.validate-buttons {
+  display: grid;
+}

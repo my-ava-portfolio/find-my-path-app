@@ -37,6 +37,9 @@ export class InputParametersComponent implements OnInit, OnDestroy {
   addPointsSubscription!: Subscription;
   updatePathSubscription!: Subscription;
   pathIdFromPathsSubscription!: Subscription;
+  ErrorPathApiFoundSubscription!: Subscription;
+
+  apiResultMessage!: string
 
   TransportModes: TransportMode[] = [
     {title: 'Pedestrian', value: 'pedestrian'},
@@ -55,7 +58,7 @@ export class InputParametersComponent implements OnInit, OnDestroy {
     });
 
     this.updatePathSubscription = this.Map2ParametersService.pathComplete.subscribe(
-      pathDone => {
+      (pathDone) => {
         this.updatePathWithApiData(pathDone);
         this.buttonsStatus(true); // activate buttons : path is finished
       }
@@ -64,6 +67,12 @@ export class InputParametersComponent implements OnInit, OnDestroy {
     this.pathIdFromPathsSubscription = this.pathsToInputs.pathId.subscribe(pathId => {
       this.deletePathAction(pathId);
     });
+
+    this.ErrorPathApiFoundSubscription = this.PathBuilderService.ErrorApiFound.subscribe(errorMessage => {
+      console.log("prout suite", errorMessage)
+      this.apiResultMessage = errorMessage;
+      this.buttonsStatus(true); // reset buttons status
+    })
 
   }
 
@@ -81,6 +90,8 @@ export class InputParametersComponent implements OnInit, OnDestroy {
     this.addPointsSubscription.unsubscribe();
     this.updatePathSubscription.unsubscribe();
     this.pathIdFromPathsSubscription.unsubscribe();
+    this.ErrorPathApiFoundSubscription.unsubscribe();
+    this.buttonsStatus(true); // reset buttons status
   }
 
   zoomOnPath(): void {

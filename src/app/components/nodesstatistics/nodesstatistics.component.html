@@ -8,7 +8,7 @@
           <div class="col-lg-6">
             <button
               type="button"
-              class="download form-control btn btn-success mx-1 my-1"
+              class="download form-control btn btn-success mx-1 my-1 btn-sm"
               (click)="generateDownloadJsonUriForOriginalNodes()"
               [disabled]="pathData.getNodes().length === 0 ? 'disabled': null"
             >
@@ -19,7 +19,7 @@
           <div class="col-lg-6">
             <button
               type="button"
-              class="download form-control btn btn-success mx-1 my-1"
+              class="download form-control btn btn-success mx-1 my-1 btn-sm"
               [disabled]="nodesOutputData === undefined ? 'disabled': null"
             >
               <i class="fas fa-cloud-download-alt"></i><a [href]="downloadJsonNodes" [download]="'nodes_' + pathData.name + '.geojson'"> Path Points</a>
@@ -29,7 +29,7 @@
           <div class="col-lg-6">
             <button
               type="button"
-              class="download form-control btn btn-success mx-1 my-1"
+              class="download form-control btn btn-success mx-1 my-1 btn-sm"
               [disabled]="pathOutputData === undefined ? 'disabled': null"
             >
               <i class="fas fa-cloud-download-alt"></i><a [href]="downloadJsonPath" [download]="'path_' + pathData.name + '.geojson'"> Path LineString</a>

@@ -13,17 +13,17 @@
       <ng-template #popContent>Coordinates: {{node.geometry.coordinates}}</ng-template>
       <button
         type="button"
-        class="btn btn-info mx-1 my-1"
+        class="info form-control badge badge-info badge-sm mx-1 my-1"
         [ngbPopover]="popContent"
         popoverTitle="Details"
-        placement="right"
+        placement="top"
       >
         <i class="fas fa-info-circle"></i>
       </button>
 
       <button
         type="button"
-        class="up form-control btn btn-danger mx-1 my-1"
+        class="up form-control badge badge-warning badge-sm mx-1 my-1"
         (click)="upPosition(node.properties.position)"
         [disabled]="node.properties.position - 1 !== -1 ? null : 'disabled'"
       >
@@ -32,7 +32,7 @@
 
       <button
         type="button"
-        class="down form-control btn btn-danger mx-1 my-1"
+        class="down form-control badge badge-warning badge-sm mx-1 my-1"
         (click)="botPosition(node.properties.position)"
         [disabled]="node.properties.position + 1 !== pathData.getNodes().length ? null : 'disabled'"
 
@@ -42,7 +42,7 @@
 
       <button
         type="button"
-        class="remove form-control btn btn-danger mx-1 my-1"
+        class="remove form-control badge badge-danger badge-sm mx-1 my-1"
         (click)="removeNode(node.properties.uuid)"
       >
         <i class="far fa-trash-alt"></i>

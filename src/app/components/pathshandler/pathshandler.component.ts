@@ -94,7 +94,6 @@ export class PathsHandlerComponent implements OnInit {
     if (this.countPath > 1) {
       this.topoChartDisplayed = !this.topoChartDisplayed;
     }
-
   }
 
   deletePath(pathId: string): void {

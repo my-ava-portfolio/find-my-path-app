@@ -180,7 +180,7 @@ export class D3LeafletUtils {
 
       linePath.attr('d', toLine);
 
-      if (d3.selectAll('.' + 'travelFixedMarker_' + layerId).size() > 0) {
+      if (d3.selectAll('.travelFixedMarker_' + layerId).size() > 0) {
         // refresh
         createAllFixedMarkers()
       }
