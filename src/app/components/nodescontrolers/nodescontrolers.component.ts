@@ -16,7 +16,7 @@ export class nodesControlersComponent implements OnInit {
   @Input() pathData!: PathElement;
   @Input() isCurrentTab!: boolean;
   @Input() currentTabId!: string | undefined;
-  
+
   constructor(
     private Parameters2MapService: ParametersToMapService,
     private GeneralFunc: GeneralUtils,
@@ -41,34 +41,38 @@ export class nodesControlersComponent implements OnInit {
     }
   }
 
-  upPosition(uuid: number): void {
+  upPosition(position: number): void {
     if (this.pathData.getEdit() && this.isCurrentTab) {
-      console.log(uuid)
+      console.log(position)
       const nodes: NodeFeature[] = this.pathData.getNodes();
-      const nodesUpdated = this._updatePositionNodes(nodes, uuid, -1);
+      const nodesUpdated = this._switchPositionNodes(nodes, position, -1);
 
       this.pathData.setNodes(nodesUpdated);
       this.Parameters2MapService.mapFromPathNodes(this.pathData);
     }
   }
 
-  botPosition(uuid: number): void {
+  botPosition(position: number): void {
     if (this.pathData.getEdit() === true && this.isCurrentTab) {
       const nodes: NodeFeature[] = this.pathData.getNodes();
-      const nodesUpdated = this._updatePositionNodes(nodes, uuid, 1);
+      const nodesUpdated = this._switchPositionNodes(nodes, position, 1);
 
       this.pathData.setNodes(nodesUpdated);
       this.Parameters2MapService.mapFromPathNodes(this.pathData);
     }
   }
 
-  private _updatePositionNodes(nodes: NodeFeature[], uuidToChange: number, incrementPos: number): NodeFeature[] {
-    // TODO avoid to do something if node is a the top and if click on top
-    // TODO there is a bug somewhere
-    const nodesShifted: NodeFeature[] = this.GeneralFunc.shiftingOnArray(nodes, uuidToChange, uuidToChange + incrementPos);
-    nodesShifted.forEach((feature, index) => {
+  private _switchPositionNodes(nodes: NodeFeature[], positionToChange: number, incrementPos: number): NodeFeature[] {
+    const toPosition = positionToChange + incrementPos
+    if (toPosition !== -1 && toPosition !== nodes.length) { // do nothing for the first (top action) elements and the last (bot action) element
+      console.log(toPosition, toPosition !== -1)
+      const nodesShifted: NodeFeature[] = this.GeneralFunc.shiftingOnArray(nodes, positionToChange, toPosition);
+      nodesShifted.forEach((feature, index) => {
         nodesShifted[index].properties.position = index;
-    });
-    return nodesShifted;
+      });
+      console.log(nodesShifted)
+      return nodesShifted;
+    }
+    return nodes
   }
 }
