@@ -83,6 +83,11 @@ export class InputParametersComponent implements OnInit, OnDestroy {
     this.pathIdFromPathsSubscription.unsubscribe();
   }
 
+  zoomOnPath(): void {
+    // zoom nodes paths...
+    this.Parameters2MapService.zoomOnPathOnMap(this.pathData);
+  }
+
   updatePathName(event: any): void {
     this.pathName = event.target.value;
     this.pathData.name = this.pathName;
@@ -164,7 +169,7 @@ export class InputParametersComponent implements OnInit, OnDestroy {
         {
           position: currentNodesPosition,
           uuid: currentNodesPosition,
-          name: 'node ' + currentNodesPosition
+          name: 'Map Point N°' + currentNodesPosition
         }
       );
       this.Parameters2MapService.mapFromPathNodes(this.pathData);

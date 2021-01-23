@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { interval } from 'rxjs';
+import { interval, Subscription } from 'rxjs';
 import { startWith  } from 'rxjs/operators';
 
 import { ApiStatusService } from '../../services/apistatus.service';
@@ -15,12 +15,19 @@ export class HeaderComponent implements OnInit {
   apiStatus!: string;
   ApiContinuousChecker = interval(5000); // observable which run all the time
 
+  ApiContinuousCheckerSubscription!: Subscription;
+
   constructor(
     private ApiCheckService: ApiStatusService
   ) {
 
-    this.ApiCheckService.apiHealth.subscribe(data =>
-      this.apiStatus = data
+    this.ApiCheckService.apiHealth.subscribe(data => {
+        this.apiStatus = data;
+        if (this.apiStatus === 'Ready' ) {
+          this.ApiContinuousCheckerSubscription.unsubscribe();
+        }
+      }
+
     );
 
   }
@@ -30,7 +37,7 @@ export class HeaderComponent implements OnInit {
   }
 
   checkApiStatus(): void {
-    this.ApiContinuousChecker.pipe(startWith(0)).subscribe(() => {
+    this.ApiContinuousCheckerSubscription = this.ApiContinuousChecker.pipe(startWith(0)).subscribe(() => {
         this.ApiCheckService.callApiStatus();
       }
     );

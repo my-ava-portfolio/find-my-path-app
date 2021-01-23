@@ -181,118 +181,124 @@ export class NodeFeature {
 }
 
 export class PathElement {
-    id: string;
-    name: string;
-    strokeColor: string;
-    strokeWidth = '2';
-    editingStatus = false;
-    transportMode = 'pedestrian';
-    elevationStatus = true;
-    private inputNodes: NodeFeature[] = [];
-    private pointsPath!: NodePathGeoJson;
-    private linePath!: LinePathGeoJson;
-    statsPath!: PathStatistics;
-    
-    constructor(
-        id: string,
-        name: string,
-        strokeColor: string,
-    ) {
-        this.id = id;
-        this.name = name;
-        this.strokeColor = strokeColor;
-    }
+  id: string;
+  name: string;
+  strokeColor: string;
+  strokeWidth = '2';
+  editingStatus = false;
+  transportMode = 'pedestrian';
+  elevationStatus = true;
+  private inputNodes: NodeFeature[] = [];
+  private pointsPath!: NodePathGeoJson;
+  private linePath!: LinePathGeoJson;
+  statsPath!: PathStatistics;
 
-    setColor(value: string): void {
-        this.strokeColor = value;
-    }
-    getColor(): string {
-        return this.strokeColor;
-    }
-    setWidth(value: number): void {
-      this.strokeWidth = '' + value;
-    }
-    getWidth(): string {
-        return this.strokeWidth;
-    }
+  constructor(
+    id: string,
+    name: string,
+    strokeColor: string,
+  ) {
+    this.id = id;
+    this.name = name;
+    this.strokeColor = strokeColor;
+  }
 
-    setEdit(value: boolean): void {
-        this.editingStatus = value;
-    }
-    getEdit(): boolean {
-        return this.editingStatus;
-    }
+  setColor(value: string): void {
+    this.strokeColor = value;
+  }
+  getColor(): string {
+    return this.strokeColor;
+  }
+  setWidth(value: number): void {
+    this.strokeWidth = '' + value;
+  }
+  getWidth(): string {
+    return this.strokeWidth;
+  }
 
-    setTransportMode(value: string): void {
-        this.transportMode = value;
-    }
-    getTransportMode(): string {
-        return this.transportMode;
-    }
+  setEdit(value: boolean): void {
+    this.editingStatus = value;
+  }
+  getEdit(): boolean {
+    return this.editingStatus;
+  }
 
-    setElevation(value: boolean): void {
-        this.elevationStatus = true;
-    }
-    getElevation(): boolean {
-        return this.elevationStatus;
-    }
+  setTransportMode(value: string): void {
+    this.transportMode = value;
+  }
+  getTransportMode(): string {
+    return this.transportMode;
+  }
 
-    setNodes(nodes: NodeFeature[]): void {
-        this.inputNodes = nodes;
-    }
-    addNode(geometry: PointGeometry, properties: any): void {
-      const newNodes = new NodeFeature(
-            geometry,
-            properties
-      );
-      this.rebuildNodes();
-      this.inputNodes.push(newNodes);
-    }
-    getNodes(): NodeFeature[] {
-        return this.inputNodes;
-    }
+  setElevation(value: boolean): void {
+    this.elevationStatus = true;
+  }
+  getElevation(): boolean {
+    return this.elevationStatus;
+  }
 
-    setPointsPath(nodesPath: NodePathGeoJson): void {
-        this.pointsPath = nodesPath;
-    }
-    getPointsPath(): NodePathGeoJson {
-        return this.pointsPath;
-    }
+  setNodes(nodes: NodeFeature[]): void {
+    this.inputNodes = nodes;
+  }
+  addNode(geometry: PointGeometry, properties: any): void {
+    const newNodes = new NodeFeature(
+          geometry,
+          properties
+    );
+    this.rebuildNodes();
+    this.inputNodes.push(newNodes);
+  }
+  getNodes(): NodeFeature[] {
+    return this.inputNodes;
+  }
+  buildGeojsonOriginalNodes(): string {
+    return JSON.stringify({
+      type: 'FeatureCollection',
+      features: this.getNodes()
+    });
+  } 
 
-    setLinePath(linePath: LinePathGeoJson): void {
-        this.linePath = linePath;
-    }
-    getLinePath(): LinePathGeoJson {
-        return this.linePath;
-    }
+  setPointsPath(nodesPath: NodePathGeoJson): void {
+      this.pointsPath = nodesPath;
+  }
+  getPointsPath(): NodePathGeoJson {
+      return this.pointsPath;
+  }
 
-    setStatsPath(statsPath: PathStatistics): void {
-        this.statsPath = statsPath;
-    }
-    getStatsPath(): PathStatistics {
-        return this.statsPath;
-    }
+  setLinePath(linePath: LinePathGeoJson): void {
+      this.linePath = linePath;
+  }
+  getLinePath(): LinePathGeoJson {
+      return this.linePath;
+  }
 
-    // deprecated, only used to debug the duplication action
-    updatePath(pathId: string): void {
-        this.getNodes().forEach((element: NodeFeature) => {
-            element.properties.path = pathId;
-        });
-    }
-    rebuildNodes(): void {
-        const nodesToReworked: NodeFeature[] = this.getNodes();
-        this.inputNodes = [];
-        nodesToReworked.forEach((element: NodeFeature) => {
-            this.addNode(
-                createCopy(element.geometry),
-                createCopy(element.properties)
-            );
-        });
-    }
+  setStatsPath(statsPath: PathStatistics): void {
+      this.statsPath = statsPath;
+  }
+  getStatsPath(): PathStatistics {
+      return this.statsPath;
+  }
 
-    getCopy(): PathElement {
-        return (JSON.parse(JSON.stringify(this)));
-    }
+  // deprecated, only used to debug the duplication action
+  updatePath(pathId: string): void {
+      this.getNodes().forEach((element: NodeFeature) => {
+          element.properties.path = pathId;
+      });
+  }
+  rebuildNodes(): void {
+      const nodesToReworked: NodeFeature[] = this.getNodes();
+      this.inputNodes = [];
+      nodesToReworked.forEach((element: NodeFeature) => {
+          this.addNode(
+              createCopy(element.geometry),
+              createCopy(element.properties)
+          );
+      });
+  }
+
+  getCopy(): PathElement {
+    return (JSON.parse(JSON.stringify(this)));
+  }
 
   isPathComputed(): boolean {
     return this.pointsPath !== undefined;

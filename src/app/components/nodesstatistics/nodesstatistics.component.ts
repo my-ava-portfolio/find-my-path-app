@@ -97,10 +97,7 @@ export class NodesstatisticsComponent implements OnInit, OnDestroy {
   generateDownloadJsonUriForOriginalNodes(): void {
     if (this.pathData !== undefined) {
       if (this.pathData.getNodes().length > 0) {
-        let jsonData = JSON.stringify({
-          "type": "FeatureCollection",
-          "features": this.pathData.getNodes()
-        });
+        let jsonData = this.pathData.buildGeojsonOriginalNodes();
         let blob = new Blob([jsonData], { type: 'text/json' });
         let url= window.URL.createObjectURL(blob);
         let uri:SafeUrl = this.sanitizer.bypassSecurityTrustUrl(url);

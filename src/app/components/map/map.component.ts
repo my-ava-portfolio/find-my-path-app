@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import * as L from 'leaflet';
 import 'leaflet/dist/images/marker-shadow.png';
-import * as d3 from 'd3';
 
 import { MapToParametersService } from '../../services/maptoparameters.service';
 import { ParametersToMapService } from '../../services/parameterstomap.service';
@@ -10,7 +9,7 @@ import { MapViewBuilderService } from '../../services/mapviewbuider.service';
 import { MapPathBuilderService } from '../../services/mappathbuilder.service';
 import { PathsToMapService } from '../../services/pathstomap.service';
 
-import { PathFeature, PathElement, PathContainer, Nodes, Node, Marker,  NodePathGeoJson, NodePathFeature} from '../../core/interfaces';
+import { PathFeature, PathElement, Marker} from '../../core/interfaces';
 import { D3LeafletUtils } from '../../core/d3LeafletUtils';
 
 
@@ -80,10 +79,26 @@ export class MapComponent implements OnInit {
 
     // delete node path from parameter button
     this.Parameters2MapService.MapPathIdToremove.subscribe(pathId => {
-      this.MapFuncs.removeFeaturesMapFromLayerId(this.pathMapPrefix + pathId)
-      this.MapFuncs.removeFeaturesMapFromLayerId(this.nodesMapPrefix + pathId)
+      this.MapFuncs.removeFeaturesMapFromLayerId(this.pathMapPrefix + pathId);
+      this.MapFuncs.removeFeaturesMapFromLayerId(this.nodesMapPrefix + pathId);
 
-    })
+    });
+
+    // zoom on path
+    this.Parameters2MapService.PathToZoom.subscribe(pathFeat => {
+      let jsonData!: string
+      if (!pathFeat.isPathComputed()) {
+        // zoom on the path is it has been computed
+        jsonData = pathFeat.buildGeojsonOriginalNodes();
+      } else {
+        // zoom on the map nodes by default
+        jsonData = JSON.stringify(pathFeat.getLinePath());
+      }
+      const jsonLayer = L.geoJSON(JSON.parse(jsonData));
+      this.map.fitBounds(jsonLayer.getBounds());
+
+    });
+ 
    }
 
   ngOnInit(): void {
@@ -107,7 +122,7 @@ export class MapComponent implements OnInit {
       event.latlng.lat,
       event.latlng.lng
     ];
-    this.Map2ParametersService.getPointCoords(coordinates)
+    this.Map2ParametersService.getPointCoords(coordinates);
   }
 
 
@@ -118,6 +133,6 @@ export class MapComponent implements OnInit {
       this.nodesMapPrefix + pathFeature.id,
       pathFeature.getEdit(),
       pathFeature.getColor()
-    )
+    );
   }
 }

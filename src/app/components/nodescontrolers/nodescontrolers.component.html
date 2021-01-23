@@ -8,9 +8,9 @@
 
     <li *ngFor="let node of pathData.getNodes()">
 
-      <span class="node-name">{{node.properties.path}} {{node.properties.name}} {{node.geometry.coordinates[0]}} {{node.geometry.coordinates[1]}}</span>
+      <span class="node-name">{{node.properties.name}} </span>
 
-      <ng-template #popContent>{{node.geometry.coordinates[0]}} {{node.geometry.coordinates[1]}}</ng-template>
+      <ng-template #popContent>Coordinates: {{node.geometry.coordinates}}</ng-template>
       <button
         type="button"
         class="btn btn-info mx-1 my-1"

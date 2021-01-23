@@ -2,3 +2,11 @@ button {
   width: fit-content;
   font-size: small;
 }
+
+.path-coords-list {
+  list-style: none;
+}
+
+.node-name {
+  font-weight: bold;
+}

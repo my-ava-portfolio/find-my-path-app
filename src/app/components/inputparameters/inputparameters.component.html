@@ -9,15 +9,21 @@
             <button id="btn-edit-tab" type="button" class="btn btn-primary mx-2 my-2" [ngClass]="pathData.editingStatus ? 'btn-danger': 'btn-primary'" (click)="changeEditMode()">
               <i class="fas fa-edit"></i> Edit {{ editStatus }}
             </button>
+
             <button id="btn-del-tab" type="button" class="btn btn-primary mx-2 my-2" (click)="deletePathAction(pathData.id)">
               <i class="fas fa-trash-alt"></i> Delete path
             </button>
+
             <button id="btn-dupl-tab" type="button" class="btn btn-primary mx-2 my-2" (click)="duplicatePathAction(pathData.id)"  [disabled]="pathData.getNodes().length === 0 ? 'disabled': null">
               <i class="fas fa-copy"></i> Duplicate path
             </button>
           </div>
 
           <div class="col-lg-12 validate-buttons">
+            <button id="btn-zoom-tab" type="button" class="btn btn-primary mx-2 my-2" (click)="zoomOnPath()" [disabled]="pathData.getNodes().length === 0 ? 'disabled': null">
+              <i class="fas fa-search-location"></i> Zoom
+            </button>
+
             <button id="btn-valid-tab" type="button" class="btn btn-success mx-2 my-2" type="submit" value="Submit" (click)="computePath()" [disabled]="pathData.getNodes().length < 2 ? 'disabled': null">
               Compute path
             </button>

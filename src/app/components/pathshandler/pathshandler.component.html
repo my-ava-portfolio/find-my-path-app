@@ -44,8 +44,11 @@
           *ngFor="let path of PathFeatures; let i = index"
           [disabled]="!pathActionButtonEnabled ? 'disabled': null"
           (click)="switchTab(path.id)" role="tab" data-toggle="tab" aria-controls="tab" aria-selected="true"
+          [ngStyle]="{'color': path.strokeColor}"
           >
-            <a href="{{ '#' + path.id }}" >{{path.name}}</a>
+          {{path.name}}
+          <!-- <a href="{{ '#' + path.id }}" >{{path.name}}</a> -->
+
         </button>
       </div>
 
