@@ -126,11 +126,8 @@ export class MapComponent implements OnInit {
   displayNodesOnMap(pathFeature: PathElement): void {
     this.MapFuncs.computeMapFromPoints(
       this.map,
-      pathFeature.getNodes(),
+      pathFeature,
       this.nodesMapPrefix + pathFeature.id,
-      pathFeature.getEdit(),
-      pathFeature.getColor(),
-      pathFeature.getTransportModeIcon()
     );
   }
 }

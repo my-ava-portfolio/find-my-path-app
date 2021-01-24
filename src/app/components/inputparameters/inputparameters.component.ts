@@ -7,6 +7,7 @@ import { ParametersToMapService } from '../../services/parameterstomap.service';
 import { MapPathBuilderService } from '../../services/mappathbuilder.service';
 import { PathsToInputs } from '../../services/pathstoinputs.service';
 import { D3ToInputs } from '../../services/d3toinputs.service';
+import { ControlersToInputs } from '../../services/constrolerstoinputs.service';
 
 import { Subscription } from 'rxjs';
 
@@ -40,8 +41,10 @@ export class InputParametersComponent implements OnInit, OnDestroy {
   updatePathSubscription!: Subscription;
   pathIdFromPathsSubscription!: Subscription;
   ErrorPathApiFoundSubscription!: Subscription;
-  nodesMappedSubscription!: Subscription;
   d3ToInputsSubscription!: Subscription;
+  nodeUuidRemovedSubscription!: Subscription;
+  nodeUuidChangedToTopSubscription!: Subscription;
+  nodeUuidChangedToBotSubscription!: Subscription;
 
   apiResultErrorMessage!: string;
   apiResultSuccessMessage!: string;
@@ -59,7 +62,8 @@ export class InputParametersComponent implements OnInit, OnDestroy {
     private PathBuilderService: MapPathBuilderService,
     private MapFuncs: D3LeafletUtils,
     private pathsToInputs: PathsToInputs,
-    private d3ToInputs: D3ToInputs
+    private d3ToInputs: D3ToInputs,
+    private controlersToInputs: ControlersToInputs
   ) {
 
     this.addPointsSubscription = this.Map2ParametersService.newPointCoords.subscribe(coordinates => {
@@ -69,12 +73,6 @@ export class InputParametersComponent implements OnInit, OnDestroy {
     this.updatePathSubscription = this.Map2ParametersService.pathComplete.subscribe(
       (pathDone) => {
         this.updatePathWithApiData(pathDone);
-        // status message updated when api call is a success
-        this.setlogSuccessMessage(this.pathData.getTransportMode() + ' Path built !')
-        if (this.pathData.id === this.currentTabId) {
-          this.infoMessage = this.pathData.getTransportMode() + ' Path built !';
-          this.infoMessageIcon = 'fa-check-circle text-success';
-        }
         this.buttonsStatus(true); // activate buttons : path is finished
       }
     );
@@ -85,19 +83,25 @@ export class InputParametersComponent implements OnInit, OnDestroy {
 
     // status message updated when api issue occurred
     this.ErrorPathApiFoundSubscription = this.PathBuilderService.ErrorApiFound.subscribe(errorMessage => {
-      this.setlogErrorMessage(errorMessage)
+      this.setlogInfoMessage(errorMessage, 'error')
       this.buttonsStatus(true); // reset buttons status
 
     });
 
-    // status message updated when nodes are mapped
-    this.nodesMappedSubscription = this.Parameters2MapService.NodesPathToMap.subscribe(_ => {
-      this.setlogDebugMessage('node(s) added/removed')
+    // status message updated when nodes are modified by controler component
+    this.nodeUuidRemovedSubscription = this.controlersToInputs.nodeUuidRemoved.subscribe(nodeUuid => {
+      this.setlogInfoMessage('Node ' + nodeUuid + ' removed', 'info')
+    });
+    this.nodeUuidChangedToTopSubscription = this.controlersToInputs.nodeUuidChangedTop.subscribe(nodeUuid => {
+      this.setlogInfoMessage('Node ' + nodeUuid + ' moved to top', 'info')
+    });
+    this.nodeUuidChangedToBotSubscription = this.controlersToInputs.nodeUuidChangedBot.subscribe(nodeUuid => {
+      this.setlogInfoMessage('Node ' + nodeUuid + ' moved to bot', 'info')
     });
 
     // update log message if coordinates point change
-    this.d3ToInputsSubscription = this.d3ToInputs.pointMapMoved.subscribe(_ => {
-      this.setlogDebugMessage('node(s) moved')
+    this.d3ToInputsSubscription = this.d3ToInputs.pointMapMovedNewCoordinates.subscribe(coordinates => {
+      this.setlogInfoMessage('Node moved at: ' + coordinates, 'info')
     })
 
   }
@@ -107,6 +111,8 @@ export class InputParametersComponent implements OnInit, OnDestroy {
     // in order to generate the map by default, each time we create a new tab (useful if duplicate!)
     this.Parameters2MapService.mapFromPathNodes(this.pathData);
     this.pathName = this.pathData.name;
+    this.setlogInfoMessage('Path Created: ' + this.pathName, 'info')
+
   }
 
   ngOnDestroy(): void {
@@ -117,37 +123,37 @@ export class InputParametersComponent implements OnInit, OnDestroy {
     this.updatePathSubscription.unsubscribe();
     this.pathIdFromPathsSubscription.unsubscribe();
     this.ErrorPathApiFoundSubscription.unsubscribe();
-    this.nodesMappedSubscription.unsubscribe();
-    this.d3ToInputsSubscription.unsubscribe()
+    this.d3ToInputsSubscription.unsubscribe();
+
+    this.nodeUuidRemovedSubscription.unsubscribe();
+    this.nodeUuidChangedToTopSubscription.unsubscribe();
+    this.nodeUuidChangedToBotSubscription.unsubscribe();
+
     this.buttonsStatus(true); // reset buttons status
   }
 
-  setlogSuccessMessage(message: string): void {
+  setlogInfoMessage(message: string, type: string): void {
     if (this.pathData.id === this.currentTabId) {
-      this.pathData.pathLogMessage = message;
-      this.infoMessageIcon = 'fa-check-circle text-success';
+      let logIcon!: string;
+      if (type === 'info') {
+        logIcon = 'fa-info-circle text-info';
+      } else if (type === 'warning') {
+        logIcon = 'fa-exclamation-circle text-warning';
+      } else if (type === 'error') {
+        logIcon = 'fa-exclamation-circle text-danger';
+      } else if (type === 'success') {
+        logIcon = 'fa-check-circle text-success';
+      } else if (type === 'warning') {
+        logIcon = 'fa-exclamation-circle text-warning';
+      }
+      this.pathData.pathLogMessages.push({
+        icon: logIcon,
+        details: message
+      });
+
     }
   }
 
-  setlogDebugMessage(message: string): void {
-    if (this.pathData.id === this.currentTabId) {
-      if (this.pathData.getNodes().length >= 2) {
-        this.pathData.pathLogMessage = message;
-        this.infoMessageIcon = 'fa-info-circle text-info';
-      }
-      if (this.pathData.getNodes().length < 2) {
-        this.pathData.pathLogMessage = this.defaultInfoMessage;
-        this.infoMessageIcon = 'fa-exclamation-circle text-warning';
-      }
-    }
-  }
-
-  setlogErrorMessage(message: string): void {
-    if (this.pathData.id === this.currentTabId) {
-      this.pathData.pathLogMessage = message
-      this.infoMessageIcon = 'fa-exclamation-circle text-danger';
-    }
-  }
 
   zoomOnPath(): void {
     // zoom nodes paths...
@@ -156,6 +162,7 @@ export class InputParametersComponent implements OnInit, OnDestroy {
 
   updatePathName(event: any): void {
     this.pathName = event.target.value;
+    this.setlogInfoMessage('path renamed: ' + this.pathData.name + ' to ' + this.pathName, 'info')
     this.pathData.name = this.pathName;
     this.PathBuilderService.chartPathToRefresh.next(this.pathData);
     this.pathsToInputs.emitGlobalChartRefreshing();
@@ -167,6 +174,7 @@ export class InputParametersComponent implements OnInit, OnDestroy {
   }
 
   duplicatePathAction(pathId: string): void {
+    this.setlogInfoMessage('Path duplicated: ' + pathId, 'info')
     this.pathEmitToDuplicate.emit(pathId);
   }
 
@@ -187,16 +195,22 @@ export class InputParametersComponent implements OnInit, OnDestroy {
   }
 
   updateStrokeWidth(event: any): void {
+    this.setlogInfoMessage('Line width updated', 'info')
+    console.log(this.pathData.id)
     this.pathData.setWidth(event.target.value);
     this.MapFuncs.UpdatePathStyleFromLayerId(this.pathData.id, undefined, event.target.value);
+
   }
   updateStrokeColor(event: any): void {
+    this.setlogInfoMessage('Color updated', 'info')
+    console.log(this.pathData.id)
     this.pathData.setColor(event.target.value);
     this.MapFuncs.UpdatePathStyleFromLayerId(this.pathData.id, event.target.value);
   }
 
   replayPath(): void {
     this.PathBuilderService.refreshPath(this.pathData);
+    this.setlogInfoMessage('Path animation replayed', 'info')
   }
 
   changeEditMode(): void {
@@ -215,7 +229,7 @@ export class InputParametersComponent implements OnInit, OnDestroy {
     this.pathData.setTransportMode(newValue);
     this.transportModeSelected = newValue;
     this.Parameters2MapService.mapFromPathNodes(this.pathData); // in order to enable or disable drag nodes
-    console.log('update transportMode', this.pathData.getTransportMode());
+    this.setlogInfoMessage(this.pathData.getTransportMode() + ' transport mode applied', 'info')
   }
 
   updateElevationStatus(event: any): void {
@@ -244,17 +258,19 @@ export class InputParametersComponent implements OnInit, OnDestroy {
         }
       );
       this.Parameters2MapService.mapFromPathNodes(this.pathData);
-
+      this.setlogInfoMessage('Node added at: ' + coordinates, 'info')
     }
 
   }
 
   updatePathWithApiData(path: PathElement): void {
-    if ( this.pathData.id === this.currentTabId ) {
+    if (this.pathData.id === this.currentTabId) {
+
       this.pathData = path;
       this.pathsToInputs.emitGlobalChartRefreshing();
       console.log('finito', this.isCurrentTab, this.pathData);
-
+      // status message updated when api call is a success
+      this.setlogInfoMessage(this.pathData.getTransportMode() + ' Path built !', 'success')
     }
   }
 

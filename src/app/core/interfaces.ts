@@ -180,6 +180,12 @@ export class NodeFeature {
 
 }
 
+export class logMessage {
+  icon!: string;
+  details!: string;
+  constructor() {}
+}
+
 export class PathElement {
   id: string;
   name: string;
@@ -188,7 +194,7 @@ export class PathElement {
   editingStatus = false;
   transportMode = 'pedestrian';
   elevationStatus = true;
-  pathLogMessage!: string;
+  pathLogMessages: logMessage[] = [];
   private inputNodes: NodeFeature[] = [];
   private pointsPath!: NodePathGeoJson;
   private linePath!: LinePathGeoJson;

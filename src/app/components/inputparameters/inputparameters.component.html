@@ -5,15 +5,15 @@
         <h6 class="input-group">Current status:</h6>
         <div class="row">
           <div class="col-lg-12">
-            <small 
-              class="mx-2 my-2" 
-              *ngIf="infoMessage" 
+            <small
+              class="mx-2 my-2"
+              *ngIf="infoMessage"
               role="alert"
               >
-              <i class="fas " [ngClass]="infoMessageIcon"></i>
-              {{pathData.pathLogMessage}}
+              <i class="fas " [ngClass]="pathData.pathLogMessages[pathData.pathLogMessages.length - 1].icon"></i>
+              {{pathData.pathLogMessages[pathData.pathLogMessages.length - 1].details}}
             </small>
-                
+
 
           </div>
         </div>
@@ -33,7 +33,7 @@
                 <i class="fas fa-search-location"></i> Zoom
               </button>
             </div>
- 
+
             <div class="col-lg-6 edit-buttons">
               <button id="btn-del-tab" type="button" class="btn btn-primary mx-2 my-2 btn-sm" (click)="deletePathAction(pathData.id)">
                 <i class="fas fa-trash-alt"></i> Delete path
@@ -65,7 +65,7 @@
 
 
           </div>
-          
+
         </div>
 
       </div>

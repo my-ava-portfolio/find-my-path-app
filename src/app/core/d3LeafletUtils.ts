@@ -238,9 +238,12 @@ export class D3LeafletUtils {
   }
 
 
-  computeMapFromPoints(LeafletMap: any, GeoJsonPointFeatures: any[], layerId: string, dragEnabled: boolean, colorStroke: string, transportModeIcon: string, displayToolTip: boolean = false): void {
+  computeMapFromPoints(LeafletMap: any, inputPath: any, layerId: string, displayToolTip: boolean = false): void {
     this.removeFeaturesMapFromLayerId(layerId);
-    console.log('drag status', dragEnabled);
+    console.log('drag status');
+
+    const GeoJsonPointFeatures = inputPath.getNodes();
+
     const input_data: any[] = JSON.parse(JSON.stringify(GeoJsonPointFeatures))
 
     input_data.forEach( (feature, i): void => {
@@ -270,9 +273,8 @@ export class D3LeafletUtils {
       .append('path')
       .attr('d', path)
       .attr('class', 'PathNodes')
-      .style('stroke', colorStroke)
+      .style('stroke', inputPath.getColor())
       .style('stroke-width', '5px');
-
 
     PathNodes
       .append('text')
@@ -290,19 +292,20 @@ export class D3LeafletUtils {
       .attr('r', 10)
       .attr('cy', '-40')
       .attr('class', 'travelFixedMarker_' + layerId)
-      .style('fill', colorStroke) // TODO add css
+      .style('fill', inputPath.getColor()) // TODO add css
 
     PathNodes
       .append('text')
       .attr('font-family', '\'Font Awesome 5 Free\'')
       .attr('y', '-40')
       .attr('font-weight', 900)
-      .text(transportModeIcon)
+      .text(inputPath.getTransportModeIcon())
       .attr('text-anchor', 'middle')
       .attr('alignment-baseline', 'middle')
       .attr('class', 'travelFixedMarker_' + layerId)
       .style('fill', 'white')
       .style('opacity', '1');
+
 
       // .on('mouseover', (d: any): void => {
       //     LeafletMap.dragging.disable();
@@ -331,7 +334,8 @@ export class D3LeafletUtils {
       return sourceData;
     }
 
-    if (dragEnabled) {
+
+    if (inputPath.getEdit()) {
       PathNodes
         .attr('class', 'MapMarkers-' + layerId + ' dragEnabled')
         .call(
@@ -349,11 +353,12 @@ export class D3LeafletUtils {
           .on('end', (d: any): void => {
             // to refresh the nodecontrolers part
             // use the original input data to update data path (inherit)
-            GeoJsonPointFeatures = refreshInputDataCoordinates(GeoJsonPointFeatures, d)
-            this.computeMapFromPoints(LeafletMap, GeoJsonPointFeatures, layerId, dragEnabled, colorStroke, transportModeIcon, displayToolTip = false);
+            inputPath.setNodes(refreshInputDataCoordinates(GeoJsonPointFeatures, d))
+            this.computeMapFromPoints(LeafletMap, inputPath, layerId, displayToolTip = false);
 
             // emit a node changes
-            this.d3ToInputs.emitpointMapMoved(layerId);
+            const CoordinatesUpdated = layerCoordsConverter(LeafletMap, { x: d3.event.x, y: d3.event.y });
+            this.d3ToInputs.emitpointMapMoved([CoordinatesUpdated.lng, CoordinatesUpdated.lat]);
 
             LeafletMap.dragging.enable();
           })

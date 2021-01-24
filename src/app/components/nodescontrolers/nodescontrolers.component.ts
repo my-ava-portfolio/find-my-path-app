@@ -1,6 +1,7 @@
 import { Component, OnInit, Input} from '@angular/core';
 
 import { ParametersToMapService } from '../../services/parameterstomap.service';
+import { ControlersToInputs } from '../../services/constrolerstoinputs.service';
 
 import { NodeFeature, PathElement } from '../../core/interfaces';
 
@@ -20,6 +21,7 @@ export class nodesControlersComponent implements OnInit {
   constructor(
     private Parameters2MapService: ParametersToMapService,
     private GeneralFunc: GeneralUtils,
+    private controlersToInputs: ControlersToInputs
   ) {
 
   }
@@ -37,11 +39,12 @@ export class nodesControlersComponent implements OnInit {
       // update nodes list regarding user removing action
       nodesFiltered.forEach((feature, index) => {
         nodesFiltered[index].properties.position = index;
-        nodesFiltered[index].properties.uuid = index;
-        nodesFiltered[index].properties.name = 'Map Point N°' + index;
+        // nodesFiltered[index].properties.uuid = index;
+        // nodesFiltered[index].properties.name = 'Map Point N°' + index;
       });
       this.pathData.setNodes(nodesFiltered);
       this.Parameters2MapService.mapFromPathNodes(this.pathData);
+      this.controlersToInputs.emitNodeRemoved(uuid)
     }
   }
 
@@ -49,8 +52,9 @@ export class nodesControlersComponent implements OnInit {
     if (this.pathData.getEdit() && this.isCurrentTab) {
       console.log(position)
       const nodes: NodeFeature[] = this.pathData.getNodes();
-      const nodesUpdated = this._switchPositionNodes(nodes, position, -1);
+      this.controlersToInputs.emitNodeChangedToTop(nodes[position].properties.uuid)
 
+      const nodesUpdated = this._switchPositionNodes(nodes, position, -1);
       this.pathData.setNodes(nodesUpdated);
       this.Parameters2MapService.mapFromPathNodes(this.pathData);
     }
@@ -59,8 +63,9 @@ export class nodesControlersComponent implements OnInit {
   botPosition(position: number): void {
     if (this.pathData.getEdit() === true && this.isCurrentTab) {
       const nodes: NodeFeature[] = this.pathData.getNodes();
-      const nodesUpdated = this._switchPositionNodes(nodes, position, 1);
+      this.controlersToInputs.emitNodeChangedToBot(nodes[position].properties.uuid)
 
+      const nodesUpdated = this._switchPositionNodes(nodes, position, 1);
       this.pathData.setNodes(nodesUpdated);
       this.Parameters2MapService.mapFromPathNodes(this.pathData);
     }

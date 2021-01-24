@@ -1,0 +1,16 @@
+<div [id]="'stats-results-' + pathData.id" class="container-fluid">
+  <div class="row">
+
+    <div class="col-lg-12">
+      <ol class="logs-list">
+
+        <li *ngFor="let log of pathData.pathLogMessages">
+          <i class="fas " [ngClass]="log.icon"></i>
+          {{log.details}}
+        </li>
+      </ol>
+
+    </div>
+  </div>
+</div>
+

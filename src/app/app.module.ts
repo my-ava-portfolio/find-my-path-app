@@ -17,6 +17,8 @@ import { MapPathBuilderService } from './services/mappathbuilder.service';
 import { MapToParametersService } from './services/maptoparameters.service';
 import { ParametersToMapService } from './services/parameterstomap.service';
 import { PathsToMapService } from './services/pathstomap.service';
+import { ControlersToInputs } from './services/constrolerstoinputs.service';
+
 // TODO rename...
 import { PathsToInputs } from './services/pathstoinputs.service';
 import { D3ToInputs } from './services/d3toinputs.service';
@@ -25,6 +27,7 @@ import { PathsHandlerComponent } from './components/pathshandler/pathshandler.co
 import { nodesControlersComponent } from './components/nodescontrolers/nodescontrolers.component';
 import { NodesstatisticsComponent } from './components/nodesstatistics/nodesstatistics.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { PathlogsComponent } from './components/pathlogs/pathlogs.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +39,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     PathsHandlerComponent,
     InputParametersComponent,
     nodesControlersComponent,
-    NodesstatisticsComponent
+    NodesstatisticsComponent,
+    PathlogsComponent
   ],
   imports: [
     BrowserModule,
@@ -53,7 +57,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     MapPathBuilderService,
     PathsToMapService,
     PathsToInputs,
-    D3ToInputs
+    D3ToInputs,
+    ControlersToInputs
   ],
   bootstrap: [AppComponent]
 })

@@ -6,13 +6,13 @@ import { Subject } from 'rxjs';
 @Injectable()
 export class D3ToInputs {
 
-  pointMapMoved: Subject<string> = new Subject<string>();  // input parameters to paths
+  pointMapMovedNewCoordinates: Subject<number[]> = new Subject<number[]>();  // input parameters to paths
 
   constructor(
   ) {}
 
-  emitpointMapMoved(pathId: string): void {
-    this.pointMapMoved.next(pathId);
+  emitpointMapMoved(coordinates: number[]): void {
+    this.pointMapMovedNewCoordinates.next(coordinates);
   };
 
 }
