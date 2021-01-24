@@ -306,20 +306,17 @@ export class D3LeafletUtils {
       .style('fill', 'white')
       .style('opacity', '1');
 
-
-      // .on('mouseover', (d: any): void => {
-      //     LeafletMap.dragging.disable();
-      //     this.initPopup('body', 'popup-' + layerId, d, false);
-      // })
-      // .on('mousemove', (d: any): void => {
-      //     LeafletMap.dragging.disable();
-      //     this.moveResponsivePopup('#popup-' + layerId);
-      // })
-      // .on('mouseout', (d: any): void => {
-      //     LeafletMap.dragging.enable();
-      //     // TODO issue popup sometimes not removed
-      //     d3.select('#popup-' + layerId).remove();
-      // })
+    PathNodes
+      .on('mouseover', (d: any): void => {
+          this.initPopup('body', 'popup-' + inputPath.id, d, false);
+      })
+      .on('mousemove', (d: any): void => {
+          this.moveResponsivePopup('#popup-' + inputPath.id);
+      })
+      .on('mouseout', (d: any): void => {
+        // TODO issue popup sometimes not removed
+        d3.select('#popup-' + inputPath.id).remove();
+      })
 
     const layerCoordsConverter = this.convertLayerCoordsToLatLng.bind(this);
 
@@ -361,6 +358,8 @@ export class D3LeafletUtils {
             this.d3ToInputs.emitpointMapMoved([CoordinatesUpdated.lng, CoordinatesUpdated.lat]);
 
             LeafletMap.dragging.enable();
+            // remove tooltip to avoid issue due to the drag and drop
+            d3.select('#popup-' + inputPath.id).remove();
           })
         );
     }
