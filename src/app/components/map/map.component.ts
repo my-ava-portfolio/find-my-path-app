@@ -67,11 +67,8 @@ export class MapComponent implements OnInit {
     this.PathBuilderService.pathBuilt.subscribe(PathData => {
       this.MapFuncs.computeAnimatePointsOnLine(
         this.map,
-        PathData.getPointsPath().features,
-        this.pathMapPrefix + PathData.id,
-        PathData.strokeColor,
-        PathData.strokeWidth,
-        PathData.getTransportMode(),
+        PathData,
+        this.pathMapPrefix + PathData.id
       );
       this.Map2ParametersService.pushCompletePath(PathData);
       this.displayNodesOnMap(PathData);

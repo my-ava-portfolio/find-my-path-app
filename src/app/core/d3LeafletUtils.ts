@@ -49,8 +49,8 @@ export class D3LeafletUtils {
   UpdatePathStyleFromLayerId(layerId: string, strokeColor?: string, strokeWidth?: string): void {
     // path , nodes, line chart are updated when color is changed
     const path: any = d3.selectAll('.lineConnect_pathMap-' + layerId);
-    const nodes: any = d3.selectAll('.MapMarkers-nodesMap-' + layerId + '  path');
-    const TransportMarkersCircle: any = d3.selectAll('circle.travelFixedMarker_pathMap-' + layerId);
+    const nodes: any = d3.selectAll('#nodesMap-' + layerId + '  path');
+    const TransportMarkersCircleOnPath: any = d3.selectAll('circle.travelFixedMarker_pathMap-' + layerId);
 
     const chartLine: any =  d3.selectAll('.chart-line-' + layerId);
     const chartLineLegend: any =  d3.selectAll('.chart-legend-' + layerId);
@@ -60,7 +60,7 @@ export class D3LeafletUtils {
       nodes.style('stroke', strokeColor);
       chartLine.style('stroke', strokeColor);
       chartLineLegend.style('fill', strokeColor);
-      TransportMarkersCircle.style('fill', strokeColor);
+      TransportMarkersCircleOnPath.style('fill', strokeColor);
     }
 
     if (strokeWidth !== undefined) {
@@ -68,9 +68,11 @@ export class D3LeafletUtils {
     }
   }
 
-  computeAnimatePointsOnLine(LeafletMap: any, GeoJsonPointFeatures: any[], layerId: string, lineColor: string, lineWidth: string,  transportMode: string,): void {
+  computeAnimatePointsOnLine(LeafletMap: any, pathData: any, layerId: string): void {
     this.removeFeaturesMapFromLayerId(layerId);
-    const input_data: any[] = JSON.parse(JSON.stringify(GeoJsonPointFeatures))
+
+    const GeoJsonPointFeatures: any[] = pathData.getPointsPath().features;
+    const input_data: any[] = JSON.parse(JSON.stringify(GeoJsonPointFeatures));
     const convertLatLngToLayerCoords = (d: any): any => {
         return LeafletMap.latLngToLayerPoint(
             new L.LatLng(
@@ -123,11 +125,11 @@ export class D3LeafletUtils {
       .attr('class', 'lineConnect_' + layerId)
       .style('fill', 'none')
       .style('opacity', 'unset') // add 0 to hide the path
-      .style('stroke', lineColor)
-      .style('stroke-width', lineWidth)
+      .style('stroke', pathData.strokeColor)
+      .style('stroke-width', pathData.strokeWidth + "px")
       .style('overflow', 'overlay');
 
-      // the traveling circle along the path
+    // the traveling circle along the path
     const marker: any  = g.append('circle')
       .attr('r', 10)
       .attr('id', 'marker_' + layerId)
@@ -138,9 +140,9 @@ export class D3LeafletUtils {
       .attr('font-family', '\'Font Awesome 5 Free\'')
       .attr('font-weight', 900)
       .text((d: any): string => {
-          if (transportMode === 'pedestrian') {
+          if (pathData.getTransportMode() === 'pedestrian') {
             return '\uf554';
-          } else if ( transportMode === 'vehicle') {
+          } else if ( pathData.getTransportMode() === 'vehicle') {
             return '\uf5e4';
           } else {
             return '\uf128';
@@ -231,15 +233,15 @@ export class D3LeafletUtils {
         .attr('id', 'marker_' + layerId)
         .attr('class', 'travelFixedMarker_' + layerId)
         .attr('transform', 'translate(' + p.x + ',' + p.y + ')')
-        .style('fill', lineColor) // TODO add css
+        .style('fill', pathData.strokeColor) // TODO add css
 
       g.append('text')
         .attr('font-family', '\'Font Awesome 5 Free\'')
         .attr('font-weight', 900)
         .text((d: any): string => {
-            if (transportMode === 'pedestrian') {
+            if (pathData.getTransportMode() === 'pedestrian') {
               return '\uf554';
-            } else if ( transportMode === 'vehicle') {
+            } else if ( pathData.getTransportMode() === 'vehicle') {
               return '\uf5e4';
             } else {
               return '\uf128';
@@ -310,7 +312,7 @@ export class D3LeafletUtils {
     const g: any = svg.select('g').attr('class', 'leaflet-zoom-hide');
 
     const path = this.pinPathCubicBezier(25, 35)
-    const PathNodes: any = g.selectAll('.MapMarkers-' + layerId)
+    const PathNodes: any = g.selectAll('.' + layerId)
       .data(input_data)
       .enter()
       .append('g')

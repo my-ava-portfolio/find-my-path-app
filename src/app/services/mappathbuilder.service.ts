@@ -49,4 +49,9 @@ export class MapPathBuilderService {
     this.chartPathToRefresh.next(path);
   }
 
+  refreshPath(path: PathElement): void {
+    // in order to replay path animation
+    this.pathBuilt.next(path);
+  }
+
 }

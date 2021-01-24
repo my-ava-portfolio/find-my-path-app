@@ -69,7 +69,6 @@ export class InputParametersComponent implements OnInit, OnDestroy {
     });
 
     this.ErrorPathApiFoundSubscription = this.PathBuilderService.ErrorApiFound.subscribe(errorMessage => {
-      console.log("prout suite", errorMessage)
       this.apiResultMessage = errorMessage;
       this.buttonsStatus(true); // reset buttons status
     })
