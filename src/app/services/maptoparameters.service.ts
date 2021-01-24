@@ -8,22 +8,22 @@ import { Nodes, OutputPathApi, PathElement } from '../core/interfaces';
 @Injectable()
 export class MapToParametersService {
 
-    newPointCoords: Subject<number[]> = new Subject<number[]>();
+  newPointCoords: Subject<number[]> = new Subject<number[]>();
   pathComplete: Subject<PathElement> = new Subject<PathElement>();
 
-    pointCoords!: number[];
-    pathDone!: PathElement;
+  pointCoords!: number[];
+  pathDone!: PathElement;
 
-    constructor() { }
+  constructor() { }
 
   getPointCoords(coordinates: number[]): void {
-      this.pointCoords = coordinates
-        this.newPointCoords.next(this.pointCoords);
-    }
+    this.pointCoords = coordinates,
+    this.newPointCoords.next(this.pointCoords);
+  }
 
   pushCompletePath(Path: PathElement): void {
-      this.pathDone = Path
-        this.pathComplete.next(this.pathDone)
-    }
+    this.pathDone = Path,
+    this.pathComplete.next(this.pathDone)
+  }
 
 }

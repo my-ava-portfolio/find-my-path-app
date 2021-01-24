@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import * as L from 'leaflet';
 import * as d3 from 'd3';
 
+import { D3ToInputs } from '../services/d3toinputs.service';
 
 
 interface PointGeometry {
@@ -32,7 +33,9 @@ export class D3LeafletUtils {
   private windowHeight: number = window.innerHeight;
   private popupClassName = 'popup-feature';
 
-  constructor() { }
+  constructor(
+    private d3ToInputs: D3ToInputs
+  ) { }
 
   pinPathCubicBezier(width: number, height:number): string {
     // https://medium.com/welldone-software/map-pins-using-svg-path-9fdfebb74501
@@ -348,6 +351,10 @@ export class D3LeafletUtils {
             // use the original input data to update data path (inherit)
             GeoJsonPointFeatures = refreshInputDataCoordinates(GeoJsonPointFeatures, d)
             this.computeMapFromPoints(LeafletMap, GeoJsonPointFeatures, layerId, dragEnabled, colorStroke, transportModeIcon, displayToolTip = false);
+
+            // emit a node changes
+            this.d3ToInputs.emitpointMapMoved(layerId);
+
             LeafletMap.dragging.enable();
           })
         );

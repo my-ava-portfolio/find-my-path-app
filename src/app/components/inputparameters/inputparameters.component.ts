@@ -6,6 +6,7 @@ import { MapToParametersService } from '../../services/maptoparameters.service';
 import { ParametersToMapService } from '../../services/parameterstomap.service';
 import { MapPathBuilderService } from '../../services/mappathbuilder.service';
 import { PathsToInputs } from '../../services/pathstoinputs.service';
+import { D3ToInputs } from '../../services/d3toinputs.service';
 
 import { Subscription } from 'rxjs';
 
@@ -32,17 +33,19 @@ export class InputParametersComponent implements OnInit, OnDestroy {
   colorsPredefined = new ColorsPalettes().colorsBrewer;
   pathName!: string;
   transportModeSelected!: string;
-  editStatus = 'off'
+  editStatus = 'off';
   private defaultInfoMessage = 'Define at least 2 nodes!';
 
   addPointsSubscription!: Subscription;
   updatePathSubscription!: Subscription;
   pathIdFromPathsSubscription!: Subscription;
   ErrorPathApiFoundSubscription!: Subscription;
+  ControlersToInputsSubscription!: Subscription;
 
   apiResultErrorMessage!: string;
   apiResultSuccessMessage!: string;
   infoMessage = 'Define at least 2 nodes!';
+  infoMessageIcon!: string;
 
   TransportModes: TransportMode[] = [
     {title: 'Pedestrian', value: 'pedestrian'},
@@ -54,7 +57,8 @@ export class InputParametersComponent implements OnInit, OnDestroy {
     private Map2ParametersService: MapToParametersService,
     private PathBuilderService: MapPathBuilderService,
     private MapFuncs: D3LeafletUtils,
-    private pathsToInputs: PathsToInputs
+    private pathsToInputs: PathsToInputs,
+    private d3ToInputs: D3ToInputs
   ) {
 
     this.addPointsSubscription = this.Map2ParametersService.newPointCoords.subscribe(coordinates => {
@@ -64,9 +68,9 @@ export class InputParametersComponent implements OnInit, OnDestroy {
     this.updatePathSubscription = this.Map2ParametersService.pathComplete.subscribe(
       (pathDone) => {
         this.updatePathWithApiData(pathDone);
+        // status message updated when api call is a success
         this.infoMessage = this.pathData.getTransportMode() + ' Path built !';
-        // this.infoMessage = '';
-        // this.apiResultErrorMessage = '';
+        this.infoMessageIcon = 'fa-check-circle text-success';
         this.buttonsStatus(true); // activate buttons : path is finished
       }
     );
@@ -75,23 +79,37 @@ export class InputParametersComponent implements OnInit, OnDestroy {
       this.deletePathAction(pathId);
     });
 
+    // status message updated when api issue occurred
     this.ErrorPathApiFoundSubscription = this.PathBuilderService.ErrorApiFound.subscribe(errorMessage => {
       this.infoMessage = errorMessage;
-      // this.infoMessage = ''
-      // this.apiResultSuccessMessage = ''
+      this.infoMessageIcon = 'fa-exclamation-circle text-danger';
       this.buttonsStatus(true); // reset buttons status
 
-    })
+    });
 
-    // status message
+    // status message updated when nodes are mapped
     this.Parameters2MapService.NodesPathToMap.subscribe(_ => {
       if (this.pathData.getNodes().length >= 2) {
-        this.infoMessage = 'A new ' + this.pathData.getTransportMode() + ' path is ready to be computed!';
+        this.infoMessage = 'A new ' + this.pathData.getTransportMode() + ' path is ready to be computed! => node(s) added/removed';
+        this.infoMessageIcon = 'fa-info-circle text-info';
       }
       if (this.pathData.getNodes().length < 2) {
         this.infoMessage = this.defaultInfoMessage;
+        this.infoMessageIcon = 'fa-exclamation-circle text-warning';
       }
     });
+
+    // update log message if coordinates point change
+    this.ControlersToInputsSubscription = this.d3ToInputs.pointMapMoved.subscribe(_ => {
+      if (this.pathData.getNodes().length >= 2) {
+        this.infoMessage = 'A new ' + this.pathData.getTransportMode() + ' path is ready to be computed! => node(s) moved';
+        this.infoMessageIcon = 'fa-info-circle text-info';
+      }
+      if (this.pathData.getNodes().length < 2) {
+        this.infoMessage = this.defaultInfoMessage;
+        this.infoMessageIcon = 'fa-exclamation-circle text-warning';
+      }
+    })
 
   }
 
@@ -110,6 +128,7 @@ export class InputParametersComponent implements OnInit, OnDestroy {
     this.updatePathSubscription.unsubscribe();
     this.pathIdFromPathsSubscription.unsubscribe();
     this.ErrorPathApiFoundSubscription.unsubscribe();
+    this.ControlersToInputsSubscription.unsubscribe()
     this.buttonsStatus(true); // reset buttons status
   }
 
@@ -121,7 +140,7 @@ export class InputParametersComponent implements OnInit, OnDestroy {
   updatePathName(event: any): void {
     this.pathName = event.target.value;
     this.pathData.name = this.pathName;
-    this.PathBuilderService.chartPathToRefresh.next(this.pathData)
+    this.PathBuilderService.chartPathToRefresh.next(this.pathData);
     this.pathsToInputs.emitGlobalChartRefreshing();
   }
 
@@ -160,16 +179,16 @@ export class InputParametersComponent implements OnInit, OnDestroy {
   }
 
   replayPath(): void {
-    this.PathBuilderService.refreshPath(this.pathData)
+    this.PathBuilderService.refreshPath(this.pathData);
   }
 
   changeEditMode(): void {
     if (this.pathData.getEdit()) {
       this.pathData.setEdit(false);
-      this.editStatus = 'off'
+      this.editStatus = 'off';
     } else {
       this.pathData.setEdit(true);
-      this.editStatus = 'on'
+      this.editStatus = 'on';
 
     }
     this.Parameters2MapService.mapFromPathNodes(this.pathData); // in order to enable or disable drag nodes

@@ -17,10 +17,9 @@ import { MapPathBuilderService } from './services/mappathbuilder.service';
 import { MapToParametersService } from './services/maptoparameters.service';
 import { ParametersToMapService } from './services/parameterstomap.service';
 import { PathsToMapService } from './services/pathstomap.service';
+// TODO rename...
 import { PathsToInputs } from './services/pathstoinputs.service';
-
-
-
+import { D3ToInputs } from './services/d3toinputs.service';
 
 import { PathsHandlerComponent } from './components/pathshandler/pathshandler.component';
 import { nodesControlersComponent } from './components/nodescontrolers/nodescontrolers.component';
@@ -53,7 +52,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     MapViewBuilderService,
     MapPathBuilderService,
     PathsToMapService,
-    PathsToInputs
+    PathsToInputs,
+    D3ToInputs
   ],
   bootstrap: [AppComponent]
 })

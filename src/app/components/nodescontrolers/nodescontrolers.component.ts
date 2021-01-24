@@ -28,14 +28,18 @@ export class nodesControlersComponent implements OnInit {
   ngOnInit(): void {
   }
 
-
   removeNode(uuid: number): void {
     if (this.pathData.getEdit() === true && this.isCurrentTab) {
 
       const nodes: NodeFeature[] = this.pathData.getNodes();
       const nodesFiltered: NodeFeature[] = nodes.filter(data => data.properties.uuid !== uuid);
       console.log(uuid, nodesFiltered)
-
+      // update nodes list regarding user removing action
+      nodesFiltered.forEach((feature, index) => {
+        nodesFiltered[index].properties.position = index;
+        nodesFiltered[index].properties.uuid = index;
+        nodesFiltered[index].properties.name = 'Map Point N°' + index;
+      });
       this.pathData.setNodes(nodesFiltered);
       this.Parameters2MapService.mapFromPathNodes(this.pathData);
     }
