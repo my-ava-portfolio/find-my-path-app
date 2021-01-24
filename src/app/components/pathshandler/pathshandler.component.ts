@@ -85,8 +85,9 @@ export class PathsHandlerComponent implements OnInit {
     this.PathFeatures.reverse().forEach((item: PathElement) => {
       this.pathsToInputs.emitPathId(item.id);
     });
-    this.topoChartDisplayed = false;
     this.pathsReadyCharted(); // we refresh the chart to clean it!
+    this.topoChartDisplayed = false;
+    this.countPath = this.PathFeatures.length //reset to 0 the count path, normaly
   }
 
   comparePath(): void {
