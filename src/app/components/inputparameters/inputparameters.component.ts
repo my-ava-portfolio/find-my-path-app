@@ -139,6 +139,10 @@ export class InputParametersComponent implements OnInit, OnDestroy {
     this.MapFuncs.UpdatePathStyleFromLayerId(this.pathData.id, event.target.value);
   }
 
+  replayPath(): void {
+    this.PathBuilderService.refreshPath(this.pathData)
+  }
+
   changeEditMode(): void {
     if (this.pathData.getEdit()) {
       this.pathData.setEdit(false);
