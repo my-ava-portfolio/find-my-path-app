@@ -50,7 +50,7 @@ export class D3LeafletUtils {
     // path , nodes, line chart are updated when color is changed
     const path: any = d3.selectAll('.lineConnect_pathMap-' + layerId);
     const nodes: any = d3.selectAll('#nodesMap-' + layerId + '  path');
-    const TransportMarkersCircleOnPath: any = d3.selectAll('circle.travelFixedMarker_pathMap-' + layerId);
+    const TransportMarkersCircleOnPath: any = d3.selectAll('circle.travelFixedMarker_nodesMap-' + layerId);
 
     const chartLine: any =  d3.selectAll('.chart-line-' + layerId);
     const chartLineLegend: any =  d3.selectAll('.chart-legend-' + layerId);
@@ -139,16 +139,7 @@ export class D3LeafletUtils {
     const textmarker: any  = g.append('text')
       .attr('font-family', '\'Font Awesome 5 Free\'')
       .attr('font-weight', 900)
-      .text((d: any): string => {
-          if (pathData.getTransportMode() === 'pedestrian') {
-            return '\uf554';
-          } else if ( pathData.getTransportMode() === 'vehicle') {
-            return '\uf5e4';
-          } else {
-            return '\uf128';
-          }
-        }
-      )
+      .text(pathData.getTransportModeIcon())
       .attr('x', -5)
       .attr('y', 5)
       .attr('id', 'markerText_' + layerId)
@@ -182,11 +173,6 @@ export class D3LeafletUtils {
 
       linePath.attr('d', toLine);
 
-      if (d3.selectAll('.travelFixedMarker_' + layerId).size() > 0) {
-        // refresh
-        createAllFixedMarkers()
-      }
-
       ptFeatures.attr(
         'transform',
         (d: any): string => 'translate(' +
@@ -194,7 +180,7 @@ export class D3LeafletUtils {
           convertLatLngToLayerCoords(d).y +
         ')'
       );
-      
+
     };
 
     function transition(): void {
@@ -209,54 +195,11 @@ export class D3LeafletUtils {
           // value of this property is depending from the zoom... if we zoom the context change and the style is not adapted.
           // so we remove the stroke-dasharray style to be sure to display the path as usual
 
-          // put some transport mode markers on the line
-          createAllFixedMarkers()
         })
         ;
 
     }
 
-    function createAllFixedMarkers(): any {
-      d3.selectAll('.travelFixedMarker_' + layerId).remove();
-      createOneFixMarkerOnPath(0.25, 'marker1' + layerId);
-      createOneFixMarkerOnPath(0.50, 'marker2' + layerId);
-      createOneFixMarkerOnPath(0.75, 'marker3' + layerId);
-    }
-
-    function createOneFixMarkerOnPath(fractionT: number, markerId: string): any {
-
-      const l: any = linePath.node().getTotalLength();
-      const p = linePath.node().getPointAtLength(fractionT * l);
-
-      g.append('circle')
-        .attr('r', 10)
-        .attr('id', 'marker_' + layerId)
-        .attr('class', 'travelFixedMarker_' + layerId)
-        .attr('transform', 'translate(' + p.x + ',' + p.y + ')')
-        .style('fill', pathData.strokeColor) // TODO add css
-
-      g.append('text')
-        .attr('font-family', '\'Font Awesome 5 Free\'')
-        .attr('font-weight', 900)
-        .text((d: any): string => {
-            if (pathData.getTransportMode() === 'pedestrian') {
-              return '\uf554';
-            } else if ( pathData.getTransportMode() === 'vehicle') {
-              return '\uf5e4';
-            } else {
-              return '\uf128';
-            }
-          }
-        )
-        .attr('text-anchor', 'middle')
-        .attr('alignment-baseline', 'middle')
-        .attr('id', markerId)
-        .attr('class', 'travelFixedMarker_' + layerId)
-        .attr('transform', 'translate(' + p.x + ',' + p.y + ')')
-        .style('fill', 'white')
-        .style('opacity', '1');
-
-    }
 
     // this function feeds the attrTween operator above with the
     // stroke and dash lengths
@@ -264,6 +207,7 @@ export class D3LeafletUtils {
       return (t: any): any => {
         // total length of path (single value)
         const l: any = linePath.node().getTotalLength();
+        // t is the time converted from 0 to 1
         console.log(t)
         const interpolate: any = d3.interpolateString('0,' + l, l + ',' + l);
         // t is fraction of time 0-1 since transition began
@@ -291,7 +235,7 @@ export class D3LeafletUtils {
   }
 
 
-  computeMapFromPoints(LeafletMap: any, GeoJsonPointFeatures: any[], layerId: string, dragEnabled: boolean, colorStroke: string, displayToolTip: boolean = false): void {
+  computeMapFromPoints(LeafletMap: any, GeoJsonPointFeatures: any[], layerId: string, dragEnabled: boolean, colorStroke: string, transportModeIcon: string, displayToolTip: boolean = false): void {
     this.removeFeaturesMapFromLayerId(layerId);
     console.log('drag status', dragEnabled);
     const input_data: any[] = JSON.parse(JSON.stringify(GeoJsonPointFeatures))
@@ -337,6 +281,25 @@ export class D3LeafletUtils {
       .attr('class', 'PathNodesText')
       .attr('id', 'textMarker-' + layerId)
       .attr('y', '-20');
+
+    PathNodes
+      .append('circle')
+      .attr('r', 10)
+      .attr('cy', '-40')
+      .attr('class', 'travelFixedMarker_' + layerId)
+      .style('fill', colorStroke) // TODO add css
+
+    PathNodes
+      .append('text')
+      .attr('font-family', '\'Font Awesome 5 Free\'')
+      .attr('y', '-40')
+      .attr('font-weight', 900)
+      .text(transportModeIcon)
+      .attr('text-anchor', 'middle')
+      .attr('alignment-baseline', 'middle')
+      .attr('class', 'travelFixedMarker_' + layerId)
+      .style('fill', 'white')
+      .style('opacity', '1');
 
       // .on('mouseover', (d: any): void => {
       //     LeafletMap.dragging.disable();
@@ -384,7 +347,7 @@ export class D3LeafletUtils {
             // to refresh the nodecontrolers part
             // use the original input data to update data path (inherit)
             GeoJsonPointFeatures = refreshInputDataCoordinates(GeoJsonPointFeatures, d)
-            this.computeMapFromPoints(LeafletMap, GeoJsonPointFeatures, layerId, dragEnabled, colorStroke, displayToolTip = false);
+            this.computeMapFromPoints(LeafletMap, GeoJsonPointFeatures, layerId, dragEnabled, colorStroke, transportModeIcon, displayToolTip = false);
             LeafletMap.dragging.enable();
           })
         );

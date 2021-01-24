@@ -32,14 +32,17 @@ export class InputParametersComponent implements OnInit, OnDestroy {
   colorsPredefined = new ColorsPalettes().colorsBrewer;
   pathName!: string;
   transportModeSelected!: string;
-  editStatus = "off"
+  editStatus = 'off'
+  private defaultInfoMessage = 'Define at least 2 nodes!';
 
   addPointsSubscription!: Subscription;
   updatePathSubscription!: Subscription;
   pathIdFromPathsSubscription!: Subscription;
   ErrorPathApiFoundSubscription!: Subscription;
 
-  apiResultMessage!: string
+  apiResultErrorMessage!: string;
+  apiResultSuccessMessage!: string;
+  infoMessage = 'Define at least 2 nodes!';
 
   TransportModes: TransportMode[] = [
     {title: 'Pedestrian', value: 'pedestrian'},
@@ -53,6 +56,7 @@ export class InputParametersComponent implements OnInit, OnDestroy {
     private MapFuncs: D3LeafletUtils,
     private pathsToInputs: PathsToInputs
   ) {
+
     this.addPointsSubscription = this.Map2ParametersService.newPointCoords.subscribe(coordinates => {
       this.addPointsFromCoords(coordinates);
     });
@@ -60,6 +64,9 @@ export class InputParametersComponent implements OnInit, OnDestroy {
     this.updatePathSubscription = this.Map2ParametersService.pathComplete.subscribe(
       (pathDone) => {
         this.updatePathWithApiData(pathDone);
+        this.infoMessage = this.pathData.getTransportMode() + ' Path built !';
+        // this.infoMessage = '';
+        // this.apiResultErrorMessage = '';
         this.buttonsStatus(true); // activate buttons : path is finished
       }
     );
@@ -69,9 +76,22 @@ export class InputParametersComponent implements OnInit, OnDestroy {
     });
 
     this.ErrorPathApiFoundSubscription = this.PathBuilderService.ErrorApiFound.subscribe(errorMessage => {
-      this.apiResultMessage = errorMessage;
+      this.infoMessage = errorMessage;
+      // this.infoMessage = ''
+      // this.apiResultSuccessMessage = ''
       this.buttonsStatus(true); // reset buttons status
+
     })
+
+    // status message
+    this.Parameters2MapService.NodesPathToMap.subscribe(_ => {
+      if (this.pathData.getNodes().length >= 2) {
+        this.infoMessage = 'A new ' + this.pathData.getTransportMode() + ' path is ready to be computed!';
+      }
+      if (this.pathData.getNodes().length < 2) {
+        this.infoMessage = this.defaultInfoMessage;
+      }
+    });
 
   }
 
@@ -146,10 +166,10 @@ export class InputParametersComponent implements OnInit, OnDestroy {
   changeEditMode(): void {
     if (this.pathData.getEdit()) {
       this.pathData.setEdit(false);
-      this.editStatus = "off"
+      this.editStatus = 'off'
     } else {
       this.pathData.setEdit(true);
-      this.editStatus = "on"
+      this.editStatus = 'on'
 
     }
     this.Parameters2MapService.mapFromPathNodes(this.pathData); // in order to enable or disable drag nodes
@@ -158,6 +178,7 @@ export class InputParametersComponent implements OnInit, OnDestroy {
   updateTransportMode(newValue: string): void {
     this.pathData.setTransportMode(newValue);
     this.transportModeSelected = newValue;
+    this.Parameters2MapService.mapFromPathNodes(this.pathData); // in order to enable or disable drag nodes
     console.log('update transportMode', this.pathData.getTransportMode());
   }
 
@@ -187,6 +208,7 @@ export class InputParametersComponent implements OnInit, OnDestroy {
         }
       );
       this.Parameters2MapService.mapFromPathNodes(this.pathData);
+
     }
 
   }

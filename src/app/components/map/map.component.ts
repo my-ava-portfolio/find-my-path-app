@@ -95,7 +95,7 @@ export class MapComponent implements OnInit {
       this.map.fitBounds(jsonLayer.getBounds());
 
     });
- 
+
    }
 
   ngOnInit(): void {
@@ -129,7 +129,8 @@ export class MapComponent implements OnInit {
       pathFeature.getNodes(),
       this.nodesMapPrefix + pathFeature.id,
       pathFeature.getEdit(),
-      pathFeature.getColor()
+      pathFeature.getColor(),
+      pathFeature.getTransportModeIcon()
     );
   }
 }

@@ -256,7 +256,7 @@ export class PathElement {
       type: 'FeatureCollection',
       features: this.getNodes()
     });
-  } 
+  }
 
   setPointsPath(nodesPath: NodePathGeoJson): void {
       this.pointsPath = nodesPath;
@@ -302,6 +302,16 @@ export class PathElement {
 
   isPathComputed(): boolean {
     return this.pointsPath !== undefined;
+  }
+
+  getTransportModeIcon(): string {
+    if (this.getTransportMode() === 'pedestrian') {
+      return '\uf554';
+    } else if ( this.getTransportMode() === 'vehicle') {
+      return '\uf1b9';
+    } else {
+      return '\uf128';
+    }
   }
 
 }
