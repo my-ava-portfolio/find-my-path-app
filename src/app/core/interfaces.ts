@@ -188,6 +188,7 @@ export class PathElement {
   editingStatus = false;
   transportMode = 'pedestrian';
   elevationStatus = true;
+  pathLogMessage!: string;
   private inputNodes: NodeFeature[] = [];
   private pointsPath!: NodePathGeoJson;
   private linePath!: LinePathGeoJson;

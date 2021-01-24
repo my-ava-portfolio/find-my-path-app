@@ -40,7 +40,8 @@ export class InputParametersComponent implements OnInit, OnDestroy {
   updatePathSubscription!: Subscription;
   pathIdFromPathsSubscription!: Subscription;
   ErrorPathApiFoundSubscription!: Subscription;
-  ControlersToInputsSubscription!: Subscription;
+  nodesMappedSubscription!: Subscription;
+  d3ToInputsSubscription!: Subscription;
 
   apiResultErrorMessage!: string;
   apiResultSuccessMessage!: string;
@@ -69,8 +70,11 @@ export class InputParametersComponent implements OnInit, OnDestroy {
       (pathDone) => {
         this.updatePathWithApiData(pathDone);
         // status message updated when api call is a success
-        this.infoMessage = this.pathData.getTransportMode() + ' Path built !';
-        this.infoMessageIcon = 'fa-check-circle text-success';
+        this.setlogSuccessMessage(this.pathData.getTransportMode() + ' Path built !')
+        if (this.pathData.id === this.currentTabId) {
+          this.infoMessage = this.pathData.getTransportMode() + ' Path built !';
+          this.infoMessageIcon = 'fa-check-circle text-success';
+        }
         this.buttonsStatus(true); // activate buttons : path is finished
       }
     );
@@ -81,34 +85,19 @@ export class InputParametersComponent implements OnInit, OnDestroy {
 
     // status message updated when api issue occurred
     this.ErrorPathApiFoundSubscription = this.PathBuilderService.ErrorApiFound.subscribe(errorMessage => {
-      this.infoMessage = errorMessage;
-      this.infoMessageIcon = 'fa-exclamation-circle text-danger';
+      this.setlogErrorMessage(errorMessage)
       this.buttonsStatus(true); // reset buttons status
 
     });
 
     // status message updated when nodes are mapped
-    this.Parameters2MapService.NodesPathToMap.subscribe(_ => {
-      if (this.pathData.getNodes().length >= 2) {
-        this.infoMessage = 'A new ' + this.pathData.getTransportMode() + ' path is ready to be computed! => node(s) added/removed';
-        this.infoMessageIcon = 'fa-info-circle text-info';
-      }
-      if (this.pathData.getNodes().length < 2) {
-        this.infoMessage = this.defaultInfoMessage;
-        this.infoMessageIcon = 'fa-exclamation-circle text-warning';
-      }
+    this.nodesMappedSubscription = this.Parameters2MapService.NodesPathToMap.subscribe(_ => {
+      this.setlogDebugMessage('node(s) added/removed')
     });
 
     // update log message if coordinates point change
-    this.ControlersToInputsSubscription = this.d3ToInputs.pointMapMoved.subscribe(_ => {
-      if (this.pathData.getNodes().length >= 2) {
-        this.infoMessage = 'A new ' + this.pathData.getTransportMode() + ' path is ready to be computed! => node(s) moved';
-        this.infoMessageIcon = 'fa-info-circle text-info';
-      }
-      if (this.pathData.getNodes().length < 2) {
-        this.infoMessage = this.defaultInfoMessage;
-        this.infoMessageIcon = 'fa-exclamation-circle text-warning';
-      }
+    this.d3ToInputsSubscription = this.d3ToInputs.pointMapMoved.subscribe(_ => {
+      this.setlogDebugMessage('node(s) moved')
     })
 
   }
@@ -128,8 +117,36 @@ export class InputParametersComponent implements OnInit, OnDestroy {
     this.updatePathSubscription.unsubscribe();
     this.pathIdFromPathsSubscription.unsubscribe();
     this.ErrorPathApiFoundSubscription.unsubscribe();
-    this.ControlersToInputsSubscription.unsubscribe()
+    this.nodesMappedSubscription.unsubscribe();
+    this.d3ToInputsSubscription.unsubscribe()
     this.buttonsStatus(true); // reset buttons status
+  }
+
+  setlogSuccessMessage(message: string): void {
+    if (this.pathData.id === this.currentTabId) {
+      this.pathData.pathLogMessage = message;
+      this.infoMessageIcon = 'fa-check-circle text-success';
+    }
+  }
+
+  setlogDebugMessage(message: string): void {
+    if (this.pathData.id === this.currentTabId) {
+      if (this.pathData.getNodes().length >= 2) {
+        this.pathData.pathLogMessage = message;
+        this.infoMessageIcon = 'fa-info-circle text-info';
+      }
+      if (this.pathData.getNodes().length < 2) {
+        this.pathData.pathLogMessage = this.defaultInfoMessage;
+        this.infoMessageIcon = 'fa-exclamation-circle text-warning';
+      }
+    }
+  }
+
+  setlogErrorMessage(message: string): void {
+    if (this.pathData.id === this.currentTabId) {
+      this.pathData.pathLogMessage = message
+      this.infoMessageIcon = 'fa-exclamation-circle text-danger';
+    }
   }
 
   zoomOnPath(): void {

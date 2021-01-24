@@ -25,7 +25,7 @@
         type="button"
         class="up form-control badge badge-warning badge-sm mx-1 my-1"
         (click)="upPosition(node.properties.position)"
-        [disabled]="node.properties.position - 1 !== -1 ? null : 'disabled'"
+        [disabled]="node.properties.position - 1 !== -1 && pathData.getEdit() ? null : 'disabled'"
       >
         <i class="fas fa-angle-up"></i>
       </button>
@@ -34,7 +34,7 @@
         type="button"
         class="down form-control badge badge-warning badge-sm mx-1 my-1"
         (click)="botPosition(node.properties.position)"
-        [disabled]="node.properties.position + 1 !== pathData.getNodes().length ? null : 'disabled'"
+        [disabled]="node.properties.position + 1 !== pathData.getNodes().length && pathData.getEdit() ? null : 'disabled'"
 
       >
         <i class="fas fa-angle-down"></i>
@@ -44,6 +44,7 @@
         type="button"
         class="remove form-control badge badge-danger badge-sm mx-1 my-1"
         (click)="removeNode(node.properties.uuid)"
+        [disabled]="pathData.getEdit() ? null : 'disabled'"
       >
         <i class="far fa-trash-alt"></i>
       </button>
