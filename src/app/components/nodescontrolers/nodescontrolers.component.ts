@@ -35,7 +35,7 @@ export class nodesControlersComponent implements OnInit {
 
       const nodes: NodeFeature[] = this.pathData.getNodes();
       const nodesFiltered: NodeFeature[] = nodes.filter(data => data.properties.uuid !== uuid);
-      console.log(uuid, nodesFiltered)
+      console.log(uuid, nodesFiltered);
       // update nodes list regarding user removing action
       nodesFiltered.forEach((feature, index) => {
         nodesFiltered[index].properties.position = index;
@@ -44,15 +44,15 @@ export class nodesControlersComponent implements OnInit {
       });
       this.pathData.setNodes(nodesFiltered);
       this.Parameters2MapService.mapFromPathNodes(this.pathData);
-      this.controlersToInputs.emitNodeRemoved(uuid)
+      this.controlersToInputs.emitNodeRemoved(uuid);
     }
   }
 
   upPosition(position: number): void {
     if (this.pathData.getEdit() && this.isCurrentTab) {
-      console.log(position)
+      console.log(position);
       const nodes: NodeFeature[] = this.pathData.getNodes();
-      this.controlersToInputs.emitNodeChangedToTop(nodes[position].properties.uuid)
+      this.controlersToInputs.emitNodeChangedToTop(nodes[position].properties.uuid);
 
       const nodesUpdated = this._switchPositionNodes(nodes, position, -1);
       this.pathData.setNodes(nodesUpdated);
@@ -63,7 +63,7 @@ export class nodesControlersComponent implements OnInit {
   botPosition(position: number): void {
     if (this.pathData.getEdit() === true && this.isCurrentTab) {
       const nodes: NodeFeature[] = this.pathData.getNodes();
-      this.controlersToInputs.emitNodeChangedToBot(nodes[position].properties.uuid)
+      this.controlersToInputs.emitNodeChangedToBot(nodes[position].properties.uuid);
 
       const nodesUpdated = this._switchPositionNodes(nodes, position, 1);
       this.pathData.setNodes(nodesUpdated);
@@ -72,16 +72,17 @@ export class nodesControlersComponent implements OnInit {
   }
 
   private _switchPositionNodes(nodes: NodeFeature[], positionToChange: number, incrementPos: number): NodeFeature[] {
-    const toPosition = positionToChange + incrementPos
-    if (toPosition !== -1 && toPosition !== nodes.length) { // do nothing for the first (top action) elements and the last (bot action) element
-      console.log(toPosition, toPosition !== -1)
+    const toPosition = positionToChange + incrementPos;
+    if (toPosition !== -1 && toPosition !== nodes.length) {
+      // do nothing for the first (top action) elements and the last (bot action) element
+      console.log(toPosition, toPosition !== -1);
       const nodesShifted: NodeFeature[] = this.GeneralFunc.shiftingOnArray(nodes, positionToChange, toPosition);
       nodesShifted.forEach((feature, index) => {
         nodesShifted[index].properties.position = index;
       });
-      console.log(nodesShifted)
+      console.log(nodesShifted);
       return nodesShifted;
     }
-    return nodes
+    return nodes;
   }
 }
