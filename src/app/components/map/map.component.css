@@ -1,5 +1,5 @@
 #map {
-    height: 89vh;
+    height: 85vh;
     width: 100%;
     z-index: 0;
 }
@@ -25,7 +25,7 @@
     /* fill: black; */
     display: block;
     /* margin: auto; */
-    font-size: 18px;
+    font-size: 13px;
     font-weight: bold;
     /* stroke-width: 1px; */
 }

@@ -23,10 +23,14 @@ import { D3LeafletUtils } from '../../core/d3LeafletUtils';
 export class MapComponent implements OnInit {
 
   private InitialViewCoords: any = [45.754649, 4.858618];
-  private backgroundMapUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-  private backgroundMapAttribution = '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors';
-  private zoom = 10;
-
+  private zoomValue = 10;
+  private minZoomValue = 3
+  private maxZoomValue = 18
+	
+  private stamenLayer: any = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}{r}.png', { id: 'backgroundMap', attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' });
+  private osmLayer: any = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {id: 'backgroundMap', attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'});
+  private openTopoMap: any = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {id: 'backgroundMap', attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'});
+  
   private nodesMapPrefix = 'nodesMap-';
   private pathMapPrefix = 'pathMap-';
 
@@ -103,13 +107,22 @@ export class MapComponent implements OnInit {
    }
 
   initMap(): void {
-    this.map = L.map('map').setView(this.InitialViewCoords, this.zoom);
-    L.tileLayer(
-      this.backgroundMapUrl,
-      {
-        attribution: this.backgroundMapAttribution
-      }
-    ).addTo(this.map);
+
+    this.map = L.map('map', {
+      center: this.InitialViewCoords,
+      zoom: this.zoomValue,
+      minZoom: this.minZoomValue,
+      maxZoom: this.maxZoomValue,
+      layers: [this.osmLayer] // the default background map
+    });
+    // prepare background map controler
+    const backgroundMaps = {
+      "Stamen": this.stamenLayer,
+      "OpenTopoMap": this.openTopoMap,
+      "OpenStreetMap": this.osmLayer
+    };
+    L.control.layers(backgroundMaps).addTo(this.map);
+
     this.map.on('click', this.onMapClickWithD3.bind(this));
   }
 
