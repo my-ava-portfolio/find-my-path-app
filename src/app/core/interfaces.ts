@@ -60,10 +60,11 @@ export interface NodePathFeature {
     type: string;
     geometry: PointGeometry;
     properties: {
+      position: string;
+      uuid: string; // to link to the chart and map
+      path_name: string;
       height: number;
       distance: number;
-      step: string; // TODO seems useless, check API
-      uuid: string; // to link to the chart and map
     };
     LatLng?: any;
 }
@@ -87,10 +88,11 @@ export interface LinePathGeoJson {
         type: string;
         geometry: PointGeometry;
         properties: {
-            source_node: string,
-            target_node: string,
-            path_step: number,
-            length: number
+          path_position: number,
+          path_name: string;
+          source_node: string,
+          target_node: string,
+          length: number
         };
     };
 }
@@ -194,6 +196,7 @@ export class PathElement {
   editingStatus = false;
   transportMode = 'pedestrian';
   elevationStatus = true;
+  isPathLoop = false;
   pathLogMessages: logMessage[] = [];
   private inputNodes: NodeFeature[] = [];
   private pointsPath!: NodePathGeoJson;

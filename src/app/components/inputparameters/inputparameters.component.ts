@@ -34,7 +34,8 @@ export class InputParametersComponent implements OnInit, OnDestroy {
   colorsPredefined = new ColorsPalettes().colorsBrewer;
   pathName!: string;
   transportModeSelected!: string;
-  editStatus = 'off';
+  editStatus = 'disabled';
+  loopStatus = 'disabled';
   private defaultInfoMessage = 'Define at least 2 nodes!';
 
   addPointsSubscription!: Subscription;
@@ -216,11 +217,10 @@ export class InputParametersComponent implements OnInit, OnDestroy {
   changeEditMode(): void {
     if (this.pathData.getEdit()) {
       this.pathData.setEdit(false);
-      this.editStatus = 'off';
+      this.editStatus = 'disabled';
     } else {
       this.pathData.setEdit(true);
-      this.editStatus = 'on';
-
+      this.editStatus = 'enabled';
     }
     this.Parameters2MapService.mapFromPathNodes(this.pathData); // in order to enable or disable drag nodes
   }
@@ -236,6 +236,18 @@ export class InputParametersComponent implements OnInit, OnDestroy {
     this.pathData.setElevation(event.target.checked);
     console.log('update elevationMode', this.pathData.getElevation());
   }
+
+  updatePathLoopStatus(): void {
+    if (this.pathData.isPathLoop) {
+      this.pathData.isPathLoop = false;
+      this.loopStatus = 'disabled';
+    } else {
+      this.pathData.isPathLoop = true;
+      this.loopStatus = 'enabled';
+    }
+    this.setlogInfoMessage('Path loop is ' + this.pathData.isPathLoop, 'info')
+  }
+  
 
   addPointsFromCoords(coordinates: number[]): void {
     // here the magic part! update only the active tab and if edit is true of course

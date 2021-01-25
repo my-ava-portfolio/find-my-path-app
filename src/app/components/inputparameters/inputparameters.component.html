@@ -113,9 +113,19 @@
           -->
 
           <div class="row mx-2 my-2">
+            <legend class="col-form-label col-lg-5 px-2">Path loop ?</legend>
+            <div class="col-lg-7">
+              <button id="btnloop-tab" type="button" class="btn btn-primary btn-sm  ml-4 mx-2" [ngClass]="pathData.isPathLoop ? 'btn-danger': 'btn-primary'" (click)="updatePathLoopStatus()">
+                <i class="fas fa-retweet"></i> Loop {{ loopStatus }}
+              </button>
+
+            </div>
+          </div>
+
+          <div class="row mx-2 my-2">
             <legend class="col-form-label col-lg-5 px-2">Geometry color</legend>
             <div class="col-lg-7">
-              <input class="form-control my-2 ml-4" type="color" list="presetColors" [(ngModel)]="pathData.strokeColor" [name]="'colorPicker' + pathData.id" [id]="'styleColor-' + pathData.id" (input)="updateStrokeColor($event)"/>
+              <input class="my-2 ml-4" type="color" list="presetColors" [(ngModel)]="pathData.strokeColor" [name]="'colorPicker' + pathData.id" [id]="'styleColor-' + pathData.id" (input)="updateStrokeColor($event)"/>
                 <datalist id="presetColors">
                   <option *ngFor="let color of colorsPredefined" [value]="color">
                 </datalist>

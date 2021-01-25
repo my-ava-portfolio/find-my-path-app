@@ -22,14 +22,18 @@ export class MapPathBuilderService {
     // get API data
     const transportMode: string = path.getTransportMode();
     let elevationStatus: boolean | string = path.getElevation();
+    let loopStatus: boolean | string = path.isPathLoop;
+
     const nodes: NodeFeature[] = path.getNodes();
 
     if ( !elevationStatus ) {
       elevationStatus = '';
     }
-
+    if ( !loopStatus ) {
+      loopStatus = '';
+    }
     this.http.get<OutputPathApi>(
-      this.apiUrl + 'elevation_mode=' + elevationStatus + '&mode=' + transportMode + '&geojson=' + JSON.stringify({ features: nodes })
+      this.apiUrl +  'path_name=' + path.name + '&elevation_mode=' + elevationStatus + '&mode=' + transportMode + '&geojson=' + JSON.stringify({ features: nodes }) + '&is_loop=' + loopStatus
     ).subscribe(
       (response) => {
         path.setLinePath(response?.line_path);
