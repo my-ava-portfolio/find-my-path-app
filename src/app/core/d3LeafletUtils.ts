@@ -454,7 +454,7 @@ export class D3LeafletUtils {
     // list of paths
     const defaultChartClass = 'multiLineChart' + '-' + chartId;
 
-    const contentWidth: number = width - margin.left;
+    const contentWidth: number = width - margin.right;
     const contentHeight: number = height + margin.top + margin.bottom;
 
     d3.select('#' + defaultChartClass).remove();
@@ -512,7 +512,7 @@ export class D3LeafletUtils {
     .attr('class', 'legend');
 
     legend.append('rect')
-    .attr('x', width - 70)
+    .attr('x', contentWidth - 70)
     .attr('y', (d: any, i: number) => i *  20)
     .attr('width', 10)
     .attr('height', 10)
@@ -520,7 +520,7 @@ export class D3LeafletUtils {
     .style('fill', (d: any) => d.strokeColor);
 
     legend.append('text')
-    .attr('x', width - 55)
+    .attr('x', contentWidth - 55)
     .attr('y', (d: any, i: number) => (i *  20) + 9)
     .text( (d: any) => d.name);
 

@@ -1,14 +1,14 @@
 <div id="paths-controler" class="container-fluid">
   <div class="row mt-4 border border-primary rounded">
 
-    <div class="col-sm-12 topic mt-2">
+    <div class="col-lg-12 topic mt-2">
       <h4 class="sub-title">Find My Path
         <ng-template #popContent>{{helpPopup}}</ng-template>
         <span class="text-info" [ngbPopover]="popContent" popoverTitle="Help!"  placement="right"><i class="far fa-question-circle"></i></span>
       </h4>
     </div>
 
-    <div class="col-sm-12 my-2 subtopic">
+    <div class="col-lg-12 my-2 subtopic">
       <button
         id="btn-add-tab"
         type="button"
@@ -28,12 +28,14 @@
       </button>
     </div>
 
-    <div class="col-sm-12 my-2 mb-4 subtopic" [hidden]="!topoChartDisplayed">
+    <div class="col-lg-12 my-2 mb-4 subtopic" [hidden]="!topoChartDisplayed">
       <h5>Topo Paths Charts</h5>
-      <div id="globalChart" class="border"></div>
+      <div class="col-lg-12">
+        <div id="globalChart" class="col-lg-12 border"></div>
+      </div>
     </div>
 
-    <div class="col-sm-12 my-2 mb-4 subtopic" [hidden]="countPath === 0">
+    <div class="col-lg-12 my-2 mb-4 subtopic" [hidden]="countPath === 0">
       <h5>Paths</h5>
 
       <!-- Nav tabs -->
