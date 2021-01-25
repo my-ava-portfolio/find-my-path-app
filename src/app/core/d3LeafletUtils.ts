@@ -53,6 +53,7 @@ export class D3LeafletUtils {
     // path , nodes, line chart are updated when color is changed
     const path: any = d3.selectAll('.lineConnect_pathMap-' + layerId);
     const pathPoints: any = d3.selectAll('.waypoints_pathMap-' + layerId);
+    const pathTravelMarker: any = d3.selectAll('.travelMarker_pathMap-' + layerId);
 
     const nodes: any = d3.selectAll('#nodesMap-' + layerId + '  path');
     const TransportMarkersCircleOnPath: any = d3.selectAll('circle.travelFixedMarker_nodesMap-' + layerId);
@@ -64,6 +65,7 @@ export class D3LeafletUtils {
     if (strokeColor !== undefined) {
       path.style('stroke', strokeColor);
       pathPoints.style('stroke', strokeColor);
+      pathTravelMarker.style('stroke', strokeColor);
       nodes.style('stroke', strokeColor);
       chartLinePath.style('stroke', strokeColor);
       chartLineCircle.style('stroke', strokeColor);
@@ -128,17 +130,19 @@ export class D3LeafletUtils {
 
     // the traveling circle along the path
     const marker: any  = g.append('circle')
-      .attr('r', 10)
+      .attr('r', 11)
       .attr('id', 'marker_' + layerId)
       .attr('class', 'travelMarker_' + layerId)
-      .style('fill', 'red'); // TODO add css
+      .style('fill', 'white')
+      .style('stroke', pathData.strokeColor)
+      .style('stroke-width', '4px');
 
     const textmarker: any  = g.append('text')
       .attr('font-family', '\'Font Awesome 5 Free\'')
       .attr('font-weight', 900)
       .text(pathData.getTransportModeIcon())
-      .attr('x', -5)
-      .attr('y', 5)
+      .attr('text-anchor', 'middle')
+      .attr('alignment-baseline', 'middle')
       .attr('id', 'markerText_' + layerId)
       .attr('class', 'travelMarkerText_' + layerId);
 
