@@ -1,11 +1,11 @@
 export class ColorsPalettes {
   colorsBrewer = [
-    '#1f78b4',
-    '#33a02c',
-    '#e31a1c',
     '#ff7f00',
+    '#e31a1c',
     '#6a3d9a',
-    '#b15928'
+    '#b15928',
+    '#33a02c',
+    '#1f78b4'
   ];
 
   constructor() {
