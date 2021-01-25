@@ -3,6 +3,7 @@ import { interval, Subscription } from 'rxjs';
 import { startWith  } from 'rxjs/operators';
 
 import { ApiStatusService } from '../../services/apistatus.service';
+import { version } from '../../../../package.json';
 
 @Component({
   selector: 'app-header',
@@ -12,6 +13,7 @@ import { ApiStatusService } from '../../services/apistatus.service';
 export class HeaderComponent implements OnInit {
   @Input() NavBarTitle = 'Nav bar title';
 
+  appVersion!: string;
   apiStatus!: string;
   ApiContinuousChecker = interval(5000); // observable which run all the time
 
@@ -33,6 +35,8 @@ export class HeaderComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.appVersion = version
+
     this.checkApiStatus();
   }
 

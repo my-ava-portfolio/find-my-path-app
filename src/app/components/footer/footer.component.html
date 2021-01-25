@@ -1,7 +1,42 @@
 <nav class="navbar navbar-light bg-light shadow footer">
 
-  <div class="col-md-6 text-left">
-    blabla
+  <div class="col-sm-12 text-right">
+    <div class="dependency mr-2">
+      <span class="text-detail mr-2">By amauryval - {{year}}</span>
+      <a class="mr-2" [href]="authorRepoUrl" target="_blank">
+        <i class="fab fa-github"></i>
+      </a> 
+      <span class="text-detail mr-2">with:</span>
+    </div>
+
+    <div class="dependency mr-2">
+      <a [href]="angularRepoUrl" target="_blank">
+        <img class="mr-1" src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Angular_full_color_logo.svg/512px-Angular_full_color_logo.svg.png" height="20px" width="20px"/>
+      </a>
+      <span class="text-detail">{{this.angularVersion.slice(1)}}</span>
+    </div>
+
+    <div class="dependency mr-2">
+      <a [href]="bootstrapRepoUrl" target="_blank">
+        <img class="mr-1" src="https://getbootstrap.com/docs/5.0/assets/brand/bootstrap-logo-shadow.png" height="20px" width="20px"/>
+      </a>
+      <span class="text-detail">{{this.bootstrapVersion.slice(1)}}</span>
+    </div>
+
+    <div class="dependency mr-2">
+      <a [href]="leafletRepoUrl" target="_blank">
+        <img class="mr-1" src="https://rawgit.com/Leaflet/Leaflet/master/src/images/logo.svg" height="20px" width="60px"/>
+      </a>
+      <span class="text-detail">{{this.leafletVersion.slice(1)}}</span>
+    </div>
+
+    <div class="dependency mr-2">
+      <a [href]="d3RepoUrl" target="_blank">
+        <img class="mr-1" src="https://d3js.org/logo.svg" height="20px" width="20px"/>
+      </a>
+      <span class="text-detail">{{this.d3Version}}</span>
+    </div>
+
   </div>
 
 </nav>
