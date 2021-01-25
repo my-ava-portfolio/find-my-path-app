@@ -127,7 +127,7 @@ export class PathsHandlerComponent implements OnInit {
         pathsToChart.push(d);
       }
     });
-    this.d3LeafletUtils.createLinesChart('globalChart', pathsToChart, this.margin, this.width, this.height);
+    this.d3LeafletUtils.createLinesChart('globalChart', pathsToChart, this.margin, this.width, this.height, true);
   }
 
   duplicatePath(pathId: string): void {

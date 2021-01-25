@@ -454,7 +454,7 @@ export class D3LeafletUtils {
       });
   }
 
-  createLinesChart(chartId: string, data: any[], margin: any, width: number, height: number): void {
+  createLinesChart(chartId: string, data: any[], margin: any, width: number, height: number, isGlobalChart: boolean): void {
     // list of paths
     const defaultChartClass = 'multiLineChart' + '-' + chartId;
 
@@ -516,18 +516,36 @@ export class D3LeafletUtils {
     .attr('class', 'legend');
 
     legend.append('rect')
-    .attr('x', contentWidth - 90)
-    .attr('y', (d: any, i: number) => i *  20)
-    .attr('width', 10)
-    .attr('height', 10)
-    .attr('class', (d: any) => 'chart-legend-' + d.id)
-    .style('fill', (d: any) => d.strokeColor);
+      .attr('x', contentWidth - 90)
+      .attr('y', (d: any, i: number) => i *  20)
+      .attr('width', 10)
+      .attr('height', 10)
+      .attr('class', (d: any) => 'chart-legend-' + d.id)
+      .style('fill', (d: any) => d.strokeColor)
 
     legend.append('text')
-    .attr('x', contentWidth - 75)
-    .attr('y', (d: any, i: number) => (i *  20) + 9)
-    .text( (d: any) => d.name);
+      .attr('x', contentWidth - 75)
+      .attr('y', (d: any, i: number) => (i *  20) + 9)
+      .text( (d: any) => d.name);
 
+    if (isGlobalChart) {
+      legend
+        .style('pointer-event', 'auto')
+        .style('cursor', 'pointer')
+        .on('click', (d: any, i: any, n: any) => {
+          const chartLegend = d3.select('.chart-legend-' + d.id)
+          if (chartLegend.style('fill') === 'grey') {
+            d3.select(".chart-line-" + d.id).style('opacity', '1');
+            d3.selectAll(".chart-line-circle-" + d.id).style('opacity', '1');
+            chartLegend.style('fill', d.strokeColor);
+          } else {
+            d3.select(".chart-line-" + d.id).style('opacity', '0');
+            d3.selectAll(".chart-line-circle-" + d.id).style('opacity', '0');
+            chartLegend.style('fill', 'grey');
+          }
+        })
+    }
+    
     // data process
     data.forEach((item: any) => {
 
@@ -535,13 +553,13 @@ export class D3LeafletUtils {
       const innerG: any = g.append('g');
       // Add the line_value path.
       innerG.append('path')
-      .attr('class', 'chart-line-' + item.id)
-      .attr('d', lineBuilder(features))
-      .style('fill', 'none') // add a color
-      .style('opacity', 'unset') // add 0 to hide the path
-      .style('stroke', item.strokeColor)
-      .style('stroke-width', '4')
-      .style('overflow', 'overlay');
+        .attr('class', 'chart-line-' + item.id)
+        .attr('d', lineBuilder(features))
+        .style('fill', 'none') // add a color
+        .style('opacity', '1') // add 0 to hide the path
+        .style('stroke', item.strokeColor)
+        .style('stroke-width', '4')
+        .style('overflow', 'overlay');
 
       // Add the valueline path.
       innerG.selectAll('.chart-line-circle-' + item.id)
@@ -555,10 +573,10 @@ export class D3LeafletUtils {
         .style('opacity', '1')
         .style('stroke-width', '2px')
         .style('stroke', item.strokeColor)
-      .attr('pointer-events', 'all')
-      .style('cursor', 'pointer')
-      .attr('cx', (d: any) => x(d.properties.distance))
-      .attr('cy', (d: any) => y(d.properties.height))
+        .attr('pointer-events', 'all')
+        .style('cursor', 'pointer')
+        .attr('cx', (d: any) => x(d.properties.distance))
+        .attr('cy', (d: any) => y(d.properties.height))
         .on('mouseover', (d: any, i: any, n: any) => {
           d3.select(n[i]).attr('r', 6)
 

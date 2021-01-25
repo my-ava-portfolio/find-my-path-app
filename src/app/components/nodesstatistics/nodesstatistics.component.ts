@@ -74,7 +74,8 @@ export class NodesstatisticsComponent implements OnInit, OnDestroy {
       [pathData],
       this.margin,
       this.width,
-      this.height
+      this.height,
+      false
     ); // get a list of pointsPath
   }
 
