@@ -1,7 +1,7 @@
 <div [id]="'nodes-controler-' + pathData.id" class="container-fluid">
     <div class="row">
 
-      <div class="col-lg-12">
+      <div class="col-lg-12 mb-3">
         <h6 class="input-group">Current status:</h6>
         <div class="row">
           <div class="col-lg-12">
@@ -19,7 +19,7 @@
         </div>
       </div>
 
-      <div class="col-lg-12">
+      <div class="col-lg-12 mb-3">
         <h6 class="input-group">Actions:</h6>
         <div class="row">
 
@@ -70,11 +70,11 @@
 
       </div>
 
-      <div class="col-lg-12">
+      <div class="col-lg-12 mb-3">
         <h6 class="input-group" (click)="tabOpened = !tabOpened">Parameters:</h6>
-        <div class="col-lg-12" [hidden]="!tabOpened">
+        <div class="col-lg-12"> <!--  [hidden]="!tabOpened" -->
 
-          <div class="row mx-2 my-2">
+          <div class="row mx-2 my-1">
             <legend class="col-form-label col-lg-5 px-2">Path name</legend>
             <div class="col-lg-7">
                   <input
@@ -90,7 +90,7 @@
             </div>
           </div>
 
-          <div class="row mx-2 my-2">
+          <div class="row mx-2 my-1">
             <legend class="col-form-label col-lg-5 px-2">Transport modes</legend>
             <div class="col-lg-7">
                 <div class="form-check ml-4" *ngFor="let mode of TransportModes">
@@ -101,7 +101,7 @@
           </div>
 
           <!--
-          <div class="row mx-2 my-2">
+          <div class="row mx-2 my-1">
             <legend class="col-form-label col-sm-3 px-2">Options</legend>
             <div class="col-sm-9">
                 <div class="form-check">
@@ -112,7 +112,7 @@
           </div>
           -->
 
-          <div class="row mx-2 my-2">
+          <div class="row mx-2 my-1">
             <legend class="col-form-label col-lg-5 px-2">Path loop ?</legend>
             <div class="col-lg-7">
               <button id="btnloop-tab" type="button" class="btn btn-primary btn-sm  ml-4 mx-2" [ngClass]="pathData.isPathLoop ? 'btn-danger': 'btn-primary'" (click)="updatePathLoopStatus()">
@@ -122,7 +122,7 @@
             </div>
           </div>
 
-          <div class="row mx-2 my-2">
+          <div class="row mx-2 my-1">
             <legend class="col-form-label col-lg-5 px-2">Geometry color</legend>
             <div class="col-lg-7">
               <input class="my-2 ml-4" type="color" list="presetColors" [(ngModel)]="pathData.strokeColor" [name]="'colorPicker' + pathData.id" [id]="'styleColor-' + pathData.id" (input)="updateStrokeColor($event)"/>
@@ -133,7 +133,7 @@
             <span class="col-form-label col-lg-5 px-2"></span>
           </div>
 
-          <div class="row mx-2 my-2">
+          <div class="row mx-2 my-1">
             <legend class="col-form-label col-lg-5 px-2">Path width</legend>
             <div class="col-lg-4">
               <input class="form-control ml-4 mx-2" type="range" [(ngModel)]="pathData.strokeWidth" [name]="'strokePicker' + pathData.id" [id]="'styleWidth' + pathData.id"  (input)="updateStrokeWidth($event)" min="1" max="10">
