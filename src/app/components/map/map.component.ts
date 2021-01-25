@@ -25,7 +25,7 @@ export class MapComponent implements OnInit {
   private InitialViewCoords: any = [45.754649, 4.858618];
   private zoomValue = 10;
   private minZoomValue = 3
-  private maxZoomValue = 18
+  private maxZoomValue = 17
 	
   private stamenLayer: any = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}{r}.png', { id: 'backgroundMap', attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' });
   private osmLayer: any = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {id: 'backgroundMap', attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'});
