@@ -5,8 +5,32 @@
       <span class="text-detail mr-2">By amauryval - {{year}}</span>
       <a class="mr-2" [href]="authorRepoUrl" target="_blank">
         <i class="fab fa-github"></i>
-      </a> 
+      </a>
       <span class="text-detail mr-2">with:</span>
+    </div>
+
+
+    <div class="dependency mr-2">
+      <i class="fab fa-python mr-1"></i>
+      <span class="text-detail">Python {{this.pythonVersion}}</span>
+    </div>
+
+    <div class="dependency mr-2">
+      <a class="mr-2" [href]="lib1RepoUrl" target="_blank">
+        <i class="fab fa-github"></i>
+      </a>
+      <span class="text-detail">{{this.lib1Name}}</span>
+    </div>
+
+    <div class="dependency mr-2">
+      <a class="mr-2" [href]="lib2RepoUrl" target="_blank">
+        <i class="fab fa-github"></i>
+      </a>
+      <span class="text-detail">{{this.lib2Name}}</span>
+    </div>
+
+    <div class="dependency mr-2">
+      <span class="text-detail">&</span>
     </div>
 
     <div class="dependency mr-2">
