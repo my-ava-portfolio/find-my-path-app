@@ -1,6 +1,6 @@
 
-// export const apiBaseUrl = 'https://find-my-path.herokuapp.com';
-export const apiBaseUrl = 'http://192.168.1.16:5000';
+export const apiBaseUrl = 'https://find-my-path.herokuapp.com';
+// export const apiBaseUrl = 'http://192.168.1.16:5000';
 
 export const colorsPalettes: string[] = [
     '#ff7f00',
