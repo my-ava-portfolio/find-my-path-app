@@ -1,11 +1,9 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
-import { NodeFeature, PathElement, NodeGeoJson, Nodes, PathContainer, ColorsPalettes } from '../../core/interfaces';
+import { Node, PathElement, colorsPalettes } from '../../core/interfaces';
 
 import { GeneralUtils } from '../../core/generalUtils';
 
-import { map } from 'leaflet';
-import { Subscription } from 'rxjs';
 import { PathsToMapService } from '../../services/pathstomap.service';
 import { PathsToInputs } from '../../services/pathstoinputs.service';
 
@@ -26,7 +24,7 @@ export class PathsHandlerComponent implements OnInit {
   helpPopup = 'Start a new path!';
   topoChartDisplayed = false;
   pathActionButtonEnabled = true;
-  colorsPredefined = new ColorsPalettes().colorsBrewer;
+  colorsPredefined = colorsPalettes;
 
   private margin = {top: 30, right: 25, bottom: 30, left: 30};
   private width = 400;
@@ -136,7 +134,7 @@ export class PathsHandlerComponent implements OnInit {
     );
 
     // create and copy nodes
-    const nodesCopy: NodeFeature[] = this.PathFeatures[pathToDuplicateIndex].getNodes();
+    const nodesCopy: Node[] = this.PathFeatures[pathToDuplicateIndex].getNodes();
     const newPath: PathElement = this.initPath(' from ' + pathId);
     newPath.setNodes(nodesCopy);
     newPath.rebuildNodes(); // deep copy to remove references....
@@ -158,7 +156,7 @@ export class PathsHandlerComponent implements OnInit {
       'Path ' + this.countTotalPath + name,
       colorOutput
     );
-}
+  }
 
 }
 

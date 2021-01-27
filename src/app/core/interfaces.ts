@@ -1,5 +1,8 @@
-export class ColorsPalettes {
-  colorsBrewer = [
+
+// export const apiBaseUrl = 'https://find-my-path.herokuapp.com';
+export const apiBaseUrl = "http://192.168.1.16:5000";
+
+export const colorsPalettes: string[] = [
     '#ff7f00',
     '#e31a1c',
     '#6a3d9a',
@@ -8,140 +11,122 @@ export class ColorsPalettes {
     '#1f78b4'
   ];
 
-  constructor() {
-  }
-
-}
 
 
 
 // transport modes
 export interface TransportMode {
-    title: string;
-    value: string;
+  title: string;
+  value: string;
 }
 
-// a node feature
-// interface Geometry {
-//     type: string;
-//     coordinates: number[];
+
+
+// interface PointGeometry {
+//   type: string;
+//   coordinates: number[];
 // }
-
-// interface Properties {
-//     position: number;
-//     uuid: number;
-//     name: string;
-// }
-
-
-interface PointGeometry {
-    type: string;
-    coordinates: number[];
-}
 
 export interface Node {
+  type: string;
+  geometry: {
     type: string;
-    geometry: PointGeometry;
-    properties: {
-        position: number;
-        uuid: number;
-        name: string;
-    };
+    coordinates: number[];
+  };
+  properties: {
+    position: number;
+    uuid: number;
+    name: string;
+  };
 }
-export interface Nodes extends Array<Node>{}
-
 export interface NodeGeoJson {
-    type: string;
-    features: Nodes;
+  type: string;
+  features: Node[];
 }
 
 // PATH API
 export interface NodePathFeature {
+  type: string;
+  geometry: {
     type: string;
-    geometry: PointGeometry;
-    properties: {
-      position: string;
-      uuid: string; // to link to the chart and map
-      path_name: string;
-      height: number;
-      distance: number;
-    };
-    LatLng?: any;
+    coordinates: number[];
+  };
+  properties: {
+    position: string;
+    uuid: string; // to link to the chart and map
+    path_name: string;
+    height: number;
+    distance: number;
+  };
+  LatLng?: any;
 }
-
 export interface NodePathGeoJson {
-    type: string;
-    features: NodePathFeature[];
-}
-
-interface TopoPath {
-    nodes_count: number;
-    height_min: number;
-    height_max: number;
-    height_diff: number;
-    length: number;
+  type: string;
+  features: NodePathFeature[];
 }
 
 export interface LinePathGeoJson {
+  type: string;
+  features: {
     type: string;
-    features: {
-        type: string;
-        geometry: PointGeometry;
-        properties: {
-          path_position: number,
-          path_name: string;
-          source_node: string,
-          target_node: string,
-          length: number
-        };
+    geometry: {
+      type: string;
+      coordinates: number[];
     };
+    properties: {
+      path_position: number,
+      path_name: string;
+      source_node: string,
+      target_node: string,
+      length: number
+    };
+  };
 }
 
 export interface PathStatistics {
-    nodes_count: number;
-    height_min: number;
-    height_max: number;
-    height_diff: number;
-    length: number;
+  nodes_count: number;
+  height_min: number;
+  height_max: number;
+  height_diff: number;
+  length: number;
 }
 
 export interface OutputPathApi {
-    points_path: NodePathGeoJson;
-    line_path: LinePathGeoJson;
-    stats_path: PathStatistics;
+  points_path: NodePathGeoJson;
+  line_path: LinePathGeoJson;
+  stats_path: PathStatistics;
 }
 
 
 export interface Configuration {
-    EditingStatus: boolean;
-    transportModeStatus: string;
-    elevationStatus: boolean;
+  EditingStatus: boolean;
+  transportModeStatus: string;
+  elevationStatus: boolean;
 }
 
 
 export interface PathFeature {
-    id: string;
-    name: string;
-    color: string;
-    configuration: Configuration;
-    inputNodes: NodeGeoJson;
-    points_path?: NodePathGeoJson;
-    line_path?: LinePathGeoJson;
-    stats_path?: PathStatistics;
-
+  id: string;
+  name: string;
+  color: string;
+  configuration: Configuration;
+  inputNodes: NodeGeoJson;
+  points_path?: NodePathGeoJson;
+  line_path?: LinePathGeoJson;
+  stats_path?: PathStatistics;
 }
 export interface PathContainer extends Array<PathFeature>{}
 
 // a bbox output from app api
 export interface Bbox {
-    bbox: number[];
+  bbox: number[];
 }
 
 
 // a leafet marker
 export interface Marker {
-    uuid: number;
-    marker: any;
+  uuid: number;
+  marker: any;
 }
 
 
@@ -149,40 +134,28 @@ export interface Marker {
 
 // margin
 export interface Margin {
-    top: number;
-    right: number;
-    bottom: number;
-    left: number;
+  top: number;
+  right: number;
+  bottom: number;
+  left: number;
 }
 
 
 export interface Node {
+  type: string;
+  geometry: {
     type: string;
-    geometry: PointGeometry;
-    properties: {
-        position: number;
-        uuid: number;
-        name: string;
-    };
+    coordinates: number[];
+  };
+  properties: {
+    position: number;
+    uuid: number;
+    name: string;
+  };
 }
 
-export class NodeFeature {
-    private type = 'Feature';
-    geometry: PointGeometry;
-    properties: any;
 
-    constructor(
-        geometry: PointGeometry,
-        properties: any
-    ) {
-        this.type = this.type;
-        this.geometry = geometry;
-        this.properties = properties;
-    }
-
-}
-
-export class logMessage {
+export class LogMessage {
   icon!: string;
   details!: string;
   constructor() {}
@@ -197,8 +170,8 @@ export class PathElement {
   transportMode = 'pedestrian';
   elevationStatus = true;
   isPathLoop = false;
-  pathLogMessages: logMessage[] = [];
-  private inputNodes: NodeFeature[] = [];
+  pathLogMessages: LogMessage[] = [];
+  private inputNodes: Node[] = [];
   private pointsPath!: NodePathGeoJson;
   private linePath!: LinePathGeoJson;
   statsPath!: PathStatistics;
@@ -247,18 +220,20 @@ export class PathElement {
     return this.elevationStatus;
   }
 
-  setNodes(nodes: NodeFeature[]): void {
+  setNodes(nodes: Node[]): void {
     this.inputNodes = nodes;
   }
-  addNode(geometry: PointGeometry, properties: any): void {
-    const newNodes = new NodeFeature(
-          geometry,
-          properties
-    );
+  addNode(geometry: any, properties: any): void {
+    const newNodes: Node = {
+      type: 'Feature',
+      geometry,
+      properties
+    };
+    
     this.rebuildNodes();
     this.inputNodes.push(newNodes);
   }
-  getNodes(): NodeFeature[] {
+  getNodes(): Node[] {
     return this.inputNodes;
   }
   buildGeojsonOriginalNodes(): string {
@@ -289,16 +264,10 @@ export class PathElement {
       return this.statsPath;
   }
 
-  // deprecated, only used to debug the duplication action
-  updatePath(pathId: string): void {
-      this.getNodes().forEach((element: NodeFeature) => {
-          element.properties.path = pathId;
-      });
-  }
   rebuildNodes(): void {
-      const nodesToReworked: NodeFeature[] = this.getNodes();
+      const nodesToReworked: Node[] = this.getNodes();
       this.inputNodes = [];
-      nodesToReworked.forEach((element: NodeFeature) => {
+      nodesToReworked.forEach((element: Node) => {
           this.addNode(
               createCopy(element.geometry),
               createCopy(element.properties)

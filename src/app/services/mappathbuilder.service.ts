@@ -2,14 +2,14 @@ import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
-import { OutputPathApi, PathElement, NodeFeature } from '../core/interfaces';
+import { OutputPathApi, PathElement, Node } from '../core/interfaces';
+import { apiBaseUrl } from '../core/interfaces';
 
 
 @Injectable()
 export class MapPathBuilderService {
 
-  // private REST_API_SERVER = 'https://find-my-path.herokuapp.com/api/v1/path?';
-  private apiUrl = 'http://192.168.1.16:5000/api/v1/path?';
+  private apiUrl = `${apiBaseUrl}/api/v1/path?`;
   pathBuilt: Subject<PathElement> = new Subject<PathElement>();
   ErrorApiFound: Subject<string> = new Subject<string>();
   chartPathToRefresh: Subject<PathElement> = new Subject<PathElement>();
@@ -24,7 +24,7 @@ export class MapPathBuilderService {
     let elevationStatus: boolean | string = path.getElevation();
     let loopStatus: boolean | string = path.isPathLoop;
 
-    const nodes: NodeFeature[] = path.getNodes();
+    const nodes: Node[] = path.getNodes();
 
     if ( !elevationStatus ) {
       elevationStatus = '';
@@ -32,8 +32,10 @@ export class MapPathBuilderService {
     if ( !loopStatus ) {
       loopStatus = '';
     }
+    const geojsonData: string = JSON.stringify({ features: nodes });
+
     this.http.get<OutputPathApi>(
-      this.apiUrl +  'path_name=' + path.name + '&elevation_mode=' + elevationStatus + '&mode=' + transportMode + '&geojson=' + JSON.stringify({ features: nodes }) + '&is_loop=' + loopStatus
+      `${this.apiUrl}path_name=${path.name}&elevation_mode=${elevationStatus}&mode=${transportMode}&geojson=${geojsonData}&is_loop=${loopStatus}`
     ).subscribe(
       (response) => {
         path.setLinePath(response?.line_path);
@@ -43,7 +45,6 @@ export class MapPathBuilderService {
       },
       (response) => {
         // TODO improve error message, but API need improvments
-        console.log('prout', response.error.message)
         this.ErrorApiFound.next(response.error.message);
       }
     );

@@ -3,7 +3,7 @@ import { Component, OnInit, Input} from '@angular/core';
 import { ParametersToMapService } from '../../services/parameterstomap.service';
 import { ControlersToInputs } from '../../services/constrolerstoinputs.service';
 
-import { NodeFeature, PathElement } from '../../core/interfaces';
+import { Node, PathElement } from '../../core/interfaces';
 
 import { GeneralUtils } from '../../core/generalUtils';
 
@@ -23,7 +23,6 @@ export class nodesControlersComponent implements OnInit {
     private GeneralFunc: GeneralUtils,
     private controlersToInputs: ControlersToInputs
   ) {
-
   }
 
 
@@ -33,9 +32,9 @@ export class nodesControlersComponent implements OnInit {
   removeNode(uuid: number): void {
     if (this.pathData.getEdit() === true && this.isCurrentTab) {
 
-      const nodes: NodeFeature[] = this.pathData.getNodes();
-      const nodesFiltered: NodeFeature[] = nodes.filter(data => data.properties.uuid !== uuid);
-      console.log(uuid, nodesFiltered);
+      const nodes: Node[] = this.pathData.getNodes();
+      const nodesFiltered: Node[] = nodes.filter(data => data.properties.uuid !== uuid);
+      
       // update nodes list regarding user removing action
       nodesFiltered.forEach((feature, index) => {
         nodesFiltered[index].properties.position = index;
@@ -50,8 +49,8 @@ export class nodesControlersComponent implements OnInit {
 
   upPosition(position: number): void {
     if (this.pathData.getEdit() && this.isCurrentTab) {
-      console.log(position);
-      const nodes: NodeFeature[] = this.pathData.getNodes();
+
+      const nodes: Node[] = this.pathData.getNodes();
       this.controlersToInputs.emitNodeChangedToTop(nodes[position].properties.uuid);
 
       const nodesUpdated = this._switchPositionNodes(nodes, position, -1);
@@ -62,7 +61,7 @@ export class nodesControlersComponent implements OnInit {
 
   botPosition(position: number): void {
     if (this.pathData.getEdit() === true && this.isCurrentTab) {
-      const nodes: NodeFeature[] = this.pathData.getNodes();
+      const nodes: Node[] = this.pathData.getNodes();
       this.controlersToInputs.emitNodeChangedToBot(nodes[position].properties.uuid);
 
       const nodesUpdated = this._switchPositionNodes(nodes, position, 1);
@@ -71,16 +70,16 @@ export class nodesControlersComponent implements OnInit {
     }
   }
 
-  private _switchPositionNodes(nodes: NodeFeature[], positionToChange: number, incrementPos: number): NodeFeature[] {
+  private _switchPositionNodes(nodes: Node[], positionToChange: number, incrementPos: number): Node[] {
     const toPosition = positionToChange + incrementPos;
     if (toPosition !== -1 && toPosition !== nodes.length) {
       // do nothing for the first (top action) elements and the last (bot action) element
-      console.log(toPosition, toPosition !== -1);
-      const nodesShifted: NodeFeature[] = this.GeneralFunc.shiftingOnArray(nodes, positionToChange, toPosition);
+
+      const nodesShifted: Node[] = this.GeneralFunc.shiftingOnArray(nodes, positionToChange, toPosition);
       nodesShifted.forEach((feature, index) => {
         nodesShifted[index].properties.position = index;
       });
-      console.log(nodesShifted);
+
       return nodesShifted;
     }
     return nodes;
