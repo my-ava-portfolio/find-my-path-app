@@ -96,8 +96,6 @@ export class PathsHandlerComponent implements OnInit {
   }
 
   deletePath(pathId: string): void {
-
-
     this.PathFeatures = this.PathFeatures.filter(
       (path: PathElement): boolean => path.id !== pathId
     );
@@ -144,7 +142,6 @@ export class PathsHandlerComponent implements OnInit {
   }
 
   initPath(name: string = ''): PathElement {
-
     let colorOutput = this.GeneralFunc.randomHexColor();
     if (this.countPath <= this.colorsPredefined.length) {
       colorOutput = this.colorsPredefined[this.countPath];

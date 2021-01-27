@@ -18,11 +18,6 @@ export interface TransportMode {
   value: string;
 }
 
-// interface PointGeometry {
-//   type: string;
-//   coordinates: number[];
-// }
-
 export interface Node {
   type: string;
   geometry: {

@@ -108,7 +108,6 @@ export class InputParametersComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.displayPathParams();
     // in order to generate the map by default, each time we create a new tab (useful if duplicate!)
     this.Parameters2MapService.mapFromPathNodes(this.pathData);
     this.pathName = this.pathData.name;
@@ -184,7 +183,6 @@ export class InputParametersComponent implements OnInit, OnDestroy {
   }
 
   computePath(): void {
-    this.displayPathParams();
     const nodesCreated: Node[] = this.pathData.getNodes();
     if (nodesCreated.length > 0) {
       this.buttonsStatus(false);  // desactivate buttons to avoid conflicts between path during path computing
@@ -198,14 +196,12 @@ export class InputParametersComponent implements OnInit, OnDestroy {
 
   updateStrokeWidth(event: any): void {
     this.setlogInfoMessage('Line width updated', 'info');
-    console.log(this.pathData.id);
     this.pathData.setWidth(event.target.value);
     this.MapFuncs.UpdatePathStyleFromLayerId(this.pathData.id, undefined, event.target.value);
 
   }
   updateStrokeColor(event: any): void {
     this.setlogInfoMessage('Color updated', 'info');
-    console.log(this.pathData.id);
     this.pathData.setColor(event.target.value);
     this.MapFuncs.UpdatePathStyleFromLayerId(this.pathData.id, event.target.value);
   }
@@ -235,7 +231,6 @@ export class InputParametersComponent implements OnInit, OnDestroy {
 
   updateElevationStatus(event: any): void {
     this.pathData.setElevation(event.target.checked);
-    console.log('update elevationMode', this.pathData.getElevation());
   }
 
   updatePathLoopStatus(): void {
@@ -281,16 +276,9 @@ export class InputParametersComponent implements OnInit, OnDestroy {
 
       this.pathData = path;
       this.pathsToInputs.emitGlobalChartRefreshing();
-      console.log('finito', this.isCurrentTab, this.pathData);
       // status message updated when api call is a success
       this.setlogInfoMessage(this.pathData.getTransportMode() + ' Path built !', 'success');
     }
-  }
-
-  private displayPathParams(): void {
-    console.log(
-      this.pathData
-    );
   }
 
 }
