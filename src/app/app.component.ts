@@ -11,13 +11,7 @@ export class AppComponent {
 
   AppTitle = 'Find My Path';
 
-  constructor(
-  ) {
+  constructor() {
   }
-
-
-  ngOnInit(): void {
-  }
-
 
 }
