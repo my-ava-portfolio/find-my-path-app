@@ -37,12 +37,12 @@ export class D3LeafletUtils {
     private d3ToInputs: D3ToInputs
   ) { }
 
-  pinPathCubicBezier(width: number, height:number): string {
+  pinPathCubicBezier(width: number, height: number): string {
     // https://medium.com/welldone-software/map-pins-using-svg-path-9fdfebb74501
-    const deltaX = width * Math.sqrt(3)
-    const deltaY = height * 4 / 3
+    const deltaX = width * Math.sqrt(3);
+    const deltaY = height * 4 / 3;
     return `M 0,0 C ${-deltaX},${-deltaY}
-        ${deltaX},${-deltaY} 0,0 z`
+        ${deltaX},${-deltaY} 0,0 z`;
 }
 
   removeFeaturesMapFromLayerId(layerId: string): void {
@@ -82,7 +82,7 @@ export class D3LeafletUtils {
     this.removeFeaturesMapFromLayerId(layerId);
 
     const GeoJsonPointFeatures: any[] = pathData.getPointsPath().features;
-    const input_data: any[] = JSON.parse(JSON.stringify(GeoJsonPointFeatures));
+    const inputData: any[] = JSON.parse(JSON.stringify(GeoJsonPointFeatures));
     const convertLatLngToLayerCoords = (d: any): any => {
         return LeafletMap.latLngToLayerPoint(
             new L.LatLng(
@@ -92,7 +92,7 @@ export class D3LeafletUtils {
         );
     };
 
-    input_data.forEach( (feature, i) => {
+    inputData.forEach( (feature, i) => {
         feature.LatLng = new L.LatLng(
             feature.geometry.coordinates[1],
             feature.geometry.coordinates[0]
@@ -118,14 +118,14 @@ export class D3LeafletUtils {
     // but below we set the "d" attribute using the
     // line creator function from above.
     const linePath: any  = g.selectAll('.lineConnect_' + layerId)
-      .data([input_data])
+      .data([inputData])
       .enter()
       .append('path')
       .attr('class', 'lineConnect_' + layerId)
       .style('fill', 'none')
       .style('opacity', 'unset') // add 0 to hide the path
       .style('stroke', pathData.strokeColor)
-      .style('stroke-width', pathData.strokeWidth + "px")
+      .style('stroke-width', pathData.strokeWidth + 'px')
       .style('overflow', 'overlay');
 
     // the traveling circle along the path
@@ -149,25 +149,25 @@ export class D3LeafletUtils {
     // points that make the path, we'll be used to display them with the line chart
     // we make them transparent
     const ptFeatures: any = g.selectAll('circle')
-      .data(input_data)
+      .data(inputData)
       .enter()
       .append('circle')
       .attr('r', 6)
-      .style('fill', "white")
+      .style('fill', 'white')
       .style('stroke', pathData.strokeColor)
       .style('stroke-width', '2px')
       .attr('class', 'waypoints_' + layerId)
       .attr('id', (d: any) => d.properties.uuid)
       .style('opacity', '0');
-    
+
     // Reposition the SVG to cover the features.
     const reset = (): void => {
 
       // we get the stating point
       marker.attr('transform',
         (): string => {
-          const y: number = input_data[0].geometry.coordinates[1];
-          const x: number = input_data[0].geometry.coordinates[0];
+          const y: number = inputData[0].geometry.coordinates[1];
+          const x: number = inputData[0].geometry.coordinates[0];
           return 'translate(' +
             LeafletMap.latLngToLayerPoint(new L.LatLng(y, x)).x + ',' +
             LeafletMap.latLngToLayerPoint(new L.LatLng(y, x)).y +
@@ -177,8 +177,8 @@ export class D3LeafletUtils {
 
       textmarker.attr('transform',
         (): string => {
-        const y: number = input_data[0].geometry.coordinates[1];
-        const x: number = input_data[0].geometry.coordinates[0];
+        const y: number = inputData[0].geometry.coordinates[1];
+        const x: number = inputData[0].geometry.coordinates[0];
         return 'translate(' +
             LeafletMap.latLngToLayerPoint(new L.LatLng(y, x)).x + ',' +
             LeafletMap.latLngToLayerPoint(new L.LatLng(y, x)).y +
@@ -206,7 +206,7 @@ export class D3LeafletUtils {
           marker.style('opacity', '0');
           textmarker.style('opacity', '0');
           // d3.select(this).call(transition);// infinite loop
-          linePath.style('stroke-dasharray', '0')
+          linePath.style('stroke-dasharray', '0');
           // value of this property is depending from the zoom... if we zoom the context change and the style is not adapted.
           // so we remove the stroke-dasharray style to be sure to display the path as usual
 
@@ -223,7 +223,6 @@ export class D3LeafletUtils {
         // total length of path (single value)
         const l: any = linePath.node().getTotalLength();
         // t is the time converted from 0 to 1
-        console.log(t)
         const interpolate: any = d3.interpolateString('0,' + l, l + ',' + l);
         // t is fraction of time 0-1 since transition began
         const markerSelected: any = d3.select('#marker_' + layerId);
@@ -251,18 +250,17 @@ export class D3LeafletUtils {
 
   computeMapFromPoints(LeafletMap: any, inputPath: any, layerId: string, displayToolTip: boolean = false): void {
     this.removeFeaturesMapFromLayerId(layerId);
-    console.log('drag status');
 
     const GeoJsonPointFeatures = inputPath.getNodes();
 
-    const input_data: any[] = JSON.parse(JSON.stringify(GeoJsonPointFeatures))
+    const inputData: any[] = JSON.parse(JSON.stringify(GeoJsonPointFeatures));
 
-    input_data.forEach( (feature, i): void => {
+    inputData.forEach( (feature, i): void => {
       feature.LatLng = new L.LatLng(
         feature.geometry.coordinates[1],
         feature.geometry.coordinates[0]
       );
-      feature.properties.uuid = 'node_' + feature.properties.uuid + '_' + layerId // layerId to avoid conflic between paths !
+      feature.properties.uuid = 'node_' + feature.properties.uuid + '_' + layerId; // layerId to avoid conflic between paths !
     });
 
     const svgLayer: any = L.svg().addTo(LeafletMap);
@@ -272,9 +270,9 @@ export class D3LeafletUtils {
       .attr('class', 'svg-shadow');
     const g: any = svg.select('g').attr('class', 'leaflet-zoom-hide');
 
-    const path = this.pinPathCubicBezier(25, 35)
+    const path = this.pinPathCubicBezier(25, 35);
     const PathNodes: any = g.selectAll('.' + layerId)
-      .data(input_data)
+      .data(inputData)
       .enter()
       .append('g')
       .attr('class', 'MapMarkers')
@@ -303,7 +301,7 @@ export class D3LeafletUtils {
       .attr('r', 10)
       .attr('cy', '-38')
       .attr('class', 'travelFixedMarker_' + layerId)
-      .style('fill', inputPath.getColor()) // TODO add css
+      .style('fill', inputPath.getColor()); // TODO add css
 
     PathNodes
       .append('text')
@@ -327,12 +325,12 @@ export class D3LeafletUtils {
       .on('mouseout', (d: any): void => {
         // TODO issue popup sometimes not removed
         d3.select('#popup-' + inputPath.id).remove();
-      })
+      });
 
     const layerCoordsConverter = this.convertLayerCoordsToLatLng.bind(this);
 
     function refreshInputDataCoordinates(sourceData: any, featureUpdated: any): any {
-      const nodeUuid: number = input_data.findIndex(
+      const nodeUuid: number = inputData.findIndex(
           (node: any): boolean =>
               node.properties.uuid === featureUpdated.properties.uuid
       );
@@ -356,12 +354,12 @@ export class D3LeafletUtils {
 
             // to refresh the nodecontrolers part
             // use the original input data to update data path (inherit)
-            refreshInputDataCoordinates(GeoJsonPointFeatures, d)
+            refreshInputDataCoordinates(GeoJsonPointFeatures, d);
           })
           .on('end', (d: any): void => {
             // to refresh the nodecontrolers part
             // use the original input data to update data path (inherit)
-            inputPath.setNodes(refreshInputDataCoordinates(GeoJsonPointFeatures, d))
+            inputPath.setNodes(refreshInputDataCoordinates(GeoJsonPointFeatures, d));
             this.computeMapFromPoints(LeafletMap, inputPath, layerId, displayToolTip = false);
 
             // emit a node changes
@@ -466,15 +464,13 @@ export class D3LeafletUtils {
       .append('svg')
       .attr('width', '100%')
       .attr('height', contentHeight)
-      .attr('id', defaultChartClass)
-
-
+      .attr('id', defaultChartClass);
 
     const g: any = svg
       .append('g')
       .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
       // to display y axis and top legend
-    
+
     // Set the ranges
     const x: any = d3.scaleLinear().range([5, contentWidth]); // add 5 not 0, to dispatch the x axis and the y axis
     const y: any = d3.scaleLinear().range([height, 0]);
@@ -521,7 +517,7 @@ export class D3LeafletUtils {
       .attr('width', 10)
       .attr('height', 10)
       .attr('class', (d: any) => 'chart-legend-' + d.id)
-      .style('fill', (d: any) => d.strokeColor)
+      .style('fill', (d: any) => d.strokeColor);
 
     legend.append('text')
       .attr('x', contentWidth - 75)
@@ -533,19 +529,19 @@ export class D3LeafletUtils {
         .style('pointer-event', 'auto')
         .style('cursor', 'pointer')
         .on('click', (d: any, i: any, n: any) => {
-          const chartLegend = d3.select('.chart-legend-' + d.id)
+          const chartLegend = d3.select('.chart-legend-' + d.id);
           if (chartLegend.style('fill') === 'grey') {
-            d3.select(".chart-line-" + d.id).style('opacity', '1');
-            d3.selectAll(".chart-line-circle-" + d.id).style('opacity', '1');
+            d3.select('.chart-line-' + d.id).style('opacity', '1');
+            d3.selectAll('.chart-line-circle-' + d.id).style('opacity', '1');
             chartLegend.style('fill', d.strokeColor);
           } else {
-            d3.select(".chart-line-" + d.id).style('opacity', '0');
-            d3.selectAll(".chart-line-circle-" + d.id).style('opacity', '0');
+            d3.select('.chart-line-' + d.id).style('opacity', '0');
+            d3.selectAll('.chart-line-circle-' + d.id).style('opacity', '0');
             chartLegend.style('fill', 'grey');
           }
-        })
+        });
     }
-    
+
     // data process
     data.forEach((item: any) => {
 
@@ -578,36 +574,40 @@ export class D3LeafletUtils {
         .attr('cx', (d: any) => x(d.properties.distance))
         .attr('cy', (d: any) => y(d.properties.height))
         .on('mouseover', (d: any, i: any, n: any) => {
-          d3.select(n[i]).attr('r', 6)
+          d3.select(n[i]).attr('r', 6);
 
           const currentPopup: any = d3.select('body').append('div')
             .attr('id', 'topoTooltip')
-            .attr('class', 'border shadow')
-            .style('opacity', 0)
+            .attr('class', 'row border rounded shadow')
+            .style('opacity', 0.8)
             .style('position', 'absolute')
             .style('width', '170px')
-            .style('height', '65px')
-            .style('background-color', item.getColor());
+            .style('height', '80px')
+            .style('text-align', 'center')
+            .style('background-color', item.getColor())
+            .style('margin-left', '-5px')
+            .style('border-width', '5px');
 
           currentPopup.transition()
             .duration(200)
-            .style('opacity', .9);
+            .style('opacity', .8);
           currentPopup
-            .html('<p>Nom: ' + item.name + '<br>' +
-              'Altitude: ' + d.properties.height + ' mètres<br>' +
-              'Distance: ' + Math.round(d.properties.distance) + ' mètres</p>')
+            .html('<div class="col-lg-12"><span class="font-weight-bold">' + item.name + '</span></div>' +
+              '<div class="col-lg-12"><span>Elevation: ' + d.properties.height + ' m.</span></div>' +
+              '<div class="col-lg-12"><span>Distance: ' + Math.round(d.properties.distance) + ' m. </span></div>'
+            )
             .style('left', (d3.event.pageX + 10) + 'px')
             .style('top', (d3.event.pageY - 10) + 'px');
 
           // display node on map from chart
           d3.selectAll('#' + d.properties.uuid).style('opacity', '1');
-      })
+        })
         .on('mouseout', (d: any, i: any, n: any) => {
-          d3.select(n[i]).attr('r', 3)
-          
-        // reset display node on map from chart
-        d3.selectAll('#' + d.properties.uuid).style('opacity', '0');
-        d3.selectAll('#topoTooltip').remove();
+          d3.select(n[i]).attr('r', 3);
+
+          // reset display node on map from chart
+          d3.selectAll('#' + d.properties.uuid).style('opacity', '0');
+          d3.selectAll('#topoTooltip').remove();
       })
       .on('mousemove', () => {
         // always only 1 popup
@@ -616,7 +616,6 @@ export class D3LeafletUtils {
         // to get the size of the popup...
         // const popup_width: number = d3.selectAll("#topoTooltip").node().getBoundingClientRect().width
         // const popup_height: number = d3.selectAll("#topoTooltip").node().getBoundingClientRect().height
-        // console.log(popup_width, popup_height)
         const popupWidth: number = parseInt(d3.selectAll('#topoTooltip').style('width').replace('px', ''), 10);
         const popupHeight: number = parseInt(d3.selectAll('#topoTooltip').style('height').replace('px', ''), 10);
 
