@@ -22,7 +22,7 @@ export class MapToParametersService {
 
   pushCompletePath(Path: PathElement): void {
     this.pathDone = Path,
-    this.pathComplete.next(this.pathDone)
+      this.pathComplete.next(this.pathDone);
   }
 
 }
