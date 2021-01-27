@@ -9,13 +9,12 @@ import { MapViewBuilderService } from '../../services/mapviewbuider.service';
 import { MapPathBuilderService } from '../../services/mappathbuilder.service';
 import { PathsToMapService } from '../../services/pathstomap.service';
 
-import { PathFeature, PathElement, Marker} from '../../core/interfaces';
+import { PathElement, Marker} from '../../core/interfaces';
 import { D3LeafletUtils } from '../../core/d3LeafletUtils';
 
 
 @Component({
   selector: 'app-map',
-  // https://medium.com/@simonb90/comprendre-la-viewencapsulation-dans-un-component-angular-83decae8f092
   encapsulation: ViewEncapsulation.None,
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.css']
@@ -24,20 +23,29 @@ export class MapComponent implements OnInit {
 
   private InitialViewCoords: any = [45.754649, 4.858618];
   private zoomValue = 10;
-  private minZoomValue = 3
-  private maxZoomValue = 17
-	
-  private stamenLayer: any = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}{r}.png', { id: 'backgroundMap', attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' });
-  private osmLayer: any = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {id: 'backgroundMap', attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'});
-  private openTopoMap: any = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {id: 'backgroundMap', attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'});
-  
+  private minZoomValue = 3;
+  private maxZoomValue = 17;
+
+  private stamenLayer: any = L.tileLayer(
+    'https://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}{r}.png',
+    { id: 'backgroundMap', attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' }
+  );
+  private osmLayer: any = L.tileLayer(
+    'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    { id: 'backgroundMap', attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors' }
+  );
+  private openTopoMap: any = L.tileLayer(
+    'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
+    { id: 'backgroundMap', attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)' }
+  );
+
   private nodesMapPrefix = 'nodesMap-';
   private pathMapPrefix = 'pathMap-';
 
   map: any;
   EditModeStatus!: boolean;
   MarkerArray: Marker[] = [];
-  finalPathCompleted!: PathFeature;
+  finalPathCompleted!: PathElement;
 
   constructor(
     private Map2ParametersService: MapToParametersService,
@@ -87,15 +95,20 @@ export class MapComponent implements OnInit {
 
     // zoom on path
     this.Parameters2MapService.PathToZoom.subscribe(pathFeat => {
-      let jsonData!: string
-      if (!pathFeat.isPathComputed()) {
-        // zoom on the path is it has been computed
-        jsonData = pathFeat.buildGeojsonOriginalNodes();
-      } else {
-        // zoom on the map nodes by default
-        jsonData = JSON.stringify(pathFeat.getLinePath());
-      }
-      const jsonLayer = L.geoJSON(JSON.parse(jsonData));
+
+      // zoom on the path is it has been computed
+      const jsonData: string = pathFeat.buildGeojsonOriginalNodes();
+
+      // zoom switcher on nodes and path if computed
+      // if (!pathFeat.isPathComputed()) {
+      //   // zoom on the path is it has been computed
+      //   jsonData = pathFeat.buildGeojsonOriginalNodes();
+      // } else {
+      //   // zoom on the map nodes by default
+      //   jsonData = JSON.stringify(pathFeat.getLinePath());
+      // }
+
+      const jsonLayer: any = L.geoJSON(JSON.parse(jsonData));
       this.map.fitBounds(jsonLayer.getBounds());
 
     });
@@ -117,9 +130,9 @@ export class MapComponent implements OnInit {
     });
     // prepare background map controler
     const backgroundMaps = {
-      "Stamen": this.stamenLayer,
-      "OpenTopoMap": this.openTopoMap,
-      "OpenStreetMap": this.osmLayer
+      Stamen: this.stamenLayer,
+      OpenTopoMap: this.openTopoMap,
+      OpenStreetMap: this.osmLayer
     };
     L.control.layers(backgroundMaps).addTo(this.map);
 

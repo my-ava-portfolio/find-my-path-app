@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
 
-import { Nodes, OutputPathApi, PathElement } from '../core/interfaces';
+import { PathElement } from '../core/interfaces';
 
 
 @Injectable()

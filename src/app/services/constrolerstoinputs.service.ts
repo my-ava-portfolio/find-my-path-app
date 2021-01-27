@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 
 
-
 @Injectable()
 export class ControlersToInputs {
 
@@ -15,13 +14,13 @@ export class ControlersToInputs {
 
   emitNodeRemoved(uuid: number): void {
     this.nodeUuidRemoved.next(uuid);
-  };
+  }
 
   emitNodeChangedToTop(uuid: number): void {
     this.nodeUuidChangedTop.next(uuid);
-  };
+  }
 
   emitNodeChangedToBot(uuid: number): void {
     this.nodeUuidChangedBot.next(uuid);
-  };
+  }
 }

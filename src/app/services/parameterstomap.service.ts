@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
 
-import { PathElement, Nodes } from '../core/interfaces';
+import { PathElement } from '../core/interfaces';
 
 
 @Injectable()
@@ -19,17 +18,17 @@ export class ParametersToMapService {
 
 
   mapFromPathNodes(pathFeat: PathElement): void {
-    this.feature = pathFeat
+    this.feature = pathFeat;
     this.NodesPathToMap.next(this.feature);
   }
 
   deletePathMaps(pathId: string): void {
-    this.featureId = pathId // TODO simplify
-    this.MapPathIdToremove.next(this.featureId)
+    this.featureId = pathId; // TODO simplify
+    this.MapPathIdToremove.next(this.featureId);
   }
 
   zoomOnPathOnMap(pathFeat: PathElement): void {
-    this.PathToZoom.next(pathFeat)
+    this.PathToZoom.next(pathFeat);
   }
 
 }

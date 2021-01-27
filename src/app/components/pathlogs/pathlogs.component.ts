@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 
-import { NodeFeature, PathElement, Nodes, ColorsPalettes } from '../../core/interfaces';
+import { PathElement } from '../../core/interfaces';
+
 
 @Component({
   selector: 'app-pathlogs',

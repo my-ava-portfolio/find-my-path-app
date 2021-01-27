@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { MapViewBuilderService } from '../../services/mapviewbuider.service';
 
 
-
 @Component({
   selector: 'app-viewcontroler',
   templateUrl: './viewcontroler.component.html',
@@ -12,13 +11,13 @@ import { MapViewBuilderService } from '../../services/mapviewbuider.service';
 export class ViewcontrolerComponent implements OnInit {
   StudyAreaValue!: string;
 
-  private noneAreaNameMessage = "Area name not defined"
+  private noneAreaNameMessage = 'Area name not defined';
   resultMessage = 'Study area not found';
 
   errorDisplayed!: boolean;
 
   coordinates: object = {};
-  helpPopup = "Set a location name to zoom!";
+  helpPopup = 'Set a location name to zoom!';
 
   constructor(
     private MapViewService: MapViewBuilderService,
