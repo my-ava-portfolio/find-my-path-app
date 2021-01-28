@@ -15,6 +15,7 @@ export class HeaderComponent implements OnInit {
 
   appVersion!: string;
   apiStatus!: string;
+  apiStatusMessage = 'Starting...';
   ApiContinuousChecker = interval(5000); // observable which run all the time
 
   ApiContinuousCheckerSubscription!: Subscription;
@@ -24,18 +25,17 @@ export class HeaderComponent implements OnInit {
   ) {
 
     this.ApiCheckService.apiHealth.subscribe(data => {
-        this.apiStatus = data;
-        if (this.apiStatus === 'Ready' ) {
-          this.ApiContinuousCheckerSubscription.unsubscribe();
-        }
+      this.apiStatus = data;
+      if (this.apiStatus === 'Ready') {
+        this.apiStatusMessage = this.apiStatus;
+        this.ApiContinuousCheckerSubscription.unsubscribe();
       }
-
-    );
+    });
 
   }
 
   ngOnInit(): void {
-    this.appVersion = version
+    this.appVersion = version;
 
     this.checkApiStatus();
   }

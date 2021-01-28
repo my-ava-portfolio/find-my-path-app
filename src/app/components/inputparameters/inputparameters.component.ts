@@ -111,7 +111,7 @@ export class InputParametersComponent implements OnInit, OnDestroy {
     // in order to generate the map by default, each time we create a new tab (useful if duplicate!)
     this.Parameters2MapService.mapFromPathNodes(this.pathData);
     this.pathName = this.pathData.name;
-    this.setlogInfoMessage('Path Created: ' + this.pathName, 'info');
+    this.setlogInfoMessage(`Path Created: ${this.pathName}. Enable the edit mode to add path nodes!`, 'info');
 
   }
 

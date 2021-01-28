@@ -72,10 +72,8 @@ export class PathsHandlerComponent implements OnInit {
   }
 
   addPath(): void {
-    // TODO add name
     const newPath: PathElement = this.initPath();
     this.PathFeatures.push(newPath);
-    // this.currentTabId = newPath.id;
     this.switchTab(newPath.id);
   }
 
