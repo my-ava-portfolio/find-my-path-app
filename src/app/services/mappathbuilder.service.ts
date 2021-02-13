@@ -9,7 +9,7 @@ import { apiBaseUrl } from '../core/interfaces';
 @Injectable()
 export class MapPathBuilderService {
 
-  private apiUrl = `${apiBaseUrl}/api/v1/path?`;
+  private apiUrl = `${apiBaseUrl}path?`;
   pathBuilt: Subject<PathElement> = new Subject<PathElement>();
   ErrorApiFound: Subject<string> = new Subject<string>();
   chartPathToRefresh: Subject<PathElement> = new Subject<PathElement>();

@@ -9,7 +9,7 @@ import { apiBaseUrl } from '../core/interfaces';
 @Injectable()
 export class MapViewBuilderService {
 
-  private apiUrl = `${apiBaseUrl}/api/v1/location?`;
+  private apiUrl = `${apiBaseUrl}location?`;
 
   errorMessage: Subject<string> = new Subject<string>();
   bboxCoords: Subject<number[]> = new Subject<number[]>();

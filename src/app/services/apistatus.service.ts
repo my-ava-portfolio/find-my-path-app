@@ -7,7 +7,7 @@ import { apiBaseUrl } from '../core/interfaces';
 @Injectable()
 export class ApiStatusService {
 
-    private apiUrl = `${apiBaseUrl}/api/v1/health`;
+    private apiUrl = `${apiBaseUrl}health`;
     apiHealth: Subject<string> = new Subject<string>();
 
     constructor(
