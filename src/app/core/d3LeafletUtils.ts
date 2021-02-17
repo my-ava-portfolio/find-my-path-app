@@ -1,3 +1,4 @@
+import { element } from 'protractor';
 import { Injectable } from '@angular/core';
 
 import * as L from 'leaflet';
@@ -190,7 +191,7 @@ export class D3LeafletUtils {
 
       ptFeatures.attr(
         'transform',
-        (d: any): string => 'translate(' +
+        (d: any,): string => 'translate(' +
           convertLatLngToLayerCoords(d).x + ',' +
           convertLatLngToLayerCoords(d).y +
         ')'
@@ -316,25 +317,25 @@ export class D3LeafletUtils {
       .style('opacity', '1');
 
     PathNodes
-      .on('mouseover', (d: any): void => {
+      .on('mouseover', (e: any, d: any): void => {
           this.initPopup('body', 'popup-' + inputPath.id, d, false);
       })
-      .on('mousemove', (d: any): void => {
-          this.moveResponsivePopup('#popup-' + inputPath.id);
+      .on('mousemove', (e: any, d: any): void => {
+          this.moveResponsivePopup('#popup-' + inputPath.id, e);
       })
-      .on('mouseout', (d: any): void => {
+      .on('mouseout', (e: any, d: any): void => {
         // TODO issue popup sometimes not removed
         d3.select('#popup-' + inputPath.id).remove();
       });
 
     const layerCoordsConverter = this.convertLayerCoordsToLatLng.bind(this);
 
-    function refreshInputDataCoordinates(sourceData: any, featureUpdated: any): any {
+    function refreshInputDataCoordinates(sourceData: any, featureUpdated: any, event: any): any {
       const nodeUuid: number = inputData.findIndex(
           (node: any): boolean =>
               node.properties.uuid === featureUpdated.properties.uuid
       );
-      const CoordinatesUpdated = layerCoordsConverter(LeafletMap, { x: d3.event.x, y: d3.event.y });
+      const CoordinatesUpdated = layerCoordsConverter(LeafletMap, { x: event.x, y: event.y });
       sourceData[nodeUuid].geometry.coordinates = [CoordinatesUpdated.lng, CoordinatesUpdated.lat];
 
       return sourceData;
@@ -346,24 +347,24 @@ export class D3LeafletUtils {
         .attr('class', 'MapMarkers-' + layerId + ' dragEnabled')
         .call(
           d3.drag()
-            .on('drag', (d: any): void => {
+            .on('drag', (e: any, d: any): void => {
             LeafletMap.dragging.disable();
             d3.select('#' + d.properties.uuid)
               // .style('r', '15')
-              .attr('transform', 'translate(' + d3.event.x + ',' + d3.event.y + ')' );
+              .attr('transform', 'translate(' + e.x + ',' + e.y + ')' );
 
             // to refresh the nodecontrolers part
             // use the original input data to update data path (inherit)
-            refreshInputDataCoordinates(GeoJsonPointFeatures, d);
+            refreshInputDataCoordinates(GeoJsonPointFeatures, d, e);
           })
-          .on('end', (d: any): void => {
+          .on('end', (e: any, d: any): void => {
             // to refresh the nodecontrolers part
             // use the original input data to update data path (inherit)
-            inputPath.setNodes(refreshInputDataCoordinates(GeoJsonPointFeatures, d));
+            inputPath.setNodes(refreshInputDataCoordinates(GeoJsonPointFeatures, d, e));
             this.computeMapFromPoints(LeafletMap, inputPath, layerId, displayToolTip = false);
 
             // emit a node changes
-            const CoordinatesUpdated = layerCoordsConverter(LeafletMap, { x: d3.event.x, y: d3.event.y });
+            const CoordinatesUpdated = layerCoordsConverter(LeafletMap, { x: e.x, y: e.y });
             this.d3ToInputs.emitpointMapMoved([CoordinatesUpdated.lng, CoordinatesUpdated.lat]);
 
             LeafletMap.dragging.enable();
@@ -423,12 +424,12 @@ export class D3LeafletUtils {
     if (staticMode) {
       const popup: any = d3.selectAll('#' + popupId);
       popup
-        .style('left', (d3.event.pageX)  + 'px')
-        .style('top', (d3.event.pageY - 20) + 'px');
+        .style('left', (e: any) => (e.x) + 'px')
+        .style('top', (e: any) => (e.y - 20) + 'px');
     }
   }
 
-  moveResponsivePopup(popupId: string): void {
+  moveResponsivePopup(popupId: string, event: any): void {
     const popup: any = d3.selectAll(popupId);
 
     // do not change with let or you'll have value issue
@@ -437,17 +438,17 @@ export class D3LeafletUtils {
     const popupHeight = 10;
     popup
       .style('left', (): string => {
-        if (d3.event.pageX + popupWidth + 20 > this.windowWidth) {
-            return d3.event.pageX - popupWidth - 15 + 'px';
+        if (event.x + popupWidth + 20 > this.windowWidth) {
+            return event.x - popupWidth - 15 + 'px';
         } else {
-            return d3.event.pageX + 15 + 'px';
+            return event.x + 15 + 'px';
         }
       })
       .style('top', (): string => {
-        if (d3.event.pageY + popupHeight + 20 > this.windowHeight) {
-            return d3.event.pageY - popupHeight - 15 + 'px';
+        if (event.y + popupHeight + 20 > this.windowHeight) {
+            return event.y - popupHeight - 15 + 'px';
         } else {
-            return d3.event.pageY + 15 + 'px';
+            return event.y + 15 + 'px';
         }
       });
   }
@@ -528,7 +529,7 @@ export class D3LeafletUtils {
       legend
         .style('pointer-event', 'auto')
         .style('cursor', 'pointer')
-        .on('click', (d: any, i: any, n: any) => {
+        .on('click', (e: any, d: any, i: any, n: any) => {
           const chartLegend = d3.select('.chart-legend-' + d.id);
           if (chartLegend.style('fill') === 'grey') {
             d3.select('.chart-line-' + d.id).style('opacity', '1');
@@ -573,8 +574,8 @@ export class D3LeafletUtils {
         .style('cursor', 'pointer')
         .attr('cx', (d: any) => x(d.properties.distance))
         .attr('cy', (d: any) => y(d.properties.height))
-        .on('mouseover', (d: any, i: any, n: any) => {
-          d3.select(n[i]).attr('r', 6);
+        .on('mouseover', (e: any, d: any, i: any, n: any) => {
+          d3.select(e.currentTarget).attr('r', 6);
 
           const currentPopup: any = d3.select('body').append('div')
             .attr('id', 'topoTooltip')
@@ -596,20 +597,20 @@ export class D3LeafletUtils {
               '<div class="col-lg-12"><span>Elevation: ' + d.properties.height + ' m.</span></div>' +
               '<div class="col-lg-12"><span>Distance: ' + Math.round(d.properties.distance) + ' m. </span></div>'
             )
-            .style('left', (d3.event.pageX + 10) + 'px')
-            .style('top', (d3.event.pageY - 10) + 'px');
+            .style('left', () => (e.x + 10) + 'px')
+            .style('top', () => (e.y - 10) + 'px');
 
           // display node on map from chart
           d3.selectAll('#' + d.properties.uuid).style('opacity', '1');
         })
-        .on('mouseout', (d: any, i: any, n: any) => {
-          d3.select(n[i]).attr('r', 3);
+        .on('mouseout', (e: any, d: any, i: any, n: any) => {
+          d3.select(e.currentTarget).attr('r', 3);
 
           // reset display node on map from chart
           d3.selectAll('#' + d.properties.uuid).style('opacity', '0');
           d3.selectAll('#topoTooltip').remove();
       })
-      .on('mousemove', () => {
+      .on('mousemove', (e: any) => {
         // always only 1 popup
         const currentPopup = d3.selectAll('#topoTooltip');
 
@@ -621,17 +622,17 @@ export class D3LeafletUtils {
 
         currentPopup
         .style('left', () => {
-          if (d3.event.pageX + popupWidth + 10 > window.outerWidth) {
-                return d3.event.pageX - popupWidth - 10 + 'px';
+          if (e.pageX + popupWidth + 10 > window.outerWidth) {
+                return e.x - popupWidth - 10 + 'px';
             } else {
-                return d3.event.pageX + 10 + 'px';
+                return e.x + 10 + 'px';
             }
         })
         .style('top', () => {
-            if (d3.event.pageY + popupHeight + 10 > window.outerHeight) {
-                return d3.event.pageY - popupHeight - 10 + 'px';
+            if (e.pageY + popupHeight + 10 > window.outerHeight) {
+                return e.y - popupHeight - 10 + 'px';
             } else {
-                return d3.event.pageY + 10 + 'px';
+                return e.y + 10 + 'px';
             }
         });
 
