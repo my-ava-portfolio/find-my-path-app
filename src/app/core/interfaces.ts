@@ -1,7 +1,8 @@
 
 // export const apiBaseUrl = 'https://ava-api.herokuapp.com/api/v1/findmypath/';
 // export const apiBaseUrl = 'http://192.168.1.16:5000/';
-export const apiBaseUrl = 'https://amaury-valorge.com/api/v1/findmypath/';
+export const apiBaseUrl = 'https://api.amaury-valorge.com/api/v1/findmypath/';
+//export const apiBaseUrl = 'http://127.0.0.1:8080/api/v1/findmypath/';
 
 export const colorsPalettes: string[] = [
     '#ff7f00',
